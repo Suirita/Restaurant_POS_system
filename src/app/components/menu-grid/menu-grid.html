@@ -1,0 +1,61 @@
+<div class="flex-1 p-2 sm:p-4 overflow-y-auto bg-gray-50 min-h-0">
+  <!-- Loading State -->
+  <div
+    *ngIf="loading()"
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4"
+  >
+    <div
+      *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]"
+      class="bg-white rounded-2xl shadow-sm overflow-hidden animate-pulse"
+    >
+      <div class="bg-gray-200 h-24 sm:h-32"></div>
+      <div class="p-2 sm:p-3">
+        <div class="bg-gray-200 h-3 sm:h-4 rounded mb-2"></div>
+        <div class="bg-gray-200 h-2 sm:h-3 rounded w-2/3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div
+    *ngIf="!loading()"
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4"
+  >
+    <div
+      *ngFor="let meal of meals()"
+      class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group transform hover:-translate-y-1"
+      [class.opacity-50]="!canAddToCart()"
+      [class.cursor-not-allowed]="!canAddToCart()"
+      (click)="onMealSelect(meal)"
+    >
+      <div class="relative overflow-hidden">
+        <img
+          [src]="meal.strMealThumb || '/placeholder.svg'"
+          [alt]="meal.strMeal"
+          class="w-full h-24 sm:h-32 object-cover transition-transform group-hover:scale-110"
+          loading="lazy"
+        />
+        <div
+          class="absolute top-1 sm:top-2 right-1 sm:right-2 bg-gradient-to-r bg-green-500 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-bold shadow-lg text-xs sm:text-sm"
+        >
+          ${{ meal.price }}
+        </div>
+        <div
+          *ngIf="!canAddToCart()"
+          class="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center"
+        >
+          <div class="text-white font-semibold text-center px-3">
+            <div class="text-xs">{{ getOverlayMessage() }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="p-2 sm:p-3">
+        <h3
+          class="font-semibold text-xs sm:text-sm leading-tight text-gray-900 line-clamp-1"
+        >
+          {{ meal.strMeal }}
+        </h3>
+      </div>
+    </div>
+  </div>
+</div>

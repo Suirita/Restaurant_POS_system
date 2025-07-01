@@ -1,0 +1,73 @@
+<!-- Fixed height calculator -->
+<div
+  class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm"
+  style="min-height: 200px"
+>
+  <!-- Calculator Header -->
+  <div class="text-center mb-1.5">
+    <div class="text-xs font-medium text-gray-500 mb-1">{{ label() }}</div>
+    <div
+      class="text-sm sm:text-base font-bold py-1.5 px-2 rounded-md min-h-[30px] flex items-center justify-center"
+      [class]="
+        canConfirm()
+          ? 'bg-gradient-to-r bg-gray-100 text-gray-800 border-2 border-green-500'
+          : 'bg-gray-100 text-gray-500 border border-gray-200'
+      "
+    >
+      {{ displayValue() }}
+    </div>
+  </div>
+
+  <!-- Compact Number Grid -->
+  <div class="grid grid-cols-3 gap-1 mb-1.5 mx-1 sm:mx-3">
+    <button
+      *ngFor="let num of ['1', '2', '3', '4', '5', '6', '7', '8', '9']"
+      class="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-sm"
+      (click)="onAddNumber(num)"
+    >
+      {{ num }}
+    </button>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="grid grid-cols-3 gap-1">
+    <button
+      class="bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
+      (click)="onClear()"
+    >
+      Clear
+    </button>
+    <button
+      class="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 py-1.5 rounded-md text-xs font-medium transition-all duration-150"
+      (click)="onAddNumber('0')"
+    >
+      0
+    </button>
+
+    <!-- Conditional button: Decimal for quantity mode, Confirm for table mode -->
+    <button
+      *ngIf="isQuantityMode()"
+      class="bg-blue-500 hover:bg-blue-600 text-white py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
+      [disabled]="displayValue().includes('.')"
+      [class.opacity-50]="displayValue().includes('.')"
+      [class.cursor-not-allowed]="displayValue().includes('.')"
+      (click)="onAddDecimal()"
+    >
+      .
+    </button>
+
+    <button
+      *ngIf="!isQuantityMode()"
+      class="text-white py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
+      [class]="
+        canConfirm()
+          ? 'bg-green-500 hover:bg-green-600'
+          : 'bg-gray-300 cursor-not-allowed'
+      "
+      [disabled]="!canConfirm()"
+      (click)="onConfirm()"
+    >
+      ✓
+    </button>
+  </div>
+</div>

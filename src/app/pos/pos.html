@@ -1,0 +1,108 @@
+<!-- Login Screen -->
+<app-login
+  *ngIf="!isLoggedIn()"
+  (loginSuccess)="onLoginSuccess($event)"
+></app-login>
+
+<!-- Main POS System (only show when logged in) -->
+<div
+  *ngIf="isLoggedIn()"
+  class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden"
+>
+  <!-- Receipt Modal -->
+  <app-receipt-modal
+    [receipt]="currentReceipt()"
+    [isVisible]="showReceipt()"
+    (closeReceipt)="onReceiptClosed()"
+    (printReceipt)="onReceiptPrinted()"
+  ></app-receipt-modal>
+
+  <!-- Main POS Interface -->
+  <div class="h-full flex flex-col">
+    <!-- Main Content -->
+    <div class="flex flex-1 min-h-0 flex-col lg:flex-row">
+      <!-- Menu Section -->
+      <div
+        class="flex flex-col min-h-0 lg:min-h-full transition-all duration-300 ease-out"
+        [style.height.%]="isMobile() ? menuHeight() : null"
+        [class]="isMobile() ? 'flex-none' : 'flex-1 lg:w-2/3'"
+      >
+        <!-- Category Navigation -->
+        <app-category-nav
+          [categories]="categoriesWithImages()"
+          [selectedCategory]="selectedCategory()"
+          (categorySelected)="onCategorySelected($event)"
+        ></app-category-nav>
+
+        <!-- Menu Items Grid -->
+        <app-menu-grid
+          [meals]="meals()"
+          [loading]="loading()"
+          [canAddToCart]="canAddToCart()"
+          [orderType]="orderType()"
+          (mealSelected)="onMealSelected($event)"
+        ></app-menu-grid>
+      </div>
+
+      <!-- Resize Handle (Mobile Only) -->
+      <div
+        class="lg:hidden relative bg-gray-400 cursor-row-resize flex items-center justify-center hover:bg-gray-500 transition-colors duration-200 active:bg-gray-600 z-10"
+        style="height: 12px; touch-action: none; min-height: 12px"
+        (mousedown)="startResize($event)"
+        (touchstart)="startResize($event)"
+      >
+        <div class="w-16 h-1.5 bg-gray-600 rounded-full"></div>
+        <div
+          class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs text-gray-600 font-medium"
+        >
+          ⋮⋮⋮
+        </div>
+      </div>
+
+      <!-- Right Sidebar (Cart Section) -->
+      <div
+        class="bg-white border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col shadow-xl order-last lg:order-none transition-all duration-300 ease-out"
+        [style.height.%]="isMobile() ? cartHeight() : null"
+        [class]="isMobile() ? 'flex-none' : 'w-full lg:w-1/3'"
+      >
+        <!-- Cart Items -->
+        <div class="flex-1 min-h-0 flex flex-col">
+          <app-cart
+            [cartItems]="cart()"
+            [selectedCartItemId]="selectedCartItemId()"
+            [tempQuantity]="tempQuantity()"
+            [total]="total()"
+            [canAddToCart]="canAddToCart()"
+            (itemSelected)="onCartItemSelected($event)"
+            (itemRemoved)="onCartItemRemoved($event)"
+            (cartCleared)="onCartCleared()"
+            (orderCompleted)="onOrderCompleted()"
+            (quantityIncreased)="onQuantityIncreased($event)"
+            (quantityDecreased)="onQuantityDecreased($event)"
+          ></app-cart>
+        </div>
+
+        <!-- Service Selection -->
+        <app-service-selection
+          [orderType]="orderType()"
+          (takeAwaySelected)="onTakeAwaySelected()"
+          (tableSelected)="onTableSelected()"
+        ></app-service-selection>
+
+        <!-- Calculator -->
+        <div class="flex-shrink-0 p-2 sm:p-3 bg-gray-50">
+          <app-calculator
+            [label]="calculatorLabel()"
+            [displayValue]="calculatorDisplayValue()"
+            [canConfirm]="calculatorCanConfirm()"
+            [isQuantityMode]="calculatorIsQuantityMode()"
+            (numberAdded)="onCalculatorNumberAdded($event)"
+            (decimalAdded)="onCalculatorDecimalAdded()"
+            (cleared)="onCalculatorCleared()"
+            (confirmed)="onCalculatorConfirmed()"
+          ></app-calculator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

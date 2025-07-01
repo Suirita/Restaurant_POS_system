@@ -1,0 +1,144 @@
+<!-- Fixed height cart container -->
+<div class="flex flex-col h-full">
+  <!-- Cart Items - Fixed height with scroll -->
+  <div
+    class="flex-1 p-2 sm:p-4 overflow-y-auto min-h-0"
+    style="max-height: 380px; min-height: 380px"
+  >
+    <!-- Empty Cart -->
+    <div *ngIf="cartItems().length === 0" class="text-center py-6 lg:py-12">
+      <p class="text-gray-600 font-medium mb-1">No items in cart</p>
+      <p class="text-gray-400 text-sm">Add items from the menu</p>
+    </div>
+
+    <!-- Cart Items List -->
+    <div *ngIf="cartItems().length > 0" class="space-y-1">
+      <div
+        *ngFor="let item of cartItems()"
+        class="rounded-lg px-1 sm:px-2 py-0.5 border transition-all duration-200 group"
+        [class]="
+          selectedCartItemId() === item.idMeal
+            ? 'bg-gradient-to-r from-blue-50 to-green-50 border-blue-300 shadow-md ring-2 ring-blue-200'
+            : 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
+        "
+      >
+        <!-- Item Header -->
+        <div class="flex justify-between items-center gap-2">
+          <!-- Quantity Controls -->
+          <div class="flex items-center gap-1">
+            <!-- Decrease Button -->
+            <button
+              class="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+              (click)="onDecreaseQuantity(item.idMeal, $event)"
+              [disabled]="item.quantity <= 0.1"
+              [class.opacity-50]="item.quantity <= 0.1"
+              [class.cursor-not-allowed]="item.quantity <= 0.1"
+              title="Decrease quantity"
+            >
+              <i-lucide [img]="MinusIcon" [size]="12" class="text-red-500">
+              </i-lucide>
+            </button>
+
+            <!-- Clickable Quantity Display -->
+            <button
+              class="font-semibold text-sm min-w-[40px] px-2 py-1 rounded-md transition-all duration-200 text-center"
+              [class]="
+                isItemBeingEdited(item)
+                  ? 'bg-blue-100 text-blue-800 border-2 border-blue-400 shadow-sm'
+                  : 'bg-white text-gray-900 border border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+              "
+              (click)="onSelectItem(item.idMeal)"
+              data-edit-button
+              title="Click to edit quantity"
+            >
+              {{ getDisplayQuantity(item) }}
+            </button>
+
+            <!-- Increase Button -->
+            <button
+              class="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+              (click)="onIncreaseQuantity(item.idMeal, $event)"
+              [disabled]="item.quantity >= 99.99"
+              [class.opacity-50]="item.quantity >= 99.99"
+              [class.cursor-not-allowed]="item.quantity >= 99.99"
+              title="Increase quantity"
+            >
+              <i-lucide [img]="PlusIcon" [size]="18" class="text-green-500">
+              </i-lucide>
+            </button>
+          </div>
+
+          <!-- Item Name -->
+          <span
+            class="font-semibold text-xs sm:text-sm text-gray-900 leading-tight flex-1 line-clamp-1 text-center px-2"
+          >
+            {{ item.strMeal }}
+          </span>
+
+          <!-- Price -->
+          <span
+            class="font-semibold text-xs sm:text-sm text-green-600 min-w-0 flex-shrink-0"
+          >
+            ${{ (item.quantity * item.price).toFixed(2) }}
+          </span>
+
+          <!-- Remove Button -->
+          <button
+            class="flex-shrink-0 p-1 hover:bg-red-50 rounded transition-colors"
+            (click)="onRemoveItem(item.idMeal, $event)"
+            title="Remove item"
+          >
+            <i-lucide
+              [img]="XIcon"
+              [size]="18"
+              class="text-red-500 cursor-pointer transition hover:scale-110"
+            >
+            </i-lucide>
+          </button>
+        </div>
+
+        <!-- Edit Indicator -->
+        <div *ngIf="isItemBeingEdited(item)" class="mt-2 text-center">
+          <div class="text-xs text-blue-600 font-medium animate-pulse">
+            Use calculator to edit quantity
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Total & Actions -->
+  <div
+    *ngIf="cartItems().length > 0"
+    class="flex-shrink-0 p-2 sm:p-3 border-t border-gray-200 bg-white"
+    style="min-height: 120px"
+  >
+    <div class="flex justify-between items-center pb-1.5">
+      <span class="text-sm sm:text-base font-bold text-gray-900">Total:</span>
+      <span class="text-base sm:text-lg font-bold text-green-600">
+        ${{ total().toFixed(2) }}
+      </span>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-1.5">
+      <button
+        class="w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+        [class]="
+          canAddToCart()
+            ? 'bg-gradient-to-r bg-green-600 text-white hover:bg-green-700'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        "
+        [disabled]="!canAddToCart()"
+        (click)="onCompleteOrder()"
+      >
+        {{ canAddToCart() ? "Complete Order" : "Setup Required" }}
+      </button>
+      <button
+        class="w-full text-white border bg-red-500 border-red-200 hover:border-red-300 hover:bg-red-600 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+        (click)="onClearCart()"
+      >
+        Clear Order
+      </button>
+    </div>
+  </div>
+</div>
