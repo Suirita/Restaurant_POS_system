@@ -17,7 +17,7 @@
     ></div>
   </div>
   <div
-    class="bg-white rounded-xl shadow-2xl w-full mx-8 overflow-hidden relative"
+    class="bg-white rounded-xl shadow-2xl w-full mx-48 overflow-hidden relative"
     (click)="$event.stopPropagation()"
   >
     <div
@@ -26,7 +26,14 @@
       <h1 class="text-2xl font-bold">All Receipts</h1>
     </div>
     <div class="p-4">
-      <div class="grid grid-cols-4 gap-4 p-8 max-h-96 overflow-y-auto">
+      <div *ngIf="receipts.length === 0" class="text-center py-6 lg:py-12">
+        <p class="text-gray-600 font-medium mb-1">No receipts found</p>
+        <p class="text-gray-400 text-sm">Add receipts from the menu</p>
+      </div>
+      <div
+        *ngIf="receipts.length > 0"
+        class="grid grid-cols-3 gap-4 p-8 max-h-96 overflow-y-auto"
+      >
         <div
           *ngFor="let receipt of receipts"
           class="mb-4 p-4 border rounded-lg"
