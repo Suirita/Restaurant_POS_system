@@ -31,6 +31,14 @@ export class ReceiptService {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
   }
 
+  deleteReceiptByOrderNumber(orderNumber: string): void {
+    let allReceipts = this.getAllReceipts();
+    allReceipts = allReceipts.filter(
+      receipt => receipt.orderNumber !== orderNumber
+    );
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
+  }
+
   private getAllReceipts(): Receipt[] {
     const receiptsJson = localStorage.getItem(this.STORAGE_KEY);
     return receiptsJson ? JSON.parse(receiptsJson) : [];

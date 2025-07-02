@@ -565,14 +565,22 @@ export class PosComponent implements OnInit {
     }
 
     this.clearCart();
+
+    if (this.orderType() === 'take away') {
+      this.orderType.set('table');
+      this.isEditing.set(true);
+    }
   }
 
-  pay(tableName: string) {
-    const tables = this.tables().map((t) =>
-      t.name === tableName ? { ...t, occupied: false, userId: null } : t
-    );
-    this.tables.set(tables);
-    this.receiptService.deleteReceiptByTable(tableName);
+  pay(orderNumber: string) {
+    const receipt = this.receiptService.getReceipts(this.currentUser()!.userId).find(r => r.orderNumber === orderNumber);
+    if (receipt) {
+      const tables = this.tables().map((t) =>
+        t.name === receipt.tableName ? { ...t, occupied: false, userId: null } : t
+      );
+      this.tables.set(tables);
+      this.receiptService.deleteReceiptByOrderNumber(orderNumber);
+    }
   }
 
   // Responsive design methods
