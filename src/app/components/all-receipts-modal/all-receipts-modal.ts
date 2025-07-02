@@ -27,5 +27,6 @@ export class AllReceiptsModalComponent {
 
   onPay(tableName: string) {
     this.pay.emit(tableName);
+    this.receipts = this.receiptService.getReceipts(this.userId());
   }
 }
