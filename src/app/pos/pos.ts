@@ -114,6 +114,7 @@ export class PosComponent implements OnInit {
   isResizing = signal(false);
   menuHeight = signal(60);
   isMobile = signal(false);
+  isEditing = signal(false);
 
   // ... all your existing computed properties remain the same ...
 
@@ -157,6 +158,7 @@ export class PosComponent implements OnInit {
 
   constructor() {
     this.checkMobile();
+    this.isEditing.set(false);
   }
 
   ngOnInit() {
@@ -171,6 +173,7 @@ export class PosComponent implements OnInit {
     this.currentUser.set(user);
     this.isLoggedIn.set(true);
     this.loadCategories(); // Load data after successful login
+    this.isEditing.set(true);
   }
 
   // Logout method
@@ -179,6 +182,7 @@ export class PosComponent implements OnInit {
     this.isLoggedIn.set(false);
     this.clearCart(); // Clear cart on logout
     this.finishEditing(); // Finish any editing
+    this.isEditing.set(false);
   }
 
   // ... rest of your existing methods remain exactly the same ...
@@ -223,6 +227,7 @@ export class PosComponent implements OnInit {
   onCartItemSelected(itemId: string) {
     // Don't finish editing here, allow switching between items
     this.selectCartItemForQuantity(itemId);
+    this.isEditing.set(true);
   }
 
   onCartItemRemoved(itemId: string) {
@@ -265,6 +270,7 @@ export class PosComponent implements OnInit {
   onTakeAwaySelected() {
     this.finishEditing(); // Finish editing when changing service type
     this.selectTakeAway();
+    this.isEditing.set(false);
   }
 
   onTableTypeSelected() {
@@ -273,6 +279,7 @@ export class PosComponent implements OnInit {
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
     this.tableErrorMessage.set(null);
+    this.isEditing.set(true);
   }
 
   onCalculatorNumberAdded(num: string) {
@@ -282,24 +289,27 @@ export class PosComponent implements OnInit {
     if (this.selectedCartItemId() && this.tempQuantity()) {
       this.autoApplyQuantityChange();
     }
+    this.isEditing.set(true);
   }
 
   onCalculatorDecimalAdded() {
     this.addDecimal();
+    this.isEditing.set(true);
   }
 
   onCalculatorCleared() {
     this.clearNumber();
+    this.isEditing.set(true);
   }
 
   onCalculatorConfirmed() {
-    this.confirmNumber();
+    if (this.isEditing()) {
+      this.confirmNumber();
+    }
   }
 
   calculatorCanConfirm = computed(() => {
-    // Only require confirmation for table mode
-    if (this.selectedCartItemId()) return Boolean(this.tempQuantity());
-    return Boolean(this.orderType() === 'table' && this.tableNumber() !== '');
+    return this.isEditing();
   });
 
   // Method to finish editing
@@ -308,6 +318,7 @@ export class PosComponent implements OnInit {
       this.selectedCartItemId.set(null);
       this.tempQuantity.set('');
     }
+    this.isEditing.set(false);
   }
 
   // ... rest of all your existing methods remain exactly the same ...
@@ -479,6 +490,7 @@ export class PosComponent implements OnInit {
         this.cart.set([]);
       }
     }
+    this.isEditing.set(false);
   }
 
   private autoApplyQuantityChange() {

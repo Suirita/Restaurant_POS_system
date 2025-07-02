@@ -34,7 +34,7 @@ export class MenuGridComponent {
 
   getOverlayMessage(): string {
     return this.orderType() === 'table'
-      ? 'Enter Table Number'
+      ? 'Enter Table Number Or Slect Take Away'
       : 'Select Service';
   }
 }
