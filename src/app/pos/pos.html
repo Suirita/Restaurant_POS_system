@@ -53,7 +53,7 @@
           (showAllReceipts)="showAllReceiptsModal()"
           (logout)="logout()"
         ></app-menu-grid>
-        
+
       </div>
 
       <!-- Resize Handle (Mobile Only) -->
@@ -95,11 +95,17 @@
           [tables]="tables()"
           (takeAwaySelected)="onTakeAwaySelected()"
           (tableTypeSelected)="onTableTypeSelected()"
-          (tableSelected)="onTableSelected($event)"
+
         ></app-service-selection>
 
         <!-- Calculator -->
         <div class="flex-shrink-0 p-2 sm:p-3 bg-gray-50">
+          <div
+            *ngIf="tableErrorMessage()"
+            class="text-red-500 text-center text-md mb-2"
+          >
+            {{ tableErrorMessage() }}
+          </div>
           <app-calculator
             [displayValue]="calculatorDisplayValue()"
             [canConfirm]="calculatorCanConfirm()"

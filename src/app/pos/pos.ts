@@ -1,4 +1,12 @@
-import { Component, type OnInit, inject, computed, signal, HostListener, ElementRef, } from '@angular/core';
+import {
+  Component,
+  type OnInit,
+  inject,
+  computed,
+  signal,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MealService, type Meal } from '../meal.service';
 import { CartItem, Receipt, UserAccount, Table } from '../types/pos.types';
@@ -97,6 +105,7 @@ export class PosComponent implements OnInit {
   loading = signal<boolean>(false);
   selectedCartItemId = signal<string | null>(null);
   tempQuantity = signal<string>('');
+  tableErrorMessage = signal<string | null>(null);
 
   // Order counter for receipt numbers
   private orderCounter = 1;
@@ -134,21 +143,12 @@ export class PosComponent implements OnInit {
     );
   });
 
-  
-
   calculatorDisplayValue = computed(() => {
     if (this.selectedCartItemId()) return this.tempQuantity() || '0';
     if (this.orderType() === 'table' && !this.isTableNumberComplete())
       return this.tableNumber() || '0';
     return '0';
   });
-
-  calculatorCanConfirm = computed(() => {
-    // Only require confirmation for table mode
-    if (this.selectedCartItemId()) return Boolean(this.tempQuantity());
-    return Boolean(this.orderType() === 'table' && this.tableNumber());
-  });
-
   calculatorIsQuantityMode = computed(() => {
     return Boolean(this.selectedCartItemId());
   });
@@ -272,11 +272,7 @@ export class PosComponent implements OnInit {
     this.orderType.set('table');
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
-  }
-
-  onTableSelected(tableName: string) {
-    this.finishEditing(); // Finish editing when changing service type
-    this.selectTable(tableName);
+    this.tableErrorMessage.set(null);
   }
 
   onCalculatorNumberAdded(num: string) {
@@ -297,11 +293,14 @@ export class PosComponent implements OnInit {
   }
 
   onCalculatorConfirmed() {
-    // Only confirm for table mode
-    if (!this.selectedCartItemId()) {
-      this.confirmNumber();
-    }
+    this.confirmNumber();
   }
+
+  calculatorCanConfirm = computed(() => {
+    // Only require confirmation for table mode
+    if (this.selectedCartItemId()) return Boolean(this.tempQuantity());
+    return Boolean(this.orderType() === 'table' && this.tableNumber() !== '');
+  });
 
   // Method to finish editing
   private finishEditing() {
@@ -413,28 +412,6 @@ export class PosComponent implements OnInit {
     this.isTableNumberComplete.set(false);
   }
 
-  private selectTable(tableName: string) {
-    const table = this.tables().find((t) => t.name === tableName);
-    if (!table) return;
-
-    if (table.occupied) {
-      if (table.userId === this.currentUser()?.userId) {
-        const receipt = this.receiptService.getReceiptByTable(tableName);
-        if (receipt) {
-          this.cart.set(receipt.items);
-          this.tableNumber.set(tableName);
-          this.isTableNumberComplete.set(true);
-        }
-      } else {
-        alert('This table is occupied by another user.');
-      }
-    } else {
-      this.orderType.set('table');
-      this.tableNumber.set(tableName);
-      this.isTableNumberComplete.set(true);
-    }
-  }
-
   private addNumber(num: string) {
     if (this.selectedCartItemId()) {
       const currentQuantity = this.tempQuantity();
@@ -469,8 +446,38 @@ export class PosComponent implements OnInit {
   }
 
   private confirmNumber() {
+    this.tableErrorMessage.set(null); // Clear previous error messages
     if (this.tableNumber() && this.orderType() === 'table') {
-      this.isTableNumberComplete.set(true);
+      const tableName = 'T' + this.tableNumber();
+      const table = this.tables().find((t) => t.name === tableName);
+
+      if (!table) {
+        this.isTableNumberComplete.set(false);
+        this.tableErrorMessage.set('Invalid table number.');
+        return;
+      }
+
+      if (table.occupied) {
+        if (table.userId !== this.currentUser()!.userId) {
+          this.isTableNumberComplete.set(false);
+          this.tableErrorMessage.set(
+            'This table is served by another server.'
+          );
+          return;
+        }
+        const receipt = this.receiptService.getReceiptByTable(tableName);
+        if (receipt) {
+          this.cart.set([...receipt.items]);
+          this.isTableNumberComplete.set(true);
+          this.orderType.set('table');
+        } else {
+          this.isTableNumberComplete.set(true);
+          this.cart.set([]);
+        }
+      } else {
+        this.isTableNumberComplete.set(true);
+        this.cart.set([]);
+      }
     }
   }
 
@@ -521,14 +528,12 @@ export class PosComponent implements OnInit {
     }
 
     const total = this.total();
-    const serviceName =
-      this.orderType() === 'take away'
-        ? 'Take away'
-        : `Table ${this.tableNumber()}`;
+    const tableName =
+      this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
     const receipt: Receipt = {
       orderNumber: this.generateOrderNumber(),
-      tableName: serviceName,
+      tableName: tableName,
       items: [...this.cart()],
       total: total,
       date: new Date(),
@@ -540,14 +545,14 @@ export class PosComponent implements OnInit {
 
     if (this.orderType() === 'table') {
       const tables = this.tables().map((t) =>
-        t.name === this.tableNumber()
+        t.name === tableName
           ? { ...t, occupied: true, userId: this.currentUser()!.userId }
           : t
       );
       this.tables.set(tables);
     }
 
-    
+    this.clearCart();
   }
 
   pay(tableName: string) {

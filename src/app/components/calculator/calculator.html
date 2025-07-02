@@ -9,7 +9,7 @@
     class="text-sm sm:text-base font-bold py-1.5 px-2 rounded-md min-h-[30px] flex items-center justify-center mb-1.5"
     [class]="
         canConfirm()
-          ? 'bg-gradient-to-r bg-gray-100 text-gray-800 border-2 border-green-500'
+          ? 'bg-gradient-to-r bg-gray-100 text-gray-800 border-2 border-blue-500'
           : 'bg-gray-100 text-gray-500 border border-gray-200'
       "
   >
@@ -56,7 +56,7 @@
 
     <button
       *ngIf="!isQuantityMode()"
-      class="text-white py-3 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
+      class="text-white py-3 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md flex justify-center align-middle"
       [class]="
         canConfirm()
           ? 'bg-green-500 hover:bg-green-600'
@@ -65,7 +65,7 @@
       [disabled]="!canConfirm()"
       (click)="onConfirm()"
     >
-      ✓
+      <i-lucide [img]="Check" [size]="20"></i-lucide>
     </button>
   </div>
 </div>
