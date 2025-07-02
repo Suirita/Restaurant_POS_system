@@ -1,0 +1,54 @@
+<div
+  class="fixed inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center z-50"
+  (click)="onClose()"
+>
+  <div class="absolute inset-0 opacity-10">
+    <div
+      class="absolute inset-0"
+      style="
+        background-image: radial-gradient(
+            circle at 25% 25%,
+            white 2px,
+            transparent 2px
+          ),
+          radial-gradient(circle at 75% 75%, white 2px, transparent 2px);
+        background-size: 50px 50px;
+      "
+    ></div>
+  </div>
+  <div
+    class="bg-white rounded-xl shadow-2xl w-full mx-8 overflow-hidden relative"
+    (click)="$event.stopPropagation()"
+  >
+    <div
+      class="bg-gradient-to-r from-blue-500 to-purple-500 p-4 text-white text-center"
+    >
+      <h1 class="text-2xl font-bold">All Receipts</h1>
+    </div>
+    <div class="p-4">
+      <div class="grid grid-cols-4 gap-4 p-8 max-h-96 overflow-y-auto">
+        <div
+          *ngFor="let receipt of receipts"
+          class="mb-4 p-4 border rounded-lg"
+        >
+          <p><strong>Order:</strong> {{ receipt.orderNumber }}</p>
+          <p><strong>Service:</strong> {{ receipt.tableName }}</p>
+          <p><strong>Time:</strong> {{ receipt.date | date: 'short' }}</p>
+          <p><strong>Total:</strong> {{ receipt.total | currency }}</p>
+          <button
+            (click)="onPay(receipt.tableName)"
+            class="mt-2 w-full py-1 px-2 rounded font-medium transition-all duration-200 shadow hover:shadow-lg transform bg-green-500 text-white hover:bg-green-600"
+          >
+            Pay
+          </button>
+        </div>
+      </div>
+      <button
+        (click)="onClose()"
+        class="mt-4 w-full py-2 px-4 rounded font-medium transition-all duration-200 shadow hover:shadow-lg transform bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>

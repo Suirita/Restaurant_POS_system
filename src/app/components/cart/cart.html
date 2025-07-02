@@ -2,8 +2,8 @@
 <div class="flex flex-col h-full">
   <!-- Cart Items - Fixed height with scroll -->
   <div
-    class="flex-1 p-2 sm:p-4 overflow-y-auto min-h-0"
-    style="max-height: 380px; min-height: 380px"
+    class="flex-1 px-2 py-1 sm:px-4 sm:py-2 overflow-y-auto min-h-0"
+    style="max-height: 360px; min-height: 360px"
   >
     <!-- Empty Cart -->
     <div *ngIf="cartItems().length === 0" class="text-center py-6 lg:py-12">
@@ -41,7 +41,7 @@
 
             <!-- Clickable Quantity Display -->
             <button
-              class="font-semibold text-sm min-w-[40px] px-2 py-1 rounded-md transition-all duration-200 text-center"
+              class="font-semibold text-sm min-w-[40px] py-0.5 rounded-md transition-all duration-200 text-center"
               [class]="
                 isItemBeingEdited(item)
                   ? 'bg-blue-100 text-blue-800 border-2 border-blue-400 shadow-sm'

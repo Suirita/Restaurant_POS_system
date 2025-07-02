@@ -24,10 +24,17 @@ export interface Receipt {
   total: number;
   date: Date;
   paymentMethod: string;
+  userId: string;
 }
 
 export interface UserAccount {
   userId: string;
   username: string;
   password: string;
+}
+
+export interface Table {
+  name: string;
+  occupied: boolean;
+  userId: string | null;
 }

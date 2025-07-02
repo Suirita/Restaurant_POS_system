@@ -1,28 +1,23 @@
-<!-- Fixed height service selection -->
 <div
-  class="flex-shrink-0 p-2 sm:p-3 border-t border-gray-200 bg-gray-50"
-  style="min-height: 45px; max-height: 45px"
+  class="flex-shrink-0 p-2 sm:p-3 border-t border-blue-200 bg-blue-50"
+  style="min-height: 50px; max-height: 50px"
 >
-  <div class="flex gap-3">
+  <div class="flex gap-2">
     <button
-      class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all duration-200 hover:cursor-pointer"
-      [class]="
-        orderType() === 'take away'
-          ? 'bg-gradient-to-r bg-gray-400 text-white shadow-md transform scale-105'
-          : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-      "
+      class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
+      [class]="orderType() === 'take away' ? 'bg-gradient-to-r bg-blue-500 text-white shadow-md' : 'bg-white text-gray-900 border border-blue-200 hover:border-blue-300 hover:bg-blue-50'"
       (click)="onSelectTakeAway()"
     >
       Take away
     </button>
     <button
-      class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all duration-200"
+      class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
       [class]="
         orderType() === 'table'
-          ? 'bg-gradient-to-r bg-gray-600 text-white shadow-md transform scale-105'
-          : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+          ? 'bg-gradient-to-r bg-blue-500 text-white shadow-md'
+          : 'bg-white text-gray-900 border border-blue-200 hover:border-blue-300 hover:bg-blue-50'
       "
-      (click)="onSelectTable()"
+      (click)="onSelectTableType()"
     >
       Table
     </button>

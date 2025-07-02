@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class CalculatorComponent {
-  label = input.required<string>();
   displayValue = input.required<string>();
   canConfirm = input.required<boolean>();
   isQuantityMode = input.required<boolean>();

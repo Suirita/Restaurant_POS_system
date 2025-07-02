@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Table } from '../../types/pos.types';
 
 @Component({
   standalone: true,
@@ -9,15 +10,21 @@ import { CommonModule } from '@angular/common';
 })
 export class ServiceSelectionComponent {
   orderType = input.required<'take away' | 'table'>();
+  tables = input.required<Table[]>();
 
   takeAwaySelected = output<void>();
-  tableSelected = output<void>();
+  tableTypeSelected = output<void>();
+  tableSelected = output<string>();
 
   onSelectTakeAway() {
     this.takeAwaySelected.emit();
   }
 
-  onSelectTable() {
-    this.tableSelected.emit();
+  onSelectTableType() {
+    this.tableTypeSelected.emit();
+  }
+
+  onSelectSpecificTable(tableName: string) {
+    this.tableSelected.emit(tableName);
   }
 }

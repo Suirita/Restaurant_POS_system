@@ -1,28 +1,26 @@
 <!-- Fixed height calculator -->
 <div
-  class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm"
+  class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm px-1 sm:px-3"
   style="min-height: 200px"
 >
   <!-- Calculator Header -->
-  <div class="text-center mb-1.5">
-    <div class="text-xs font-medium text-gray-500 mb-1">{{ label() }}</div>
-    <div
-      class="text-sm sm:text-base font-bold py-1.5 px-2 rounded-md min-h-[30px] flex items-center justify-center"
-      [class]="
+
+  <div
+    class="text-sm sm:text-base font-bold py-1.5 px-2 rounded-md min-h-[30px] flex items-center justify-center mb-1.5"
+    [class]="
         canConfirm()
           ? 'bg-gradient-to-r bg-gray-100 text-gray-800 border-2 border-green-500'
           : 'bg-gray-100 text-gray-500 border border-gray-200'
       "
-    >
-      {{ displayValue() }}
-    </div>
+  >
+    {{ displayValue() }}
   </div>
 
   <!-- Compact Number Grid -->
-  <div class="grid grid-cols-3 gap-1 mb-1.5 mx-1 sm:mx-3">
+  <div class="grid grid-cols-3 gap-1 mb-1.5">
     <button
       *ngFor="let num of ['1', '2', '3', '4', '5', '6', '7', '8', '9']"
-      class="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-sm"
+      class="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 py-3 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-sm"
       (click)="onAddNumber(num)"
     >
       {{ num }}
@@ -58,7 +56,7 @@
 
     <button
       *ngIf="!isQuantityMode()"
-      class="text-white py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
+      class="text-white py-3 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
       [class]="
         canConfirm()
           ? 'bg-green-500 hover:bg-green-600'

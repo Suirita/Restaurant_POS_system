@@ -1,28 +1,18 @@
-import {
-  Component,
-  type OnInit,
-  inject,
-  computed,
-  signal,
-  HostListener,
-  ElementRef,
-} from '@angular/core';
+import { Component, type OnInit, inject, computed, signal, HostListener, ElementRef, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MealService, type Meal } from '../meal.service';
-import {
-  CartItem,
-  Receipt,
-  UserAccount,
-} from '../types/pos.types';
+import { CartItem, Receipt, UserAccount, Table } from '../types/pos.types';
+import { ReceiptService } from '../receipt.service';
 
 // Import all child components
 import { LoginComponent } from '../components/login/login';
-import { ReceiptModalComponent } from '../components/receipt-modal/receipt-modal';
 import { CategoryNavComponent } from '../components/category-nav/category-nav';
 import { MenuGridComponent } from '../components/menu-grid/menu-grid';
 import { CartComponent } from '../components/cart/cart';
 import { ServiceSelectionComponent } from '../components/service-selection/service-selection';
+import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
+import { ConfirmationModalComponent } from '../components/confirmation-modal/confirmation-modal';
 
 @Component({
   standalone: true,
@@ -31,16 +21,18 @@ import { CalculatorComponent } from '../components/calculator/calculator';
   imports: [
     CommonModule,
     LoginComponent,
-    ReceiptModalComponent,
     CategoryNavComponent,
     MenuGridComponent,
     CartComponent,
     ServiceSelectionComponent,
     CalculatorComponent,
+    AllReceiptsModalComponent,
+    ConfirmationModalComponent,
   ],
 })
 export class PosComponent implements OnInit {
   private mealService = inject(MealService);
+  private receiptService = inject(ReceiptService);
   private elementRef = inject(ElementRef);
 
   // Authentication state
@@ -54,7 +46,6 @@ export class PosComponent implements OnInit {
 
   // Category images mapping with actual food images
   private categoryImages: { [key: string]: string } = {
-    All: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
     Beef: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=100&h=100&fit=crop&crop=center',
     Chicken:
       'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=100&h=100&fit=crop&crop=center',
@@ -72,7 +63,7 @@ export class PosComponent implements OnInit {
     Starter:
       'https://images.unsplash.com/photo-1541014741259-de529411b96a?w=100&h=100&fit=crop&crop=center',
     Vegan:
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1512621776951-a7c6f0a88666?w=100&h=100&fit=crop&crop=center',
     Vegetarian:
       'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop&crop=center',
     Breakfast:
@@ -84,10 +75,19 @@ export class PosComponent implements OnInit {
   orderType = signal<'take away' | 'table'>('table');
   tableNumber = signal<string>('');
   isTableNumberComplete = signal<boolean>(false);
+  tables = signal<Table[]>(
+    Array.from({ length: 12 }, (_, i) => ({
+      name: `T${i + 1}`,
+      occupied: false,
+      userId: null,
+    }))
+  );
 
   // Receipt management
   showReceipt = signal<boolean>(false);
   currentReceipt = signal<Receipt | null>(null);
+  showAllReceipts = signal<boolean>(false);
+  showConfirmation = signal<boolean>(false);
 
   // Signals
   meals = signal<Meal[]>([]);
@@ -134,12 +134,7 @@ export class PosComponent implements OnInit {
     );
   });
 
-  calculatorLabel = computed(() => {
-    if (this.selectedCartItemId()) return 'Quantity';
-    if (this.orderType() === 'table' && !this.isTableNumberComplete())
-      return 'Table';
-    return 'Ready';
-  });
+  
 
   calculatorDisplayValue = computed(() => {
     if (this.selectedCartItemId()) return this.tempQuantity() || '0';
@@ -255,7 +250,16 @@ export class PosComponent implements OnInit {
 
   onOrderCompleted() {
     this.finishEditing(); // Finish editing when completing order
+    this.showConfirmation.set(true);
+  }
+
+  onConfirmOrder() {
+    this.showConfirmation.set(false);
     this.completeOrder();
+  }
+
+  onCancelOrder() {
+    this.showConfirmation.set(false);
   }
 
   onTakeAwaySelected() {
@@ -263,9 +267,16 @@ export class PosComponent implements OnInit {
     this.selectTakeAway();
   }
 
-  onTableSelected() {
+  onTableTypeSelected() {
     this.finishEditing(); // Finish editing when changing service type
-    this.selectTable();
+    this.orderType.set('table');
+    this.tableNumber.set('');
+    this.isTableNumberComplete.set(false);
+  }
+
+  onTableSelected(tableName: string) {
+    this.finishEditing(); // Finish editing when changing service type
+    this.selectTable(tableName);
   }
 
   onCalculatorNumberAdded(num: string) {
@@ -292,15 +303,6 @@ export class PosComponent implements OnInit {
     }
   }
 
-  onReceiptClosed() {
-    this.finishEditing(); // Finish editing when closing receipt
-    this.closeReceipt();
-  }
-
-  onReceiptPrinted() {
-    this.printReceipt();
-  }
-
   // Method to finish editing
   private finishEditing() {
     if (this.selectedCartItemId()) {
@@ -315,48 +317,30 @@ export class PosComponent implements OnInit {
   // Core business logic methods
   private loadCategories() {
     this.mealService.getCategories().subscribe((data) => {
-      const categoryList = [
-        'All',
-        ...data.categories.map((cat: any) => cat.strCategory),
-      ];
+      const categoryList = data.categories.map((cat: any) => cat.strCategory);
       this.categories.set(categoryList);
+      if (categoryList.length > 0) {
+        this.selectedCategory.set(categoryList[0]);
+      }
       this.loadMeals();
     });
   }
 
   private loadMeals() {
     this.loading.set(true);
-    if (this.selectedCategory() === 'All') {
-      this.loadMealsFromMultipleCategories();
-    } else {
-      this.mealService
-        .getMealsByCategory(this.selectedCategory())
-        .subscribe((data) => {
-          const mealsWithPrices = (data.meals || [])
-            .slice(0, this.MAX_MEALS)
-            .map((meal: any) => ({
-              ...meal,
-              price: Math.floor(Math.random() * 25) + 8,
-            }));
+    this.mealService
+      .getMealsByCategory(this.selectedCategory())
+      .subscribe((data) => {
+        const mealsWithPrices = (data.meals || [])
+          .slice(0, this.MAX_MEALS)
+          .map((meal: any) => ({
+            ...meal,
+            price: Math.floor(Math.random() * 25) + 8,
+          }));
 
-          this.meals.set(mealsWithPrices);
-          this.loading.set(false);
-        });
-    }
-  }
-
-  private loadMealsFromMultipleCategories() {
-    this.mealService.getMealsByCategory('Beef').subscribe((data) => {
-      const mealsWithPrices = (data.meals || [])
-        .slice(0, this.MAX_MEALS)
-        .map((meal: any) => ({
-          ...meal,
-          price: Math.floor(Math.random() * 25) + 8,
-        }));
-
-      this.meals.set(mealsWithPrices);
-      this.loading.set(false);
-    });
+        this.meals.set(mealsWithPrices);
+        this.loading.set(false);
+      });
   }
 
   private addToCart(meal: Meal) {
@@ -429,10 +413,26 @@ export class PosComponent implements OnInit {
     this.isTableNumberComplete.set(false);
   }
 
-  private selectTable() {
-    this.orderType.set('table');
-    this.tableNumber.set('');
-    this.isTableNumberComplete.set(false);
+  private selectTable(tableName: string) {
+    const table = this.tables().find((t) => t.name === tableName);
+    if (!table) return;
+
+    if (table.occupied) {
+      if (table.userId === this.currentUser()?.userId) {
+        const receipt = this.receiptService.getReceiptByTable(tableName);
+        if (receipt) {
+          this.cart.set(receipt.items);
+          this.tableNumber.set(tableName);
+          this.isTableNumberComplete.set(true);
+        }
+      } else {
+        alert('This table is occupied by another user.');
+      }
+    } else {
+      this.orderType.set('table');
+      this.tableNumber.set(tableName);
+      this.isTableNumberComplete.set(true);
+    }
   }
 
   private addNumber(num: string) {
@@ -533,21 +533,29 @@ export class PosComponent implements OnInit {
       total: total,
       date: new Date(),
       paymentMethod: 'Cash',
+      userId: this.currentUser()!.userId,
     };
 
-    this.currentReceipt.set(receipt);
-    this.showReceipt.set(true);
+    this.receiptService.saveReceipt(receipt);
+
+    if (this.orderType() === 'table') {
+      const tables = this.tables().map((t) =>
+        t.name === this.tableNumber()
+          ? { ...t, occupied: true, userId: this.currentUser()!.userId }
+          : t
+      );
+      this.tables.set(tables);
+    }
+
+    
   }
 
-  private closeReceipt() {
-    this.showReceipt.set(false);
-    this.currentReceipt.set(null);
-    this.clearCart();
-    this.selectTakeAway();
-  }
-
-  private printReceipt() {
-    window.print();
+  pay(tableName: string) {
+    const tables = this.tables().map((t) =>
+      t.name === tableName ? { ...t, occupied: false, userId: null } : t
+    );
+    this.tables.set(tables);
+    this.receiptService.deleteReceiptByTable(tableName);
   }
 
   // Responsive design methods
@@ -603,5 +611,13 @@ export class PosComponent implements OnInit {
 
     const constrainedPercentage = Math.min(Math.max(percentage, 20), 80);
     this.menuHeight.set(constrainedPercentage);
+  }
+
+  showAllReceiptsModal() {
+    this.showAllReceipts.set(true);
+  }
+
+  hideAllReceiptsModal() {
+    this.showAllReceipts.set(false);
   }
 }

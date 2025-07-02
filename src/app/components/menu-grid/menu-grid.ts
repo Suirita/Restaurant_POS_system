@@ -15,11 +15,21 @@ export class MenuGridComponent {
   orderType = input.required<'take away' | 'table'>();
 
   mealSelected = output<Meal>();
+  showAllReceipts = output<void>();
+  logout = output<void>();
 
   onMealSelect(meal: Meal) {
     if (this.canAddToCart()) {
       this.mealSelected.emit(meal);
     }
+  }
+
+  onShowAllReceipts() {
+    this.showAllReceipts.emit();
+  }
+
+  onLogout() {
+    this.logout.emit();
   }
 
   getOverlayMessage(): string {

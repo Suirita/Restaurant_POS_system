@@ -10,12 +10,21 @@
   class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden"
 >
   <!-- Receipt Modal -->
-  <app-receipt-modal
-    [receipt]="currentReceipt()"
-    [isVisible]="showReceipt()"
-    (closeReceipt)="onReceiptClosed()"
-    (printReceipt)="onReceiptPrinted()"
-  ></app-receipt-modal>
+
+  <!-- All Receipts Modal -->
+  <app-all-receipts-modal
+    *ngIf="showAllReceipts()"
+    [userId]="currentUser()!.userId"
+    (close)="hideAllReceiptsModal()"
+    (pay)="pay($event)"
+  ></app-all-receipts-modal>
+
+  <app-confirmation-modal
+    [isVisible]="showConfirmation()"
+    [message]="'Are you sure you want to complete this order?'"
+    (confirmed)="onConfirmOrder()"
+    (cancelled)="onCancelOrder()"
+  ></app-confirmation-modal>
 
   <!-- Main POS Interface -->
   <div class="h-full flex flex-col">
@@ -41,7 +50,10 @@
           [canAddToCart]="canAddToCart()"
           [orderType]="orderType()"
           (mealSelected)="onMealSelected($event)"
+          (showAllReceipts)="showAllReceiptsModal()"
+          (logout)="logout()"
         ></app-menu-grid>
+        
       </div>
 
       <!-- Resize Handle (Mobile Only) -->
@@ -52,11 +64,6 @@
         (touchstart)="startResize($event)"
       >
         <div class="w-16 h-1.5 bg-gray-600 rounded-full"></div>
-        <div
-          class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs text-gray-600 font-medium"
-        >
-          ⋮⋮⋮
-        </div>
       </div>
 
       <!-- Right Sidebar (Cart Section) -->
@@ -85,14 +92,15 @@
         <!-- Service Selection -->
         <app-service-selection
           [orderType]="orderType()"
+          [tables]="tables()"
           (takeAwaySelected)="onTakeAwaySelected()"
-          (tableSelected)="onTableSelected()"
+          (tableTypeSelected)="onTableTypeSelected()"
+          (tableSelected)="onTableSelected($event)"
         ></app-service-selection>
 
         <!-- Calculator -->
         <div class="flex-shrink-0 p-2 sm:p-3 bg-gray-50">
           <app-calculator
-            [label]="calculatorLabel()"
             [displayValue]="calculatorDisplayValue()"
             [canConfirm]="calculatorCanConfirm()"
             [isQuantityMode]="calculatorIsQuantityMode()"
