@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, X, Plus, Minus } from 'lucide-angular';
+import { LucideAngularModule, ShoppingCart, Trash2, X, Plus, Minus } from 'lucide-angular';
 import { CartItem } from '../../types/pos.types';
 
 @Component({
@@ -10,6 +10,8 @@ import { CartItem } from '../../types/pos.types';
   imports: [CommonModule, LucideAngularModule],
 })
 export class CartComponent {
+  readonly ShoppingCartIcon = ShoppingCart;
+  readonly TrashIcon = Trash2;
   readonly XIcon = X;
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
