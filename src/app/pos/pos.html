@@ -47,13 +47,16 @@
           [cart]="cart()"
           [loading]="loading()"
           [canAddToCart]="canAddToCart()"
-          [orderType]="orderType()"
-          (mealSelected)="onMealSelected($event)"
-          (quantityIncreased)="onQuantityIncreased($event)"
-          (quantityDecreased)="onQuantityDecreased($event)"
-          (showAllReceipts)="showAllReceiptsModal()"
-          (logout)="logout()"
-        ></app-menu-grid>
+      [orderType]="orderType()"
+      [selectedCartItemId]="selectedCartItemId()"
+      [tempQuantity]="tempQuantity()"
+      (mealSelected)="onMealSelected($event)"
+      (quantityIncreased)="onQuantityIncreased($event)"
+      (quantityDecreased)="onQuantityDecreased($event)"
+      (showAllReceipts)="showAllReceiptsModal()"
+      (logout)="logout()"
+      (itemSelected)="onCartItemSelected($event)"
+    ></app-menu-grid>
       </div>
 
       <!-- Resize Handle (Mobile Only) -->

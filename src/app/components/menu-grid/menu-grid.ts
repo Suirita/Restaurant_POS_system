@@ -18,12 +18,15 @@ export class MenuGridComponent {
   loading = input.required<boolean>();
   canAddToCart = input.required<boolean>();
   orderType = input.required<'take away' | 'table'>();
+  selectedCartItemId = input<string | null>(null);
+  tempQuantity = input<string>('');
 
   mealSelected = output<Meal>();
   quantityIncreased = output<string>();
   quantityDecreased = output<string>();
   showAllReceipts = output<void>();
   logout = output<void>();
+  itemSelected = output<string>();
 
   onMealSelect(meal: Meal) {
     if (this.canAddToCart()) {
@@ -57,5 +60,19 @@ export class MenuGridComponent {
     return this.orderType() === 'table'
       ? 'Enter Table Number Or Slect Take Away'
       : 'Select Service';
+  }
+
+  onSelectItem(itemId: string) {
+    this.itemSelected.emit(itemId);
+  }
+
+  getDisplayQuantity(item: CartItem): number | string {
+    return this.selectedCartItemId() === item.idMeal
+      ? this.tempQuantity() || item.quantity
+      : item.quantity;
+  }
+
+  isItemBeingEdited(item: CartItem): boolean {
+    return this.selectedCartItemId() === item.idMeal;
   }
 }

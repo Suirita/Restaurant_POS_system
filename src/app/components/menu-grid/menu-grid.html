@@ -61,9 +61,19 @@
             >
               <i-lucide [img]="MinusIcon" [size]="16"></i-lucide>
             </button>
-            <span class="text-md font-medium text-gray-700">
-              {{ cartItem.quantity }}
-            </span>
+            <button
+              class="font-semibold min-w-10 text-sm py-0.5 transition-all duration-200 text-center w-7 h-7 text-gray-900 rounded-md flex items-center justify-center"
+              [class]="
+                isItemBeingEdited(cartItem)
+                  ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
+                  : 'bg-white border border-gray-200 shadow-sm'
+              "
+              (click)="onSelectItem(cartItem.idMeal)"
+              data-edit-button
+              title="Click to edit quantity"
+            >
+              {{ getDisplayQuantity(cartItem) }}
+            </button>
             <button
               (click)="onIncreaseQuantity(meal.idMeal, $event)"
               [disabled]="cartItem.quantity >= 99.9"
