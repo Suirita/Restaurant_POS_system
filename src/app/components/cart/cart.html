@@ -5,7 +5,7 @@
     class="flex-1 px-2 py-2 overflow-y-auto min-h-0"
     style="max-height: 350px; min-height: 350px"
   >
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-2">
       <div class="flex items-center gap-2">
         <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
         <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
@@ -13,6 +13,7 @@
       <button
         *ngIf="cartItems().length > 0"
         class="py-1 px-2 rounded-lg border border-gray-200 shadow"
+        (click)="onClearCart()"
       >
         <div class="flex items-center gap-1.5 text-red-500">
           <i-lucide [img]="TrashIcon" [size]="18"></i-lucide>
@@ -31,92 +32,91 @@
     <div *ngIf="cartItems().length > 0" class="space-y-1">
       <div
         *ngFor="let item of cartItems()"
-        class="rounded-lg px-1 sm:px-2 py-0.5 border transition-all duration-200 group"
+        class="bg-white rounded-lg p-1 border shadow-sm"
         [class]="
           selectedCartItemId() === item.idMeal
-            ? 'bg-gradient-to-r from-blue-50 to-green-50 border-blue-300 shadow-md ring-2 ring-blue-200'
-            : 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
+            ? 'border-blue-300 shadow-md ring-2 ring-blue-200'
+            : 'border-gray-200 hover:bg-gray-100 hover:border-gray-300'
         "
       >
-        <!-- Item Header -->
-        <div class="flex justify-between items-center gap-2">
-          <!-- Quantity Controls -->
-          <div class="flex items-center gap-1">
-            <!-- Decrease Button -->
-            <button
-              class="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-              (click)="onDecreaseQuantity(item.idMeal, $event)"
-              [disabled]="item.quantity <= 0.1"
-              [class.opacity-50]="item.quantity <= 0.1"
-              [class.cursor-not-allowed]="item.quantity <= 0.1"
-              title="Decrease quantity"
-            >
-              <i-lucide [img]="MinusIcon" [size]="12" class="text-red-500">
-              </i-lucide>
-            </button>
+        <div class="flex items-center gap-2">
+          <!-- Item Image -->
+          <img
+            [src]="item.strMealThumb || '/placeholder.svg'"
+            [alt]="item.strMeal"
+            class="w-14 h-14 rounded-lg object-cover"
+            loading="lazy"
+          />
+          <div class="w-full">
+            <!-- Item Header -->
+            <div class="flex justify-around items-center gap mb-1">
+              <!-- Item Name -->
+              <span
+                class="font-medium text-md text-gray-900 leading-tight flex-1 line-clamp-1"
+              >
+                {{ item.strMeal }}
+              </span>
 
-            <!-- Clickable Quantity Display -->
-            <button
-              class="font-semibold text-sm min-w-[40px] py-0.5 rounded-md transition-all duration-200 text-center"
-              [class]="
+              <!-- Remove Button -->
+              <button
+                class="bg-red-400 text-white w-7 h-7 flex items-center justify-center rounded-md border border-gray-200 shadow-sm"
+                (click)="onRemoveItem(item.idMeal, $event)"
+                title="Remove item"
+              >
+                <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <!-- Price -->
+              <span
+                class="font-semibold text-md text-gray-900 min-w-0 flex-shrink-0"
+              >
+                ${{ (item.quantity * item.price).toFixed(2) }}
+              </span>
+
+              <!-- Edit Indicator -->
+              <div class="flex items-center justify-between gap-0.5">
+                <!-- Decrease Button -->
+                <button
+                  (click)="onDecreaseQuantity(item.idMeal, $event)"
+                  [disabled]="item.quantity <= 1"
+                  [class.opacity-25]="item.quantity <= 1"
+                  [class.cursor-not-allowed]="item.quantity <= 1"
+                  title="Decrease quantity"
+                  class="w-7 h-7 bg-white text-gray-900 rounded-md flex items-center justify-center border border-gray-200 shadow-sm"
+                >
+                  <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
+                </button>
+
+                <!-- Clickable Quantity Display -->
+                <button
+                  class="font-semibold text-sm py-0.5 transition-all duration-200 text-center w-7 h-7 text-gray-900 rounded-md flex items-center justify-center"
+                  [class]="
                 isItemBeingEdited(item)
-                  ? 'bg-blue-100 text-blue-800 border-2 border-blue-400 shadow-sm'
-                  : 'bg-white text-gray-900 border border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                  ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
+                  : 'bg-white border border-gray-200 shadow-sm'
               "
-              (click)="onSelectItem(item.idMeal)"
-              data-edit-button
-              title="Click to edit quantity"
-            >
-              {{ getDisplayQuantity(item) }}
-            </button>
+                  (click)="onSelectItem(item.idMeal)"
+                  data-edit-button
+                  title="Click to edit quantity"
+                >
+                  {{ getDisplayQuantity(item) }}
+                </button>
 
-            <!-- Increase Button -->
-            <button
-              class="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-              (click)="onIncreaseQuantity(item.idMeal, $event)"
-              [disabled]="item.quantity >= 99.99"
-              [class.opacity-50]="item.quantity >= 99.99"
-              [class.cursor-not-allowed]="item.quantity >= 99.99"
-              title="Increase quantity"
-            >
-              <i-lucide [img]="PlusIcon" [size]="18" class="text-green-500">
-              </i-lucide>
-            </button>
-          </div>
-
-          <!-- Item Name -->
-          <span
-            class="font-semibold text-xs sm:text-sm text-gray-900 leading-tight flex-1 line-clamp-1 text-center px-2"
-          >
-            {{ item.strMeal }}
-          </span>
-
-          <!-- Price -->
-          <span
-            class="font-semibold text-xs sm:text-sm text-green-600 min-w-0 flex-shrink-0"
-          >
-            {{ (item.quantity * item.price).toFixed(2) }}
-          </span>
-
-          <!-- Remove Button -->
-          <button
-            class="flex-shrink-0 p-1 hover:bg-red-50 rounded transition-colors"
-            (click)="onRemoveItem(item.idMeal, $event)"
-            title="Remove item"
-          >
-            <i-lucide
-              [img]="XIcon"
-              [size]="18"
-              class="text-red-500 cursor-pointer transition hover:scale-110"
-            >
-            </i-lucide>
-          </button>
-        </div>
-
-        <!-- Edit Indicator -->
-        <div *ngIf="isItemBeingEdited(item)" class="mt-2 text-center">
-          <div class="text-xs text-blue-600 font-medium animate-pulse">
-            Use calculator to edit quantity
+                <!-- Increase Button -->
+                <button
+                  (click)="onIncreaseQuantity(item.idMeal, $event)"
+                  [disabled]="item.quantity >= 99.99"
+                  [class.opacity-25]="item.quantity >= 99.99"
+                  [class.cursor-not-allowed]="item.quantity >= 99.99"
+                  title="Increase quantity"
+                  class="w-7 h-7 bg-white text-gray-900 rounded-md flex items-center justify-center border border-gray-200 shadow-sm"
+                >
+                  <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

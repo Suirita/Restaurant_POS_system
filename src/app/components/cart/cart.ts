@@ -4,7 +4,6 @@ import {
   LucideAngularModule,
   ShoppingCart,
   Trash2,
-  X,
   Plus,
   Minus,
   ShoppingBag,
@@ -21,7 +20,6 @@ import { CartItem } from '../../types/pos.types';
 export class CartComponent {
   readonly ShoppingCartIcon = ShoppingCart;
   readonly TrashIcon = Trash2;
-  readonly XIcon = X;
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
   readonly ShoppingBagIcon = ShoppingBag;
