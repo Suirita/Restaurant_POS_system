@@ -109,6 +109,7 @@
             [displayValue]="calculatorDisplayValue()"
             [canConfirm]="calculatorCanConfirm()"
             [isQuantityMode]="calculatorIsQuantityMode()"
+            [disabled]="!isEditing()"
             (numberAdded)="onCalculatorNumberAdded($event)"
             (decimalAdded)="onCalculatorDecimalAdded()"
             (cleared)="onCalculatorCleared()"

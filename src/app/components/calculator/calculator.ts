@@ -14,6 +14,7 @@ export class CalculatorComponent {
   displayValue = input.required<string>();
   canConfirm = input.required<boolean>();
   isQuantityMode = input.required<boolean>();
+  disabled = input<boolean>(false);
 
   numberAdded = output<string>();
   cleared = output<void>();
