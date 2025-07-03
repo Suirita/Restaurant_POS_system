@@ -490,7 +490,6 @@ export class PosComponent implements OnInit {
         }
       } else {
         this.isTableNumberComplete.set(true);
-        this.cart.set([]);
       }
     }
     this.isEditing.set(false);

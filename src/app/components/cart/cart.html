@@ -1,9 +1,9 @@
 <!-- Fixed height cart container -->
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-full border-b border-gray-200">
   <!-- Cart Items - Fixed height with scroll -->
   <div
     class="flex-1 px-2 py-2 overflow-y-auto min-h-0"
-    style="max-height: 390px; min-height: 390px"
+    style="max-height: 405px; min-height: 405px"
   >
     <div class="flex justify-between items-center mb-2">
       <div class="flex items-center gap-2">
@@ -132,22 +132,22 @@
 
     <div class="flex justify-between items-center gap-1.5">
       <button
-        class="w-full text-white bg-green-500 py-2 rounded-lg font-medium shadow-sm"
-        (click)="onClearCart()"
-      >
-        Pay Now
-      </button>
-      <button
         class="w-full py-2 rounded-lg font-medium shadow-sm"
         [class]="
           canAddToCart()
-            ? ' bg-white text-black'
+            ? ' bg-green-500 text-white'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         "
         [disabled]="!canAddToCart()"
         (click)="onCompleteOrder()"
       >
         {{ canAddToCart() ? "Save Order" : "Setup Required" }}
+      </button>
+      <button
+        class="w-full bg-white py-2 rounded-lg font-medium shadow-sm"
+        (click)="onClearCart()"
+      >
+        Pay Now
       </button>
     </div>
   </div>
