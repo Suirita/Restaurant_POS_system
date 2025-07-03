@@ -48,7 +48,7 @@ export class PosComponent implements OnInit {
   currentUser = signal<UserAccount | null>(null);
 
   // Maximum meals to display
-  private readonly MAX_MEALS = 15;
+  private readonly MAX_MEALS = 24;
 
   // Category images mapping with actual food images
   private categoryImages: { [key: string]: string } = {
@@ -393,7 +393,7 @@ export class PosComponent implements OnInit {
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
-      const newQuantity = Math.min(99.99, updatedCart[itemIndex].quantity + 1);
+      const newQuantity = Math.min(99.9, updatedCart[itemIndex].quantity + 1);
       updatedCart[itemIndex].quantity = Math.round(newQuantity * 100) / 100;
       this.cart.set(updatedCart);
     }
@@ -521,8 +521,8 @@ export class PosComponent implements OnInit {
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
-      const validQuantity = Math.max(0.1, Math.min(99.99, newQuantity));
-      updatedCart[itemIndex].quantity = Math.round(validQuantity * 100) / 100;
+      const validQuantity = Math.max(0.1, Math.min(99.9, newQuantity));
+      updatedCart[itemIndex].quantity = Math.round(validQuantity * 10) / 10;
       this.cart.set(updatedCart);
     }
   }

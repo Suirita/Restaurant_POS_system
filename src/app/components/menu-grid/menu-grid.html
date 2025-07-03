@@ -1,6 +1,6 @@
 <div class="flex-1 p-2 overflow-y-auto bg-gray-100 min-h-0">
   <!-- Loading State -->
-  <div *ngIf="loading()" class="grid grid-cols-5 grid-rows-3 gap-2">
+  <div *ngIf="loading()" class="grid grid-cols-5 grid-rows-4 gap-2">
     <div
       *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
       class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Menu Items Grid -->
-  <div *ngIf="!loading()" class="grid grid-cols-5 grid-rows-3 gap-2">
+  <div *ngIf="!loading()" class="grid grid-cols-6 grid-rows-4 gap-2">
     <div
       *ngFor="let meal of meals()"
       class="bg-white rounded-lg shadow-sm transition-all duration-300 cursor-pointer overflow-hidden p-1"
@@ -26,7 +26,7 @@
           <img
             [src]="meal.strMealThumb || '/placeholder.svg'"
             [alt]="meal.strMeal"
-            class="w-full h-32 rounded-lg object-cover"
+            class="w-full h-24 rounded-lg object-cover"
             loading="lazy"
           />
           <div
@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <div class="pt-3 px-1">
+        <div class="pt-1 px-1">
           <h3
             class="text-md font-medium leading-tight text-gray-900 line-clamp-1"
           >
@@ -46,7 +46,7 @@
           </h3>
         </div>
       </div>
-      <div class="flex items-center justify-between px-1 pb-1">
+      <div class="flex justify-between px-1 pb-1">
         <ng-container
           *ngIf="getCartItem(meal.idMeal) as cartItem; else addToCartButton"
         >
@@ -57,7 +57,9 @@
             >
               <i-lucide [img]="MinusIcon" [size]="16"></i-lucide>
             </button>
-            <span class="text-lg font-semibold">{{ cartItem.quantity }}</span>
+            <span class="text-md font-medium text-gray-700">
+              {{ cartItem.quantity }}
+            </span>
             <button
               (click)="onIncreaseQuantity(meal.idMeal)"
               class="w-8 h-8 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
@@ -67,7 +69,7 @@
           </div>
         </ng-container>
         <ng-template #addToCartButton>
-          <span class="text-lg font-medium text-gray-900">
+          <span class="text-sm font-medium text-gray-700">
             ${{ meal.price }}
           </span>
           <button
@@ -79,19 +81,20 @@
         </ng-template>
       </div>
     </div>
-    <div class="grid grid-cols-5 gap-4 mt-4">
-      <button
-        (click)="onShowAllReceipts()"
-        class="bg-emerald-600 text-white p-4 rounded-lg text-sm font-medium cursor-pointer"
-      >
-        All Receipts
-      </button>
-      <button
-        (click)="onLogout()"
-        class="bg-red-500 text-white p-4 rounded-lg text-sm font-medium cursor-pointer"
-      >
-        Logout
-      </button>
-    </div>
+  </div>
+
+  <div class="grid grid-cols-5 gap-4 mt-4">
+    <button
+      (click)="onShowAllReceipts()"
+      class="bg-emerald-600 text-white p-4 rounded-lg text-sm font-medium cursor-pointer"
+    >
+      All Receipts
+    </button>
+    <button
+      (click)="onLogout()"
+      class="bg-red-500 text-white p-4 rounded-lg text-sm font-medium cursor-pointer"
+    >
+      Logout
+    </button>
   </div>
 </div>
