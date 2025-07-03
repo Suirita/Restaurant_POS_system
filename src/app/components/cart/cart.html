@@ -5,12 +5,15 @@
     class="flex-1 px-2 py-2 overflow-y-auto min-h-0"
     style="max-height: 350px; min-height: 350px"
   >
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center mb-4">
       <div class="flex items-center gap-2">
-        <i-lucide [img]="ShoppingCartIcon" [size]="22"></i-lucide>
-        <h3 class="text-lg font-medium">Cart Details</h3>
+        <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
+        <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
       </div>
-      <button class="py-1 px-2 rounded-lg border border-gray-200 shadow">
+      <button
+        *ngIf="cartItems().length > 0"
+        class="py-1 px-2 rounded-lg border border-gray-200 shadow"
+      >
         <div class="flex items-center gap-1.5 text-red-500">
           <i-lucide [img]="TrashIcon" [size]="18"></i-lucide>
           <span class="font-medium">Reset Order</span>

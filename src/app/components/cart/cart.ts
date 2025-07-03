@@ -1,6 +1,15 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, ShoppingCart, Trash2, X, Plus, Minus } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ShoppingCart,
+  Trash2,
+  X,
+  Plus,
+  Minus,
+  ShoppingBag,
+  HandPlatter,
+} from 'lucide-angular';
 import { CartItem } from '../../types/pos.types';
 
 @Component({
@@ -15,12 +24,16 @@ export class CartComponent {
   readonly XIcon = X;
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
+  readonly ShoppingBagIcon = ShoppingBag;
+  readonly HandPlatterIcon = HandPlatter;
 
   cartItems = input.required<CartItem[]>();
   selectedCartItemId = input<string | null>(null);
   tempQuantity = input<string>('');
   total = input.required<number>();
   canAddToCart = input.required<boolean>();
+  orderType = input.required<'take away' | 'table'>();
+  tableNumber = input.required<string>();
 
   itemSelected = output<string>();
   itemRemoved = output<string>();
@@ -28,6 +41,26 @@ export class CartComponent {
   orderCompleted = output<void>();
   quantityIncreased = output<string>();
   quantityDecreased = output<string>();
+
+  displayHeader = computed(() => {
+    if (this.orderType() === 'take away') {
+      return 'Take Away';
+    } else if (this.orderType() === 'table' && this.tableNumber()) {
+      return `Table: ${this.tableNumber()}`;
+    } else {
+      return 'Cart Details';
+    }
+  });
+
+  displayIcon = computed(() => {
+    if (this.orderType() === 'take away') {
+      return this.ShoppingBagIcon;
+    } else if (this.orderType() === 'table' && this.tableNumber()) {
+      return this.HandPlatterIcon;
+    } else {
+      return this.ShoppingCartIcon;
+    }
+  });
 
   onSelectItem(itemId: string) {
     this.itemSelected.emit(itemId);
