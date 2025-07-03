@@ -405,9 +405,14 @@ export class PosComponent implements OnInit {
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
-      const newQuantity = Math.max(0.1, updatedCart[itemIndex].quantity - 1);
-      updatedCart[itemIndex].quantity = Math.round(newQuantity * 100) / 100;
-      this.cart.set(updatedCart);
+      const newQuantity = updatedCart[itemIndex].quantity - 1;
+
+      if (newQuantity <= 0) {
+        this.removeFromCart(id);
+      } else {
+        updatedCart[itemIndex].quantity = Math.round(newQuantity * 100) / 100;
+        this.cart.set(updatedCart);
+      }
     }
   }
 

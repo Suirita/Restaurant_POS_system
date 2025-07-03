@@ -1,13 +1,14 @@
 <div class="flex-1 p-2 overflow-y-auto bg-gray-100 min-h-0">
   <!-- Loading State -->
-  <div *ngIf="loading()" class="grid grid-cols-4 gap-6">
+  <div *ngIf="loading()" class="grid grid-cols-5 grid-rows-3 gap-2">
     <div
       *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
       class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
     >
       <div class="p-2 space-y-2">
         <div class="bg-gray-200 h-32 rounded-lg"></div>
-        <div class="bg-gray-200 h-3 sm:h-4 rounded-sm mb-0.5"></div>
+        <div class="bg-gray-200 h-4 rounded-sm mb-0.5"></div>
+        <div class="bg-gray-200 h-8 rounded-sm mb-1"></div>
       </div>
     </div>
   </div>
