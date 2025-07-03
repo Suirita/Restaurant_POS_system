@@ -47,8 +47,6 @@ export class PosComponent implements OnInit {
   isLoggedIn = signal<boolean>(false);
   currentUser = signal<UserAccount | null>(null);
 
-  // ... rest of your existing properties remain the same ...
-
   // Maximum meals to display
   private readonly MAX_MEALS = 15;
 
@@ -71,7 +69,7 @@ export class PosComponent implements OnInit {
     Starter:
       'https://images.unsplash.com/photo-1541014741259-de529411b96a?w=100&h=100&fit=crop&crop=center',
     Vegan:
-      'https://images.unsplash.com/photo-1512621776951-a7c6f0a88666?w=100&h=100&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1484980972926-edee96e0960d?w=100&h=100&fit=crop&crop=center',
     Vegetarian:
       'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop&crop=center',
     Breakfast:
@@ -121,7 +119,7 @@ export class PosComponent implements OnInit {
   // Computed properties
   categoriesWithImages = computed(() => {
     return this.categories()
-      .slice(0, 9)
+      .slice(0, 12)
       .map((category) => ({
         name: category,
         image:
@@ -471,9 +469,7 @@ export class PosComponent implements OnInit {
       if (table.occupied) {
         if (table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
-          this.tableErrorMessage.set(
-            'This table is served by another server.'
-          );
+          this.tableErrorMessage.set('This table is served by another server.');
           return;
         }
         const receipt = this.receiptService.getReceiptByTable(tableName);
@@ -573,10 +569,14 @@ export class PosComponent implements OnInit {
   }
 
   pay(orderNumber: string) {
-    const receipt = this.receiptService.getReceipts(this.currentUser()!.userId).find(r => r.orderNumber === orderNumber);
+    const receipt = this.receiptService
+      .getReceipts(this.currentUser()!.userId)
+      .find((r) => r.orderNumber === orderNumber);
     if (receipt) {
       const tables = this.tables().map((t) =>
-        t.name === receipt.tableName ? { ...t, occupied: false, userId: null } : t
+        t.name === receipt.tableName
+          ? { ...t, occupied: false, userId: null }
+          : t
       );
       this.tables.set(tables);
       this.receiptService.deleteReceiptByOrderNumber(orderNumber);
