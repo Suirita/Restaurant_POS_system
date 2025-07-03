@@ -20,7 +20,6 @@ import { CartComponent } from '../components/cart/cart';
 
 import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
-import { ConfirmationModalComponent } from '../components/confirmation-modal/confirmation-modal';
 
 @Component({
   standalone: true,
@@ -34,7 +33,6 @@ import { ConfirmationModalComponent } from '../components/confirmation-modal/con
     CartComponent,
     CalculatorComponent,
     AllReceiptsModalComponent,
-    ConfirmationModalComponent,
   ],
 })
 export class PosComponent implements OnInit {
@@ -92,7 +90,6 @@ export class PosComponent implements OnInit {
   showReceipt = signal<boolean>(false);
   currentReceipt = signal<Receipt | null>(null);
   showAllReceipts = signal<boolean>(false);
-  showConfirmation = signal<boolean>(false);
 
   // Signals
   meals = signal<Meal[]>([]);
@@ -252,16 +249,7 @@ export class PosComponent implements OnInit {
 
   onOrderCompleted() {
     this.finishEditing(); // Finish editing when completing order
-    this.showConfirmation.set(true);
-  }
-
-  onConfirmOrder() {
-    this.showConfirmation.set(false);
     this.completeOrder();
-  }
-
-  onCancelOrder() {
-    this.showConfirmation.set(false);
   }
 
   onTakeAwaySelected() {
@@ -486,7 +474,6 @@ export class PosComponent implements OnInit {
           this.orderType.set('table');
         } else {
           this.isTableNumberComplete.set(true);
-          this.cart.set([]);
         }
       } else {
         this.isTableNumberComplete.set(true);
@@ -652,3 +639,4 @@ export class PosComponent implements OnInit {
     this.showAllReceipts.set(false);
   }
 }
+

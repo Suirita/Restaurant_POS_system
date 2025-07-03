@@ -17,12 +17,7 @@
     (pay)="pay($event)"
   ></app-all-receipts-modal>
 
-  <app-confirmation-modal
-    [isVisible]="showConfirmation()"
-    [message]="'Are you sure you want to complete this order?'"
-    (confirmed)="onConfirmOrder()"
-    (cancelled)="onCancelOrder()"
-  ></app-confirmation-modal>
+  
 
   <!-- Main POS Interface -->
   <div class="h-full flex flex-col">
