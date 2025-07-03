@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, computed } from '@angular/core';
 import type { UserAccount } from '../../types/pos.types';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Lock, EyeOff, Eye, User } from 'lucide-angular';
+import { LucideAngularModule, Lock, EyeOff, Eye, User, ChevronLeft } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -15,6 +15,7 @@ export class LoginComponent {
   readonly EyeOffIcon = EyeOff;
   readonly EyeIcon = Eye;
   readonly UserIcon = User;
+  readonly BackspaceIcon = ChevronLeft;
 
   @Output() loginSuccess = new EventEmitter<UserAccount>();
   userAccounts: UserAccount[] = [
@@ -23,14 +24,32 @@ export class LoginComponent {
     { userId: '3', username: 'user3', password: '3' },
   ];
 
-  // selectedUserId = signal<string>('');
   password = signal<string>('');
   showPassword = signal<boolean>(false);
   loginError = signal<string>('');
   isLoading = signal<boolean>(false);
 
+  passwordDisplay = computed(() => {
+    return this.showPassword() ? this.password() : '* '.repeat(this.password().length);
+  });
+
   togglePasswordVisibility() {
     this.showPassword.set(!this.showPassword());
+  }
+
+  onNumberClick(num: string) {
+    this.password.set(this.password() + num);
+    this.loginError.set(''); // Clear error on new input
+  }
+
+  onClearClick() {
+    this.password.set('');
+    this.loginError.set('');
+  }
+
+  onBackspaceClick() {
+    this.password.set(this.password().slice(0, -1));
+    this.loginError.set('');
   }
 
   onLogin() {
@@ -59,17 +78,7 @@ export class LoginComponent {
     }, 1000);
   }
 
-  // selectUser(userId: string) {
-  //   this.selectedUserId.set(userId);
-  // }
-
-  // getSelectedUser(): UserAccount | undefined {
-  //   return this.userAccounts.find(user => user.userId === this.selectedUserId());
-  // }
-
   onPasswordKeyPress(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.onLogin();
-    }
+    // This method is no longer needed as input is handled by number pad
   }
 }
