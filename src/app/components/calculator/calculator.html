@@ -1,71 +1,39 @@
-<!-- Fixed height calculator -->
-<div
-  class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm px-1 sm:px-3"
-  style="min-height: 200px"
->
-  <!-- Calculator Header -->
-
-  <div
-    class="text-sm sm:text-base font-bold py-1.5 px-2 rounded-md min-h-[30px] flex items-center justify-center mb-1.5"
-    [class]="
-        canConfirm()
-          ? 'bg-gray-100 text-gray-800 border-2 border-blue-500'
-          : 'bg-gray-100 text-gray-500 border border-gray-200'
-      "
-  >
-    {{ displayValue() }}
+<!-- Calculator container -->
+<div class="bg-white rounded-xl border border-gray-200 shadow-lg w-full overflow-hidden">
+  <!-- Display -->
+  <div class="px-2 py-1">
+    <div class="flex items-center h-9 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm ring-offset-white">
+      <div class="flex-1 text-gray-900 text-xl font-medium">
+        {{ displayValue() }}
+      </div>
+    </div>
   </div>
 
-  <!-- Compact Number Grid -->
-  <div class="grid grid-cols-3 gap-1 mb-1.5">
-    <button
-      *ngFor="let num of ['1', '2', '3', '4', '5', '6', '7', '8', '9']"
-      class="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 py-3 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-sm"
-      (click)="onAddNumber(num)"
-    >
+  <!-- Number Pad -->
+  <div class="grid grid-cols-3 gap-1 p-2">
+    <button *ngFor="let num of ['1', '2', '3', '4', '5', '6', '7', '8', '9']" (click)="onAddNumber(num)"
+      class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors">
       {{ num }}
     </button>
-  </div>
-
-  <!-- Bottom Row -->
-  <div class="grid grid-cols-3 gap-1">
-    <button
-      class="bg-red-500 hover:bg-red-600 text-white py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
-      (click)="onClear()"
-    >
-      Clear
+    <button (click)="onClear()"
+      class="h-10 w-full rounded-md bg-red-100 text-base font-semibold flex items-center justify-center hover:bg-red-200 transition-colors text-red-600">
+      C
     </button>
-    <button
-      class="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 py-1.5 rounded-md text-xs font-medium transition-all duration-150"
-      (click)="onAddNumber('0')"
-    >
+    <button (click)="onAddNumber('0')"
+      class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors">
       0
     </button>
 
     <!-- Conditional button: Decimal for quantity mode, Confirm for table mode -->
-    <button
-      *ngIf="isQuantityMode()"
-      class="bg-blue-500 hover:bg-blue-600 text-white py-1.5 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md"
-      [disabled]="displayValue().includes('.')"
-      [class.opacity-50]="displayValue().includes('.')"
-      [class.cursor-not-allowed]="displayValue().includes('.')"
-      (click)="onAddDecimal()"
-    >
+    <button *ngIf="isQuantityMode()" (click)="onAddDecimal()" [disabled]="displayValue().includes('.')"
+      class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors"
+      [class.opacity-50]="displayValue().includes('.')" [class.cursor-not-allowed]="displayValue().includes('.')">
       .
     </button>
-
-    <button
-      *ngIf="!isQuantityMode()"
-      class="text-white py-3 rounded-md text-xs font-medium transition-all duration-150 hover:shadow-md flex justify-center align-middle"
-      [class]="
-        canConfirm()
-          ? 'bg-green-500 hover:bg-green-600'
-          : 'bg-gray-300 cursor-not-allowed'
-      "
-      [disabled]="!canConfirm()"
-      (click)="onConfirm()"
-    >
-      <i-lucide [img]="Check" [size]="20"></i-lucide>
+    <button *ngIf="!isQuantityMode()" (click)="onConfirm()" [disabled]="!canConfirm()"
+      class="h-10 w-full rounded-md text-base font-semibold flex items-center justify-center transition-colors"
+      [class]="canConfirm() ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 cursor-not-allowed'">
+      OK
     </button>
   </div>
 </div>
