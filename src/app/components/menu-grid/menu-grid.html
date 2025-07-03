@@ -16,43 +16,66 @@
   <div *ngIf="!loading()" class="grid grid-cols-5 grid-rows-3 gap-2">
     <div
       *ngFor="let meal of meals()"
-      class="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden p-1"
+      class="bg-white rounded-lg shadow-sm transition-all duration-300 cursor-pointer overflow-hidden p-1"
       [class.opacity-50]="!canAddToCart()"
       [class.cursor-not-allowed]="!canAddToCart()"
-      (click)="onMealSelect(meal)"
     >
-      <div class="relative overflow-hidden rounded-lg shadow-xs">
-        <img
-          [src]="meal.strMealThumb || '/placeholder.svg'"
-          [alt]="meal.strMeal"
-          class="w-full h-32 rounded-lg object-cover"
-          loading="lazy"
-        />
-        <div
-          *ngIf="!canAddToCart()"
-          class="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-lg"
-        >
-          <div class="text-white font-medium text-center px-3">
-            <div class="text-xs">{{ getOverlayMessage() }}</div>
+      <div (click)="onMealSelect(meal)">
+        <div class="relative overflow-hidden rounded-lg shadow-xs">
+          <img
+            [src]="meal.strMealThumb || '/placeholder.svg'"
+            [alt]="meal.strMeal"
+            class="w-full h-32 rounded-lg object-cover"
+            loading="lazy"
+          />
+          <div
+            *ngIf="!canAddToCart()"
+            class="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-lg"
+          >
+            <div class="text-white font-medium text-center px-3">
+              <div class="text-xs">{{ getOverlayMessage() }}</div>
+            </div>
           </div>
         </div>
+        <div class="pt-3 px-1">
+          <h3
+            class="text-md font-medium leading-tight text-gray-900 line-clamp-1"
+          >
+            {{ meal.strMeal }}
+          </h3>
+        </div>
       </div>
-      <div class="pt-3 pb-1 px-1">
-        <h3
-          class="text-sm font-semibold leading-tight text-gray-900 line-clamp-1"
+      <div class="flex items-center justify-between px-1 pb-1">
+        <ng-container
+          *ngIf="getCartItem(meal.idMeal) as cartItem; else addToCartButton"
         >
-          {{ meal.strMeal }}
-        </h3>
-        <div class="flex items-center justify-between">
-          <span class="text-md font-medium text-gray-900">
+          <div class="flex items-center justify-between w-full">
+            <button
+              (click)="onDecreaseQuantity(meal.idMeal)"
+              class="w-8 h-8 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+            >
+              <i-lucide [img]="MinusIcon" [size]="16"></i-lucide>
+            </button>
+            <span class="text-lg font-semibold">{{ cartItem.quantity }}</span>
+            <button
+              (click)="onIncreaseQuantity(meal.idMeal)"
+              class="w-8 h-8 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+            >
+              <i-lucide [img]="PlusIcon" [size]="16"></i-lucide>
+            </button>
+          </div>
+        </ng-container>
+        <ng-template #addToCartButton>
+          <span class="text-lg font-medium text-gray-900">
             ${{ meal.price }}
           </span>
           <button
-            class="bg-gray-900 text-white w-7 h-7 rounded-lg flex items-center justify-center hover:bg-gray-800 shadow-2xl"
+            (click)="onMealSelect(meal)"
+            class="bg-gray-900 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-xs"
           >
             <i-lucide [img]="PlusIcon" [size]="16"></i-lucide>
           </button>
-        </div>
+        </ng-template>
       </div>
     </div>
     <div class="grid grid-cols-5 gap-4 mt-4">

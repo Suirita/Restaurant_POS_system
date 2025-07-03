@@ -46,10 +46,13 @@
         <!-- Menu Items Grid -->
         <app-menu-grid
           [meals]="meals()"
+          [cart]="cart()"
           [loading]="loading()"
           [canAddToCart]="canAddToCart()"
           [orderType]="orderType()"
           (mealSelected)="onMealSelected($event)"
+          (quantityIncreased)="onQuantityIncreased($event)"
+          (quantityDecreased)="onQuantityDecreased($event)"
           (showAllReceipts)="showAllReceiptsModal()"
           (logout)="logout()"
         ></app-menu-grid>
