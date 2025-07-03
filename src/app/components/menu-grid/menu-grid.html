@@ -1,12 +1,12 @@
 <div class="flex-1 p-2 overflow-y-auto bg-gray-100 min-h-0">
   <!-- Loading State -->
-  <div *ngIf="loading()" class="grid grid-cols-5 grid-rows-4 gap-2">
+  <div *ngIf="loading()" class="grid grid-cols-6 grid-rows-3 gap-2">
     <div
       *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
       class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
     >
       <div class="p-2 space-y-2">
-        <div class="bg-gray-200 h-32 rounded-lg"></div>
+        <div class="bg-gray-200 h-24 rounded-lg"></div>
         <div class="bg-gray-200 h-4 rounded-sm mb-0.5"></div>
         <div class="bg-gray-200 h-8 rounded-sm mb-1"></div>
       </div>
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Menu Items Grid -->
-  <div *ngIf="!loading()" class="grid grid-cols-6 grid-rows-4 gap-2">
+  <div *ngIf="!loading()" class="grid grid-cols-6 grid-rows-3 gap-2">
     <div
       *ngFor="let meal of meals()"
       class="bg-white rounded-lg shadow-sm transition-all duration-300 cursor-pointer overflow-hidden p-1"
@@ -52,7 +52,11 @@
         >
           <div class="flex items-center justify-between w-full">
             <button
-              (click)="onDecreaseQuantity(meal.idMeal)"
+              (click)="onDecreaseQuantity(meal.idMeal, $event)"
+              [disabled]="cartItem.quantity <= 1"
+              [class.opacity-25]="cartItem.quantity <= 1"
+              [class.cursor-not-allowed]="cartItem.quantity <= 1"
+              title="Decrease quantity"
               class="w-8 h-8 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
             >
               <i-lucide [img]="MinusIcon" [size]="16"></i-lucide>
@@ -61,7 +65,11 @@
               {{ cartItem.quantity }}
             </span>
             <button
-              (click)="onIncreaseQuantity(meal.idMeal)"
+              (click)="onIncreaseQuantity(meal.idMeal, $event)"
+              [disabled]="cartItem.quantity >= 99.9"
+              [class.opacity-25]="cartItem.quantity >= 99.9"
+              [class.cursor-not-allowed]="cartItem.quantity >= 99.9"
+              title="Increase quantity"
               class="w-8 h-8 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
             >
               <i-lucide [img]="PlusIcon" [size]="16"></i-lucide>
@@ -69,7 +77,7 @@
           </div>
         </ng-container>
         <ng-template #addToCartButton>
-          <span class="text-sm font-medium text-gray-700">
+          <span class="text-sm font-medium text-gray-500">
             ${{ meal.price }}
           </span>
           <button

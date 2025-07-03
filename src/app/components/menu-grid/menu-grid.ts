@@ -31,11 +31,13 @@ export class MenuGridComponent {
     }
   }
 
-  onIncreaseQuantity(mealId: string) {
+  onIncreaseQuantity(mealId: string, event: Event) {
+    event.stopPropagation();
     this.quantityIncreased.emit(mealId);
   }
 
-  onDecreaseQuantity(mealId: string) {
+  onDecreaseQuantity(mealId: string, event: Event) {
+    event.stopPropagation();
     this.quantityDecreased.emit(mealId);
   }
 
