@@ -7,15 +7,16 @@ import {
   Plus,
   Minus,
   ShoppingBag,
-  HandPlatter,
+  Utensils,
 } from 'lucide-angular';
-import { CartItem } from '../../types/pos.types';
+import { CartItem, Table } from '../../types/pos.types';
+import { ServiceSelectionComponent } from '../service-selection/service-selection';
 
 @Component({
   standalone: true,
   selector: 'app-cart',
   templateUrl: './cart.html',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, ServiceSelectionComponent],
 })
 export class CartComponent {
   readonly ShoppingCartIcon = ShoppingCart;
@@ -23,7 +24,7 @@ export class CartComponent {
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
   readonly ShoppingBagIcon = ShoppingBag;
-  readonly HandPlatterIcon = HandPlatter;
+  readonly UtensilsIcon = Utensils;
 
   cartItems = input.required<CartItem[]>();
   selectedCartItemId = input<string | null>(null);
@@ -32,6 +33,7 @@ export class CartComponent {
   canAddToCart = input.required<boolean>();
   orderType = input.required<'take away' | 'table'>();
   tableNumber = input.required<string>();
+  tables = input.required<Table[]>();
 
   itemSelected = output<string>();
   itemRemoved = output<string>();
@@ -39,11 +41,11 @@ export class CartComponent {
   orderCompleted = output<void>();
   quantityIncreased = output<string>();
   quantityDecreased = output<string>();
+  takeAwaySelected = output<void>();
+  tableTypeSelected = output<void>();
 
   displayHeader = computed(() => {
-    if (this.orderType() === 'take away') {
-      return 'Take Away';
-    } else if (this.orderType() === 'table' && this.tableNumber()) {
+    if (this.orderType() === 'table' && this.tableNumber()) {
       return `Table: ${this.tableNumber()}`;
     } else {
       return 'Cart Details';
@@ -51,10 +53,8 @@ export class CartComponent {
   });
 
   displayIcon = computed(() => {
-    if (this.orderType() === 'take away') {
-      return this.ShoppingBagIcon;
-    } else if (this.orderType() === 'table' && this.tableNumber()) {
-      return this.HandPlatterIcon;
+    if (this.orderType() === 'table' && this.tableNumber()) {
+      return this.UtensilsIcon;
     } else {
       return this.ShoppingCartIcon;
     }

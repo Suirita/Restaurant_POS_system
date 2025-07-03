@@ -17,7 +17,7 @@ import { LoginComponent } from '../components/login/login';
 import { CategoryNavComponent } from '../components/category-nav/category-nav';
 import { MenuGridComponent } from '../components/menu-grid/menu-grid';
 import { CartComponent } from '../components/cart/cart';
-import { ServiceSelectionComponent } from '../components/service-selection/service-selection';
+
 import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
 import { ConfirmationModalComponent } from '../components/confirmation-modal/confirmation-modal';
@@ -32,7 +32,6 @@ import { ConfirmationModalComponent } from '../components/confirmation-modal/con
     CategoryNavComponent,
     MenuGridComponent,
     CartComponent,
-    ServiceSelectionComponent,
     CalculatorComponent,
     AllReceiptsModalComponent,
     ConfirmationModalComponent,

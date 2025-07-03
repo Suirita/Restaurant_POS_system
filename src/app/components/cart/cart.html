@@ -3,23 +3,20 @@
   <!-- Cart Items - Fixed height with scroll -->
   <div
     class="flex-1 px-2 py-2 overflow-y-auto min-h-0"
-    style="max-height: 350px; min-height: 350px"
+    style="max-height: 390px; min-height: 390px"
   >
     <div class="flex justify-between items-center mb-2">
       <div class="flex items-center gap-2">
         <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
         <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
       </div>
-      <button
-        *ngIf="cartItems().length > 0"
-        class="py-1 px-2 rounded-lg border border-gray-200 shadow"
-        (click)="onClearCart()"
-      >
-        <div class="flex items-center gap-1.5 text-red-500">
-          <i-lucide [img]="TrashIcon" [size]="18"></i-lucide>
-          <span class="font-medium">Reset Order</span>
-        </div>
-      </button>
+      <!-- Service Selection -->
+      <app-service-selection
+        [orderType]="orderType()"
+        [tables]="tables()"
+        (takeAwaySelected)="takeAwaySelected.emit()"
+        (tableTypeSelected)="tableTypeSelected.emit()"
+      ></app-service-selection>
     </div>
 
     <!-- Empty Cart -->
@@ -124,34 +121,33 @@
   <!-- Cart Total & Actions -->
   <div
     *ngIf="cartItems().length > 0"
-    class="flex-shrink-0 p-2 sm:p-3 border-t border-gray-200 bg-white"
-    style="min-height: 120px"
+    class="flex-shrink-0 p-3 border-t border-gray-200 bg-white"
   >
-    <div class="flex justify-between items-center pb-1.5">
-      <span class="text-sm sm:text-base font-bold text-gray-900">Total:</span>
-      <span class="text-base sm:text-lg font-bold text-green-600">
+    <div class="flex justify-between items-center">
+      <span class="text-lg font-medium text-gray-700">Total:</span>
+      <span class="text-lg font-medium text-gray-900">
         ${{ total().toFixed(2) }}
       </span>
     </div>
 
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-1.5">
+    <div class="flex justify-between items-center gap-1.5">
       <button
-        class="w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+        class="w-full text-white bg-green-500 py-2 rounded-lg font-medium shadow-sm"
+        (click)="onClearCart()"
+      >
+        Pay Now
+      </button>
+      <button
+        class="w-full py-2 rounded-lg font-medium shadow-sm"
         [class]="
           canAddToCart()
-            ? 'bg-gradient-to-r bg-green-600 text-white hover:bg-green-700'
+            ? ' bg-white text-black'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         "
         [disabled]="!canAddToCart()"
         (click)="onCompleteOrder()"
       >
-        {{ canAddToCart() ? "Complete Order" : "Setup Required" }}
-      </button>
-      <button
-        class="w-full text-white border bg-red-500 border-red-200 hover:border-red-300 hover:bg-red-600 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-        (click)="onClearCart()"
-      >
-        Clear Order
+        {{ canAddToCart() ? "Save Order" : "Setup Required" }}
       </button>
     </div>
   </div>

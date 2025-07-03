@@ -83,22 +83,19 @@
             [canAddToCart]="canAddToCart()"
             [orderType]="orderType()"
             [tableNumber]="tableNumber()"
+            [tables]="tables()"
             (itemSelected)="onCartItemSelected($event)"
             (itemRemoved)="onCartItemRemoved($event)"
             (cartCleared)="onCartCleared()"
             (orderCompleted)="onOrderCompleted()"
             (quantityIncreased)="onQuantityIncreased($event)"
             (quantityDecreased)="onQuantityDecreased($event)"
+            (takeAwaySelected)="onTakeAwaySelected()"
+            (tableTypeSelected)="onTableTypeSelected()"
           ></app-cart>
         </div>
 
-        <!-- Service Selection -->
-        <app-service-selection
-          [orderType]="orderType()"
-          [tables]="tables()"
-          (takeAwaySelected)="onTakeAwaySelected()"
-          (tableTypeSelected)="onTableTypeSelected()"
-        ></app-service-selection>
+        
 
         <!-- Calculator -->
         <div class="flex-shrink-0 p-3">

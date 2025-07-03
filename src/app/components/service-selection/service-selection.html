@@ -1,25 +1,20 @@
-<div
-  class="flex-shrink-0 p-2 sm:p-3"
-  style="min-height: 50px; max-height: 50px"
->
-  <div class="flex gap-2">
-    <button
-      class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
-      [class]="orderType() === 'take away' ? 'bg-gradient-to-r bg-blue-500 text-white shadow-md' : 'bg-white text-gray-900 border border-blue-200 hover:border-blue-300 hover:bg-blue-50'"
-      (click)="onSelectTakeAway()"
-    >
-      Take away
-    </button>
-    <button
-      class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
-      [class]="
+<div class="flex gap-2">
+  <button
+    class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
+    [class]="orderType() === 'take away' ? 'bg-gradient-to-r bg-black text-white shadow-md' : 'bg-white text-gray-900 border border-gray-100'"
+    (click)="onSelectTakeAway()"
+  >
+    <i-lucide [img]="ShoppingBagIcon" [size]="18"></i-lucide>
+  </button>
+  <button
+    class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
+    [class]="
         orderType() === 'table'
-          ? 'bg-gradient-to-r bg-blue-500 text-white shadow-md'
-          : 'bg-white text-gray-900 border border-blue-200 hover:border-blue-300 hover:bg-blue-50'
+          ? 'bg-gradient-to-r bg-black text-white shadow-md'
+          : 'bg-white text-gray-900 border border-gray-100'
       "
-      (click)="onSelectTableType()"
-    >
-      Table
-    </button>
-  </div>
+    (click)="onSelectTableType()"
+  >
+    <i-lucide [img]="UtensilsIcon" [size]="18"></i-lucide>
+  </button>
 </div>
