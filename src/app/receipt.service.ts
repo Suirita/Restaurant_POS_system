@@ -34,9 +34,20 @@ export class ReceiptService {
   deleteReceiptByOrderNumber(orderNumber: string): void {
     let allReceipts = this.getAllReceipts();
     allReceipts = allReceipts.filter(
-      receipt => receipt.orderNumber !== orderNumber
+      (receipt) => receipt.orderNumber !== orderNumber
     );
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
+  }
+
+  updateReceipt(updatedReceipt: Receipt): void {
+    const allReceipts = this.getAllReceipts();
+    const index = allReceipts.findIndex(
+      (r) => r.orderNumber === updatedReceipt.orderNumber
+    );
+    if (index !== -1) {
+      allReceipts[index] = updatedReceipt;
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
+    }
   }
 
   private getAllReceipts(): Receipt[] {

@@ -532,17 +532,27 @@ export class PosComponent implements OnInit {
     const tableName =
       this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
-    const receipt: Receipt = {
-      orderNumber: this.generateOrderNumber(),
-      tableName: tableName,
-      items: [...this.cart()],
-      total: total,
-      date: new Date(),
-      paymentMethod: 'Cash',
-      userId: this.currentUser()!.userId,
-    };
+    // Check if there is an existing receipt for this table
+    const existingReceipt = this.receiptService.getReceiptByTable(tableName);
 
-    this.receiptService.saveReceipt(receipt);
+    if (existingReceipt) {
+      // Update existing receipt
+      existingReceipt.items = [...this.cart()];
+      existingReceipt.total = total;
+      this.receiptService.updateReceipt(existingReceipt);
+    } else {
+      // Create a new receipt
+      const receipt: Receipt = {
+        orderNumber: this.generateOrderNumber(),
+        tableName: tableName,
+        items: [...this.cart()],
+        total: total,
+        date: new Date(),
+        paymentMethod: 'Cash',
+        userId: this.currentUser()!.userId,
+      };
+      this.receiptService.saveReceipt(receipt);
+    }
 
     if (this.orderType() === 'table') {
       const tables = this.tables().map((t) =>
@@ -557,6 +567,12 @@ export class PosComponent implements OnInit {
 
     if (this.orderType() === 'take away') {
       this.orderType.set('table');
+      this.isEditing.set(true);
+    } else {
+      this.orderType.set('table');
+      this.tableNumber.set('');
+      this.isTableNumberComplete.set(false);
+      this.tableErrorMessage.set(null);
       this.isEditing.set(true);
     }
   }
@@ -573,6 +589,11 @@ export class PosComponent implements OnInit {
       );
       this.tables.set(tables);
       this.receiptService.deleteReceiptByOrderNumber(orderNumber);
+      this.orderType.set('table');
+      this.tableNumber.set('');
+      this.isTableNumberComplete.set(false);
+      this.tableErrorMessage.set(null);
+      this.isEditing.set(true);
     }
   }
 
@@ -637,6 +658,51 @@ export class PosComponent implements OnInit {
 
   hideAllReceiptsModal() {
     this.showAllReceipts.set(false);
+  }
+
+  onPay() {
+    // Prevent action if cart is empty or table not selected for table orders
+    if (!this.canAddToCart() || this.cart().length === 0) {
+      if (this.orderType() === 'table' && !this.isTableNumberComplete()) {
+        alert('Please enter and confirm table number first!');
+      }
+      return;
+    }
+
+    // Create a record of the transaction
+    const total = this.total();
+    const tableName =
+      this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
+
+    const receipt: Receipt = {
+      orderNumber: this.generateOrderNumber(),
+      tableName: tableName,
+      items: [...this.cart()],
+      total: total,
+      date: new Date(),
+      paymentMethod: 'Paid', // Indicate it's settled
+      userId: this.currentUser()!.userId,
+    };
+    this.receiptService.saveReceipt(receipt);
+
+    // If it was a table order, free up the table
+    if (this.orderType() === 'table') {
+      const tables = this.tables().map((t) =>
+        t.name === tableName
+          ? { ...t, occupied: false, userId: null }
+          : t
+      );
+      this.tables.set(tables);
+    }
+
+    // Clear the cart and reset the UI for the next order
+    this.clearCart();
+    this.finishEditing();
+    this.orderType.set('table');
+    this.tableNumber.set('');
+    this.isTableNumberComplete.set(false);
+    this.tableErrorMessage.set(null);
+    this.isEditing.set(true);
   }
 }
 

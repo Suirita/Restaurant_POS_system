@@ -43,6 +43,7 @@ export class CartComponent {
   quantityDecreased = output<string>();
   takeAwaySelected = output<void>();
   tableTypeSelected = output<void>();
+  pay = output<void>();
 
   displayHeader = computed(() => {
     if (this.orderType() === 'table' && this.tableNumber()) {
@@ -85,6 +86,10 @@ export class CartComponent {
 
   onCompleteOrder() {
     this.orderCompleted.emit();
+  }
+
+  onPay() {
+    this.pay.emit();
   }
 
   getDisplayQuantity(item: CartItem): number | string {

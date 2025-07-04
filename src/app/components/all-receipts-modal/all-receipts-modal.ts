@@ -29,4 +29,8 @@ export class AllReceiptsModalComponent {
     this.pay.emit(orderNumber);
     this.receipts = this.receiptService.getReceipts(this.userId());
   }
+
+  onPayClick(orderNumber: string) {
+    this.onPay(orderNumber);
+  }
 }
