@@ -177,6 +177,19 @@ export class PosComponent implements OnInit {
     this.clearCart(); // Clear cart on logout
     this.finishEditing(); // Finish any editing
     this.isEditing.set(false);
+
+    // Reset table state
+    this.orderType.set('table');
+    this.tableNumber.set('');
+    this.isTableNumberComplete.set(false);
+    this.tableErrorMessage.set(null);
+    this.tables.set(
+      Array.from({ length: 12 }, (_, i) => ({
+        name: `T${i + 1}`,
+        occupied: false,
+        userId: null,
+      }))
+    );
   }
 
   // ... rest of your existing methods remain exactly the same ...
