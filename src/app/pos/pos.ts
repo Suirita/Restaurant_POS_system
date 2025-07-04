@@ -105,6 +105,7 @@ export class PosComponent implements OnInit {
   private orderCounter = 1;
 
   isEditing = signal(false);
+  lastOrderContext = signal<'take away' | 'occupied_table' | 'unoccupied_table' | null>(null);
 
   // ... all your existing computed properties remain the same ...
 
@@ -162,6 +163,7 @@ export class PosComponent implements OnInit {
     this.loadCategories(); // Load data after successful login
     this.isEditing.set(true);
     this.syncTablesWithReceipts();
+    this.lastOrderContext.set(null); // Initialize on login
   }
 
   // Logout method
@@ -461,10 +463,10 @@ export class PosComponent implements OnInit {
         return;
       }
 
-      // If switching to an unoccupied table, clear the cart
-      if (!table.occupied) {
-        this.clearCart();
-      }
+      // Capture the occupied status of the table *before* the new confirmation
+      const previousTableName = this.orderType() === 'table' && this.isTableNumberComplete() ? 'T' + this.tableNumber() : null;
+      const previousTable = previousTableName ? this.tables().find(t => t.name === previousTableName) : null;
+      const previousTableWasOccupied = previousTable?.occupied || false;
 
       if (table.occupied) {
         if (table.userId !== this.currentUser()!.userId) {
@@ -480,7 +482,11 @@ export class PosComponent implements OnInit {
         } else {
           this.isTableNumberComplete.set(true);
         }
-      } else {
+      } else { // Table is NOT occupied
+        // Clear cart ONLY if switching from an occupied table to an unoccupied one, and cart is not empty
+        if (previousTableWasOccupied && this.cart().length > 0) {
+          this.clearCart();
+        }
         this.isTableNumberComplete.set(true);
       }
     }
