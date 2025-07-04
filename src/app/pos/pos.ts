@@ -168,6 +168,7 @@ export class PosComponent implements OnInit {
     this.isLoggedIn.set(true);
     this.loadCategories(); // Load data after successful login
     this.isEditing.set(true);
+    this.syncTablesWithReceipts();
   }
 
   // Logout method
@@ -183,13 +184,6 @@ export class PosComponent implements OnInit {
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
     this.tableErrorMessage.set(null);
-    this.tables.set(
-      Array.from({ length: 12 }, (_, i) => ({
-        name: `T${i + 1}`,
-        occupied: false,
-        userId: null,
-      }))
-    );
   }
 
   // ... rest of your existing methods remain exactly the same ...
@@ -590,9 +584,30 @@ export class PosComponent implements OnInit {
     }
   }
 
+  private syncTablesWithReceipts() {
+    const allReceipts = this.receiptService.getAllReceipts();
+    const occupiedTables = allReceipts.reduce((acc, receipt) => {
+      if (receipt.tableName.startsWith('T')) {
+        acc[receipt.tableName] = receipt.userId;
+      }
+      return acc;
+    }, {} as { [key: string]: string });
+
+    this.tables.set(
+      this.tables().map((table) => ({
+        ...table,
+        occupied: !!occupiedTables[table.name],
+        userId: occupiedTables[table.name] || null,
+      }))
+    );
+  }
+
   pay(orderNumber: string) {
+    const currentUser = this.currentUser();
+    if (!currentUser) return;
+
     const receipt = this.receiptService
-      .getReceipts(this.currentUser()!.userId)
+      .getReceipts(currentUser.userId)
       .find((r) => r.orderNumber === orderNumber);
     if (receipt) {
       const tables = this.tables().map((t) =>
@@ -718,4 +733,3 @@ export class PosComponent implements OnInit {
     this.isEditing.set(true);
   }
 }
-

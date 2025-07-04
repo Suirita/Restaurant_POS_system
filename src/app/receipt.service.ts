@@ -50,7 +50,7 @@ export class ReceiptService {
     }
   }
 
-  private getAllReceipts(): Receipt[] {
+  public getAllReceipts(): Receipt[] {
     const receiptsJson = localStorage.getItem(this.STORAGE_KEY);
     return receiptsJson ? JSON.parse(receiptsJson) : [];
   }
