@@ -51,7 +51,7 @@
             <div class="flex items-center justify-between">
               <!-- Price -->
               <span
-                class="font-semibold text-md text-gray-700 min-w-0 flex-shrink-0"
+                class="font-medium text-sm text-gray-500 min-w-0 flex-shrink-0"
               >
                 ${{ (item.quantity * item.price).toFixed(2) }}
               </span>
@@ -136,7 +136,7 @@
         [disabled]="!canAddToCart()"
         (click)="onCompleteOrder()"
       >
-        {{ canAddToCart() ? "Save Order" : "Setup Required" }}
+        {{ canAddToCart() ? "Save Receipt" : "Setup Required" }}
       </button>
       <button
         class="text-sm w-full bg-white py-2 rounded-lg font-medium border border-gray-200 shadow-sm"

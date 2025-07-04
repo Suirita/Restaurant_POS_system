@@ -2,14 +2,17 @@ import { Component, output, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Receipt } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
+import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-all-receipts-modal',
   templateUrl: './all-receipts-modal.html',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
 })
 export class AllReceiptsModalComponent {
+  readonly XIcon = X;
+
   private receiptService = inject(ReceiptService);
   receipts: Receipt[] = [];
   userId = input.required<string>();
