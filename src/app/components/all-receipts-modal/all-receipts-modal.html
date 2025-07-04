@@ -1,29 +1,31 @@
 <div
-  class="fixed inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center z-50"
+  class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50"
   (click)="onClose()"
 >
-  <div class="absolute inset-0 opacity-10">
-    <div
-      class="absolute inset-0"
-      style="
-        background-image: radial-gradient(
-            circle at 25% 25%,
-            white 2px,
-            transparent 2px
-          ),
-          radial-gradient(circle at 75% 75%, white 2px, transparent 2px);
-        background-size: 50px 50px;
-      "
-    ></div>
-  </div>
   <div
-    class="bg-white rounded-xl shadow-2xl w-full mx-48 overflow-hidden relative"
+    class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden relative"
     (click)="$event.stopPropagation()"
   >
     <div
-      class="bg-gradient-to-r from-blue-500 to-purple-500 p-4 text-white text-center"
+      class="bg-gray-900 p-4 text-white text-center flex justify-between items-center"
     >
       <h1 class="text-2xl font-bold">All Receipts</h1>
+      <button (click)="onClose()" class="text-white hover:text-gray-300">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
     </div>
     <div class="p-4">
       <div *ngIf="receipts.length === 0" class="text-center py-6 lg:py-12">
@@ -32,30 +34,34 @@
       </div>
       <div
         *ngIf="receipts.length > 0"
-        class="grid grid-cols-3 gap-4 p-8 max-h-96 overflow-y-auto"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 max-h-96 overflow-y-auto"
       >
         <div
           *ngFor="let receipt of receipts"
-          class="mb-4 p-4 border rounded-lg"
+          class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between"
         >
-          <p><strong>Order:</strong> {{ receipt.orderNumber }}</p>
-          <p><strong>Service:</strong> {{ receipt.tableName }}</p>
-          <p><strong>Time:</strong> {{ receipt.date | date: 'short' }}</p>
-          <p><strong>Total:</strong> {{ receipt.total | currency }}</p>
+          <div>
+            <p class="text-sm text-gray-600">Order: <span class="font-medium text-gray-900">{{ receipt.orderNumber }}</span></p>
+            <p class="text-sm text-gray-600">Service: <span class="font-medium text-gray-900">{{ receipt.tableName }}</span></p>
+            <p class="text-sm text-gray-600">Time: <span class="font-medium text-gray-900">{{ receipt.date | date: 'short' }}</span></p>
+            <p class="text-lg font-semibold text-gray-900 mt-2">Total: {{ receipt.total | currency }}</p>
+          </div>
           <button
             (click)="onPayClick(receipt.orderNumber)"
-            class="mt-2 w-full py-1 px-2 rounded font-medium transition-all duration-200 shadow hover:shadow-lg transform bg-green-500 text-white hover:bg-green-600"
+            class="mt-3 w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200"
           >
             Pay
           </button>
         </div>
       </div>
-      <button
-        (click)="onClose()"
-        class="mt-4 w-full py-2 px-4 rounded font-medium transition-all duration-200 shadow hover:shadow-lg transform bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600"
-      >
-        Close
-      </button>
+      <div class="p-4 border-t border-gray-200">
+        <button
+          (click)="onClose()"
+          class="w-full py-2 rounded-lg font-medium shadow-xs bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors duration-200"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 </div>

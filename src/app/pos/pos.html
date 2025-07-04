@@ -52,11 +52,12 @@
 
       <!-- Right Sidebar (Cart Section) -->
       <div
-        class="w-full sm:w-[500px] md:w-[550px] lg:w-[600px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500"
+        class="w-full sm:w-[500px] md:w-[550px] lg:w-[600px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500 flex flex-col"
       >
         <!-- Cart Items -->
         <div class="flex-1 min-h-0 flex flex-col">
           <app-cart
+            class="h-full"
             [cartItems]="cart()"
             [selectedCartItemId]="selectedCartItemId()"
             [tempQuantity]="tempQuantity()"
