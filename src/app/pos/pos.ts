@@ -468,6 +468,11 @@ export class PosComponent implements OnInit {
         return;
       }
 
+      // If switching to an unoccupied table, clear the cart
+      if (!table.occupied) {
+        this.clearCart();
+      }
+
       if (table.occupied) {
         if (table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
