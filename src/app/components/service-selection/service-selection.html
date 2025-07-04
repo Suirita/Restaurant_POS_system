@@ -1,20 +1,25 @@
 <div class="flex gap-2">
   <button
-    class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
-    [class]="orderType() === 'take away' ? 'bg-gradient-to-r bg-black text-white shadow-md' : 'bg-white text-gray-900 border border-gray-100'"
+    class="flex items-center justify-center gap-2 py-1.5 px-2 rounded-lg text-xs font-medium border-gray-100"
+    [class]="orderType() === 'take away'
+              ? 'bg-black text-white shadow-md'
+              : 'bg-white text-gray-900 border shadow-sm'
+          "
     (click)="onSelectTakeAway()"
   >
     <i-lucide [img]="ShoppingBagIcon" [size]="18"></i-lucide>
+    <span>Take Away</span>
   </button>
   <button
-    class="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-200 hover:cursor-pointer"
+    class="flex items-center justify-center gap-2 py-1.5 px-2 rounded-lg text-xs font-medium border-gray-100"
     [class]="
         orderType() === 'table'
-          ? 'bg-gradient-to-r bg-black text-white shadow-md'
-          : 'bg-white text-gray-900 border border-gray-100'
+          ? 'bg-black text-white shadow-md'
+          : 'bg-white text-gray-900 border shadow-sm'
       "
     (click)="onSelectTableType()"
   >
     <i-lucide [img]="UtensilsIcon" [size]="18"></i-lucide>
+    <span>Table</span>
   </button>
 </div>
