@@ -1,22 +1,24 @@
 <!-- Fixed height cart container -->
 <div class="flex flex-col h-full border-b border-gray-200">
-  <!-- Cart Items - Fixed height with scroll -->
-  <div
-    class="flex-grow flex-shrink px-2 py-2 overflow-y-auto min-h-0 basis-0"
-  >
-    <div class="flex justify-between items-center mb-2">
-      <div class="flex items-center gap-2">
-        <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
-        <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
-      </div>
-      <!-- Service Selection -->
-      <app-service-selection
-        [orderType]="orderType()"
-        [tables]="tables()"
-        (takeAwaySelected)="takeAwaySelected.emit()"
-        (tableTypeSelected)="tableTypeSelected.emit()"
-      ></app-service-selection>
+  <!-- Cart Header - Fixed at top -->
+  <div class="flex justify-between items-center px-2 py-2 border-b border-gray-200 shadow-sm">
+    <div class="flex items-center gap-2">
+      <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
+      <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
     </div>
+    <!-- Service Selection -->
+    <app-service-selection
+      [orderType]="orderType()"
+      [tables]="tables()"
+      (takeAwaySelected)="takeAwaySelected.emit()"
+      (tableTypeSelected)="tableTypeSelected.emit()"
+    ></app-service-selection>
+  </div>
+
+  <!-- Cart Items - Scrollable area -->
+  <div
+    class="flex-grow flex-shrink px-2 py-2 overflow-y-auto min-h-0 basis-0 scrollbar-hide"
+  >
 
     <!-- Empty Cart -->
     <div *ngIf="cartItems().length === 0" class="text-center py-6 lg:py-12">
@@ -125,7 +127,7 @@
 
     <div class="flex justify-between items-center gap-1.5">
       <button
-        class="w-full py-2 rounded-lg font-medium shadow-xs"
+        class="text-sm w-full py-2 rounded-lg font-medium border border-green-300 shadow-sm"
         [class]="
           canAddToCart()
             ? ' bg-green-500 text-white'
@@ -137,7 +139,7 @@
         {{ canAddToCart() ? "Save Order" : "Setup Required" }}
       </button>
       <button
-        class="w-full bg-white py-2 rounded-lg font-medium shadow-xs"
+        class="text-sm w-full bg-white py-2 rounded-lg font-medium border border-gray-200 shadow-sm"
         (click)="onPay()"
       >
         Pay Now
