@@ -26,7 +26,8 @@
       >
         <div
           *ngFor="let receipt of receipts"
-          class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between"
+          class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer"
+          (click)="onReceiptClick(receipt)"
         >
           <div>
             <p class="text-sm text-gray-600">

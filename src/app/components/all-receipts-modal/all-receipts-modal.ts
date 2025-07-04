@@ -19,6 +19,7 @@ export class AllReceiptsModalComponent {
 
   close = output<void>();
   pay = output<string>();
+  receiptSelected = output<Receipt>();
 
   ngOnInit() {
     this.receipts = this.receiptService.getReceipts(this.userId());
@@ -35,5 +36,9 @@ export class AllReceiptsModalComponent {
 
   onPayClick(orderNumber: string) {
     this.onPay(orderNumber);
+  }
+
+  onReceiptClick(receipt: Receipt) {
+    this.receiptSelected.emit(receipt);
   }
 }

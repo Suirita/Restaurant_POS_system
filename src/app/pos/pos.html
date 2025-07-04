@@ -15,6 +15,7 @@
     [userId]="currentUser()!.userId"
     (close)="hideAllReceiptsModal()"
     (pay)="pay($event)"
+    (receiptSelected)="onReceiptSelectedFromModal($event)"
   ></app-all-receipts-modal>
 
 
