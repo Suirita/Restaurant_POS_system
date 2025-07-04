@@ -632,7 +632,6 @@ export class PosComponent implements OnInit {
   }
 
   onPay() {
-    // Prevent action if cart is empty or table not selected for table orders
     if (!this.canAddToCart() || this.cart().length === 0) {
       if (this.orderType() === 'table' && !this.isTableNumberComplete()) {
         alert('Please enter and confirm table number first!');
@@ -640,23 +639,36 @@ export class PosComponent implements OnInit {
       return;
     }
 
-    // Create a record of the transaction
     const total = this.total();
     const tableName =
       this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
-    const receipt: Receipt = {
-      orderNumber: this.generateOrderNumber(),
-      tableName: tableName,
-      items: [...this.cart()],
-      total: total,
-      date: new Date(),
-      paymentMethod: 'Paid', // Indicate it's settled
-      userId: this.currentUser()!.userId,
-    };
-    this.receiptService.saveReceipt(receipt);
+    // Check if there is an existing receipt for this table
+    const existingReceipt = this.receiptService.getReceiptByTable(tableName);
 
-    // If it was a table order, free up the table
+    if (existingReceipt) {
+      // Update existing receipt and mark as paid
+      existingReceipt.items = [...this.cart()];
+      existingReceipt.total = total;
+      existingReceipt.paymentMethod = 'Paid';
+      this.receiptService.updateReceipt(existingReceipt);
+      // Immediately delete the receipt as it's now paid and settled
+      this.receiptService.deleteReceiptByOrderNumber(existingReceipt.orderNumber);
+    } else {
+      // Create a new receipt if none exists
+      const receipt: Receipt = {
+        orderNumber: this.generateOrderNumber(),
+        tableName: tableName,
+        items: [...this.cart()],
+        total: total,
+        date: new Date(),
+        paymentMethod: 'Paid',
+        userId: this.currentUser()!.userId,
+      };
+      this.receiptService.saveReceipt(receipt);
+    }
+
+    // Free up the table if it was a table order
     if (this.orderType() === 'table') {
       const tables = this.tables().map((t) =>
         t.name === tableName
