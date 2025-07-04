@@ -29,19 +29,14 @@
     <div *ngIf="cartItems().length > 0" class="space-y-1">
       <div
         *ngFor="let item of cartItems()"
-        class="bg-white rounded-lg p-1 border shadow-sm"
-        [class]="
-          selectedCartItemId() === item.idMeal
-            ? 'border-blue-300 shadow-md ring-2 ring-blue-300'
-            : 'border-gray-200'
-        "
+        class="bg-white rounded-lg p-1 border border-gray-200 shadow-sm"
       >
         <div class="flex items-center gap-2">
           <!-- Item Image -->
           <img
             [src]="item.strMealThumb || '/placeholder.svg'"
             [alt]="item.strMeal"
-            class="w-12 h-12 rounded-lg object-cover"
+            class="w-11 h-11 rounded-lg object-cover"
             loading="lazy"
           />
           <div class="w-full">
@@ -59,59 +54,58 @@
               >
                 ${{ (item.quantity * item.price).toFixed(2) }}
               </span>
+            </div>
+          </div>
+          <!-- Edit Indicator -->
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center justify-between gap-1">
+              <!-- Decrease Button -->
+              <button
+                (click)="onDecreaseQuantity(item.idMeal, $event)"
+                [disabled]="item.quantity <= 1"
+                [class.opacity-25]="item.quantity <= 1"
+                [class.cursor-not-allowed]="item.quantity <= 1"
+                title="Decrease quantity"
+                class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+              >
+                <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
+              </button>
 
-              <!-- Edit Indicator -->
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center justify-between gap-0.5">
-                  <!-- Decrease Button -->
-                  <button
-                    (click)="onDecreaseQuantity(item.idMeal, $event)"
-                    [disabled]="item.quantity <= 1"
-                    [class.opacity-25]="item.quantity <= 1"
-                    [class.cursor-not-allowed]="item.quantity <= 1"
-                    title="Decrease quantity"
-                    class="w-7 h-7 bg-white text-gray-900 rounded-md flex items-center justify-center border border-gray-200 shadow-sm"
-                  >
-                    <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
-                  </button>
-
-                  <!-- Clickable Quantity Display -->
-                  <button
-                    class="font-semibold min-w-10 text-sm py-0.5 transition-all duration-200 text-center w-7 h-7 text-gray-900 rounded-md flex items-center justify-center"
-                    [class]="
+              <!-- Clickable Quantity Display -->
+              <button
+                class="font-semibold min-w-10 text-sm py-0.5 text-center w-10 h-10 text-gray-900 rounded-lg flex items-center justify-center"
+                [class]="
                 isItemBeingEdited(item)
                   ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
-                  : 'bg-white border border-gray-200 shadow-sm'
+                  : 'bg-white border border-gray-200 shadow-xs'
               "
-                    (click)="onSelectItem(item.idMeal)"
-                    data-edit-button
-                    title="Click to edit quantity"
-                  >
-                    {{ getDisplayQuantity(item) }}
-                  </button>
+                (click)="onSelectItem(item.idMeal)"
+                data-edit-button
+                title="Click to edit quantity"
+              >
+                {{ getDisplayQuantity(item) }}
+              </button>
 
-                  <!-- Increase Button -->
-                  <button
-                    (click)="onIncreaseQuantity(item.idMeal, $event)"
-                    [disabled]="item.quantity >= 99.9"
-                    [class.opacity-25]="item.quantity >= 99.9"
-                    [class.cursor-not-allowed]="item.quantity >= 99.9"
-                    title="Increase quantity"
-                    class="w-7 h-7 bg-white text-gray-900 rounded-md flex items-center justify-center border border-gray-200 shadow-sm"
-                  >
-                    <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
-                  </button>
-                </div>
-                <!-- Remove Button -->
-                <button
-                  class="bg-red-400 text-white w-7 h-7 flex items-center justify-center rounded-md border border-gray-200 shadow-sm"
-                  (click)="onRemoveItem(item.idMeal, $event)"
-                  title="Remove item"
-                >
-                  <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
-                </button>
-              </div>
+              <!-- Increase Button -->
+              <button
+                (click)="onIncreaseQuantity(item.idMeal, $event)"
+                [disabled]="item.quantity >= 99.9"
+                [class.opacity-25]="item.quantity >= 99.9"
+                [class.cursor-not-allowed]="item.quantity >= 99.9"
+                title="Increase quantity"
+                class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+              >
+                <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
+              </button>
             </div>
+            <!-- Remove Button -->
+            <button
+              class="bg-red-400 text-white w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 shadow-xs"
+              (click)="onRemoveItem(item.idMeal, $event)"
+              title="Remove item"
+            >
+              <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
+            </button>
           </div>
         </div>
       </div>
@@ -132,7 +126,7 @@
 
     <div class="flex justify-between items-center gap-1.5">
       <button
-        class="w-full py-2 rounded-lg font-medium shadow-sm"
+        class="w-full py-2 rounded-lg font-medium shadow-xs"
         [class]="
           canAddToCart()
             ? ' bg-green-500 text-white'
@@ -144,7 +138,7 @@
         {{ canAddToCart() ? "Save Order" : "Setup Required" }}
       </button>
       <button
-        class="w-full bg-white py-2 rounded-lg font-medium shadow-sm"
+        class="w-full bg-white py-2 rounded-lg font-medium shadow-xs"
         (click)="onPay()"
       >
         Pay Now

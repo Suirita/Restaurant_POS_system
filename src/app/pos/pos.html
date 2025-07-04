@@ -17,18 +17,14 @@
     (pay)="pay($event)"
   ></app-all-receipts-modal>
 
-  
+
 
   <!-- Main POS Interface -->
   <div class="h-full flex flex-col">
     <!-- Main Content -->
-    <div class="flex flex-1 min-h-0 flex-col lg:flex-row">
+    <div class="flex flex-1 min-h-0">
       <!-- Menu Section -->
-      <div
-        class="flex flex-col min-h-0 lg:min-h-full transition-all duration-300 ease-out"
-        [style.height.%]="isMobile() ? menuHeight() : null"
-        [class]="isMobile() ? 'flex-none' : 'flex-1 lg:w-2/3'"
-      >
+      <div class="flex flex-col flex-1 min-h-0 w-2/3">
         <!-- Category Navigation -->
         <app-category-nav
           [categories]="categoriesWithImages()"
@@ -42,31 +38,21 @@
           [cart]="cart()"
           [loading]="loading()"
           [canAddToCart]="canAddToCart()"
-      [orderType]="orderType()"
-      [selectedCartItemId]="selectedCartItemId()"
-      [tempQuantity]="tempQuantity()"
-      (mealSelected)="onMealSelected($event)"
-      (quantityIncreased)="onQuantityIncreased($event)"
-      (quantityDecreased)="onQuantityDecreased($event)"
-      (showAllReceipts)="showAllReceiptsModal()"
-      (logout)="logout()"
-      (itemSelected)="onCartItemSelected($event)"
-    ></app-menu-grid>
-      </div>
-
-      <!-- Resize Handle (Mobile Only) -->
-      <div
-        class="lg:hidden relative bg-gray-400 cursor-row-resize flex items-center justify-center hover:bg-gray-500 transition-colors duration-200 active:bg-gray-600 z-10"
-        style="height: 12px; touch-action: none; min-height: 12px"
-        (mousedown)="startResize($event)"
-        (touchstart)="startResize($event)"
-      >
-        <div class="w-16 h-1.5 bg-gray-600 rounded-full"></div>
+          [orderType]="orderType()"
+          [selectedCartItemId]="selectedCartItemId()"
+          [tempQuantity]="tempQuantity()"
+          (mealSelected)="onMealSelected($event)"
+          (quantityIncreased)="onQuantityIncreased($event)"
+          (quantityDecreased)="onQuantityDecreased($event)"
+          (showAllReceipts)="showAllReceiptsModal()"
+          (logout)="logout()"
+          (itemSelected)="onCartItemSelected($event)"
+        ></app-menu-grid>
       </div>
 
       <!-- Right Sidebar (Cart Section) -->
       <div
-        class="w-[400px] bg-white m-2 ml-0 rounded-2xl border-t-0 border-l border-gray-200 flex flex-col shadow-2xl shadow-gray-400 order-none transition-all duration-300 ease-out"
+        class="w-full sm:w-[500px] md:w-[550px] lg:w-[600px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500"
       >
         <!-- Cart Items -->
         <div class="flex-1 min-h-0 flex flex-col">
@@ -90,8 +76,6 @@
             (pay)="onPay()"
           ></app-cart>
         </div>
-
-        
 
         <!-- Calculator -->
         <div class="flex-shrink-0 p-3">

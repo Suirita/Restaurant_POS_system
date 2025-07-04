@@ -45,7 +45,7 @@ export class PosComponent implements OnInit {
   currentUser = signal<UserAccount | null>(null);
 
   // Maximum meals to display
-  private readonly MAX_MEALS = 18;
+  private readonly MAX_MEALS = 24;
 
   // Category images mapping with actual food images
   private categoryImages: { [key: string]: string } = {
@@ -104,10 +104,6 @@ export class PosComponent implements OnInit {
   // Order counter for receipt numbers
   private orderCounter = 1;
 
-  // Responsive design signals
-  isResizing = signal(false);
-  menuHeight = signal(60);
-  isMobile = signal(false);
   isEditing = signal(false);
 
   // ... all your existing computed properties remain the same ...
@@ -148,10 +144,7 @@ export class PosComponent implements OnInit {
     return Boolean(this.selectedCartItemId());
   });
 
-  cartHeight = computed(() => 100 - this.menuHeight());
-
   constructor() {
-    this.checkMobile();
     this.isEditing.set(false);
   }
 
@@ -628,61 +621,6 @@ export class PosComponent implements OnInit {
       this.tableErrorMessage.set(null);
       this.isEditing.set(true);
     }
-  }
-
-  // Responsive design methods
-  @HostListener('window:resize')
-  onWindowResize() {
-    this.checkMobile();
-  }
-
-  @HostListener('window:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent) {
-    if (this.isResizing() && this.isMobile()) {
-      this.handleResize(event.clientY);
-    }
-  }
-
-  @HostListener('window:touchmove', ['$event'])
-  onTouchMove(event: TouchEvent) {
-    if (this.isResizing() && this.isMobile()) {
-      event.preventDefault();
-      const touch = event.touches[0];
-      this.handleResize(touch.clientY);
-    }
-  }
-
-  @HostListener('window:mouseup')
-  @HostListener('window:touchend')
-  onResizeEnd() {
-    this.isResizing.set(false);
-    document.body.style.userSelect = '';
-    document.body.style.cursor = '';
-  }
-
-  checkMobile() {
-    this.isMobile.set(window.innerWidth < 1024);
-  }
-
-  startResize(event: MouseEvent | TouchEvent) {
-    if (!this.isMobile()) return;
-
-    event.preventDefault();
-    this.isResizing.set(true);
-    document.body.style.userSelect = 'none';
-    document.body.style.cursor = 'row-resize';
-  }
-
-  handleResize(clientY: number) {
-    const container = document.querySelector('.h-screen');
-    if (!container) return;
-
-    const containerRect = container.getBoundingClientRect();
-    const relativeY = clientY - containerRect.top;
-    const percentage = (relativeY / containerRect.height) * 100;
-
-    const constrainedPercentage = Math.min(Math.max(percentage, 20), 80);
-    this.menuHeight.set(constrainedPercentage);
   }
 
   showAllReceiptsModal() {

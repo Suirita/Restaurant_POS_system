@@ -2,15 +2,15 @@
   <div class="flex gap-2 overflow-x-auto scrollbar-hide px-4 py-2">
     <button
       *ngFor="let category of categories()"
-      class="bg-white text-gray-900 flex flex-col items-center p-1 rounded-md hover:shadow hover:cursor-pointer flex-shrink-0 min-w-[80px] sm:min-w-[100px]"
+      class="bg-white text-gray-900 flex flex-col items-center p-1 rounded-md border border-gray-200 shadow-sm flex-shrink-0 min-w-[60px] sm:min-w-[80px]"
       [class]="
         selectedCategory() === category.name
-          ? 'shadow-sm scale-105'
-          : 'hover:shadow-xs'
+          ? 'shadow-lg scale-105'
+          : ''
       "
       (click)="onCategorySelect(category.name)"
     >
-      <div class="w-full h-16 rounded-md overflow-hidden mb-1 shadow-xs">
+      <div class="w-full h-12 rounded-md overflow-hidden mb-1 shadow-xs">
         <img
           [src]="category.image"
           [alt]="category.name"

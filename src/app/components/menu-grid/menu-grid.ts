@@ -28,6 +28,10 @@ export class MenuGridComponent {
   logout = output<void>();
   itemSelected = output<string>();
 
+  getSkeletonArray(count: number): number[] {
+    return Array.from({ length: count }, (_, i) => i + 1);
+  }
+
   onMealSelect(meal: Meal) {
     if (this.canAddToCart()) {
       this.mealSelected.emit(meal);

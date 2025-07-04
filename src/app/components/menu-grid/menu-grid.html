@@ -2,31 +2,34 @@
   <!-- Loading State -->
   <div *ngIf="loading()" class="grid grid-cols-6 grid-rows-3 gap-2">
     <div
-      *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+      *ngFor="let item of getSkeletonArray(24)"
       class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
     >
-      <div class="p-2 space-y-2">
-        <div class="bg-gray-200 h-24 rounded-lg"></div>
-        <div class="bg-gray-200 h-4 rounded-sm mb-0.5"></div>
+      <div class="p-1">
+        <div class="bg-gray-200 h-20 rounded-lg mb-1.5"></div>
+        <div class="bg-gray-200 h-3 rounded-sm mb-0.5"></div>
         <div class="bg-gray-200 h-8 rounded-sm mb-1"></div>
       </div>
     </div>
   </div>
 
   <!-- Menu Items Grid -->
-  <div *ngIf="!loading()" class="grid grid-cols-6 grid-rows-3 gap-2">
+  <div
+    *ngIf="!loading()"
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2"
+  >
     <div
       *ngFor="let meal of meals()"
-      class="bg-white rounded-lg shadow-sm transition-all duration-300 cursor-pointer overflow-hidden p-1"
+      class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden p-1"
       [class.opacity-50]="!canAddToCart()"
       [class.cursor-not-allowed]="!canAddToCart()"
     >
       <div (click)="onMealSelect(meal)">
-        <div class="relative overflow-hidden rounded-lg shadow-xs">
+        <div class="relative overflow-hidden rounded-lg border border-gray-200 shadow-xs">
           <img
             [src]="meal.strMealThumb || '/placeholder.svg'"
             [alt]="meal.strMeal"
-            class="w-full h-24 rounded-lg object-cover"
+            class="w-full h-20 rounded-lg object-cover"
             loading="lazy"
           />
           <div
@@ -40,7 +43,7 @@
         </div>
         <div class="pt-1 px-1">
           <h3
-            class="text-md font-medium leading-tight text-gray-900 line-clamp-1"
+            class="text-sm font-medium leading-tight text-gray-900 line-clamp-1"
           >
             {{ meal.strMeal }}
           </h3>
