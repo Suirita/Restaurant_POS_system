@@ -1,6 +1,6 @@
-<div class="flex-1 px-2 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide">
+<div class="flex-1 p-2 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide">
   <!-- Loading State -->
-  <div *ngIf="loading()" class="grid grid-cols-6 grid-rows-3 gap-2">
+  <div *ngIf="loading()" class="grid grid-cols-5 grid-rows-3 gap-2">
     <div
       *ngFor="let item of getSkeletonArray(24)"
       class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
@@ -16,7 +16,7 @@
   <!-- Menu Items Grid -->
   <div
     *ngIf="!loading()"
-    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
   >
     <div
       *ngFor="let meal of meals()"
@@ -89,9 +89,7 @@
           </div>
         </ng-container>
         <ng-template #addToCartButton>
-          <span class="text-gray-500">
-            ${{ meal.price }}
-          </span>
+          <span class="text-gray-500"> ${{ meal.price }} </span>
           <div class="mt-1">
             <button
               (click)="onMealSelect(meal)"
@@ -105,7 +103,8 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-6 gap-4 mt-3 mb-1">
+  <!-- Actions -->
+  <div class="grid grid-cols-6 gap-4 mt-4 mb-1">
     <button
       (click)="onShowAllReceipts()"
       class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
