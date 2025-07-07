@@ -53,8 +53,13 @@ export class LoginComponent {
   }
 
   onNumberClick(num: string) {
+    if (this.password().length >= 4) return;
     this.password.set(this.password() + num);
     this.loginError.set(''); // Clear error on new input
+
+    if (this.password().length === 4) {
+      this.onLogin();
+    }
   }
 
   onClearClick() {
