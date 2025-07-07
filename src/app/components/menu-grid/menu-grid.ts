@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Meal, CartItem } from '../../types/pos.types';
-import { LucideAngularModule, Plus, Minus } from 'lucide-angular';
+import { LucideAngularModule, Plus, Minus, Receipt, LogOut } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -12,6 +12,8 @@ import { LucideAngularModule, Plus, Minus } from 'lucide-angular';
 export class MenuGridComponent {
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
+  readonly ReceiptIcon = Receipt;
+  readonly LogOutIcon = LogOut;
 
   meals = input.required<Meal[]>();
   cart = input.required<CartItem[]>();

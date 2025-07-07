@@ -27,7 +27,6 @@
       0
     </button>
 
-    <!-- Conditional button: Decimal for quantity mode, Confirm for table mode -->
     <button *ngIf="isQuantityMode()" (click)="onAddDecimal()" [disabled]="disabled() || displayValue().includes('.')"
       class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors"
       [class.opacity-50]="displayValue().includes('.')" [class.cursor-not-allowed]="displayValue().includes('.')">

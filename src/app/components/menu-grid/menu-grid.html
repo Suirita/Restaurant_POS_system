@@ -1,4 +1,4 @@
-<div class="flex-1 p-2 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide">
+<div class="flex-1 px-2 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide">
   <!-- Loading State -->
   <div *ngIf="loading()" class="grid grid-cols-6 grid-rows-3 gap-2">
     <div
@@ -7,7 +7,7 @@
     >
       <div class="p-1">
         <div class="bg-gray-200 h-20 rounded-lg mb-1.5"></div>
-        <div class="bg-gray-200 h-3 rounded-sm mb-0.5"></div>
+        <div class="bg-gray-200 h-4 rounded-sm mb-1"></div>
         <div class="bg-gray-200 h-8 rounded-sm mb-1"></div>
       </div>
     </div>
@@ -16,7 +16,7 @@
   <!-- Menu Items Grid -->
   <div
     *ngIf="!loading()"
-    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2"
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"
   >
     <div
       *ngFor="let meal of meals()"
@@ -25,11 +25,13 @@
       [class.cursor-not-allowed]="!canAddToCart()"
     >
       <div (click)="onMealSelect(meal)">
-        <div class="relative overflow-hidden rounded-lg border border-gray-200 shadow-xs">
+        <div
+          class="relative overflow-hidden rounded-lg border border-gray-200 shadow-xs"
+        >
           <img
             [src]="meal.strMealThumb || '/placeholder.svg'"
             [alt]="meal.strMeal"
-            class="w-full h-20 rounded-lg object-cover"
+            class="w-full h-26 rounded-lg object-cover"
             loading="lazy"
           />
           <div
@@ -53,12 +55,9 @@
         <ng-container
           *ngIf="getCartItem(meal.idMeal) as cartItem; else addToCartButton"
         >
-          <div class="flex items-center justify-between w-full">
+          <div class="flex items-center justify-between w-full pt-1">
             <button
               (click)="onDecreaseQuantity(meal.idMeal, $event)"
-              [disabled]="cartItem.quantity <= 1"
-              [class.opacity-25]="cartItem.quantity <= 1"
-              [class.cursor-not-allowed]="cartItem.quantity <= 1"
               title="Decrease quantity"
               class="w-8 h-8 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
             >
@@ -90,31 +89,35 @@
           </div>
         </ng-container>
         <ng-template #addToCartButton>
-          <span class="text-sm font-medium text-gray-500">
+          <span class="text-gray-500">
             ${{ meal.price }}
           </span>
-          <button
-            (click)="onMealSelect(meal)"
-            class="bg-gray-900 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-xs"
-          >
-            <i-lucide [img]="PlusIcon" [size]="16"></i-lucide>
-          </button>
+          <div class="mt-1">
+            <button
+              (click)="onMealSelect(meal)"
+              class="bg-black text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-xs"
+            >
+              <i-lucide [img]="PlusIcon" [size]="16"></i-lucide>
+            </button>
+          </div>
         </ng-template>
       </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-5 gap-4 mt-4">
+  <div class="grid grid-cols-6 gap-4 mt-3 mb-1">
     <button
       (click)="onShowAllReceipts()"
-      class="bg-emerald-600 text-white p-4 rounded-lg text-sm font-medium cursor-pointer"
+      class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
+      <i-lucide [img]="ReceiptIcon" [size]="16"></i-lucide>
       All Receipts
     </button>
     <button
       (click)="onLogout()"
-      class="bg-red-500 text-white p-4 rounded-lg text-sm font-medium cursor-pointer"
+      class="flex justify-center items-center gap-2 bg-red-400 text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
+      <i-lucide [img]="LogOutIcon" [size]="16"></i-lucide>
       Logout
     </button>
   </div>

@@ -63,9 +63,6 @@
               <!-- Decrease Button -->
               <button
                 (click)="onDecreaseQuantity(item.idMeal, $event)"
-                [disabled]="item.quantity <= 1"
-                [class.opacity-25]="item.quantity <= 1"
-                [class.cursor-not-allowed]="item.quantity <= 1"
                 title="Decrease quantity"
                 class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
@@ -90,9 +87,9 @@
               <!-- Increase Button -->
               <button
                 (click)="onIncreaseQuantity(item.idMeal, $event)"
-                [disabled]="item.quantity >= 99.9"
-                [class.opacity-25]="item.quantity >= 99.9"
-                [class.cursor-not-allowed]="item.quantity >= 99.9"
+                [disabled]="item.quantity >= 100"
+                [class.opacity-25]="item.quantity >= 100"
+                [class.cursor-not-allowed]="item.quantity >= 100"
                 title="Increase quantity"
                 class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >

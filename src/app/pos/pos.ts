@@ -45,11 +45,11 @@ export class PosComponent implements OnInit {
   currentUser = signal<UserAccount | null>(null);
 
   // Maximum meals to display
-  private readonly MAX_MEALS = 24;
+  private readonly MAX_MEALS = 15;
 
   // Category images mapping with actual food images
   private categoryImages: { [key: string]: string } = {
-    Beef: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=100&h=100&fit=crop&crop=center',
+    Beef: 'https://images.unsplash.com/photo-1690983330536-3b0089d07cf9?w=100&h=100&fit=crop&crop=center',
     Chicken:
       'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=100&h=100&fit=crop&crop=center',
     Dessert:
@@ -108,8 +108,6 @@ export class PosComponent implements OnInit {
   lastOrderContext = signal<
     'take away' | 'occupied_table' | 'unoccupied_table' | null
   >(null);
-
-  // ... all your existing computed properties remain the same ...
 
   // Computed properties
   categoriesWithImages = computed(() => {
@@ -173,7 +171,7 @@ export class PosComponent implements OnInit {
     this.currentUser.set(null);
     this.isLoggedIn.set(false);
     this.clearCart(); // Clear cart on logout
-    this.finishEditing(); // Finish any editing
+    this.finishEditing(false); // Finish any editing
     this.isEditing.set(false);
 
     // Reset table state
@@ -207,18 +205,18 @@ export class PosComponent implements OnInit {
     }
 
     // Finish editing for any other click
-    this.finishEditing();
+    this.finishEditing(true);
   }
 
   // Event handlers for child components
   onCategorySelected(category: string) {
-    this.finishEditing(); // Finish editing when changing category
+    this.finishEditing(true); // Finish editing when changing category
     this.selectedCategory.set(category);
     this.loadMeals();
   }
 
   onMealSelected(meal: Meal) {
-    this.finishEditing(); // Finish editing when adding new item
+    this.finishEditing(true); // Finish editing when adding new item
     this.addToCart(meal);
   }
 
@@ -231,37 +229,40 @@ export class PosComponent implements OnInit {
   onCartItemRemoved(itemId: string) {
     // If removing the item being edited, finish editing
     if (this.selectedCartItemId() === itemId) {
-      this.finishEditing();
+      this.finishEditing(false);
     }
     this.removeFromCart(itemId);
   }
 
   onQuantityIncreased(itemId: string) {
-    this.finishEditing(); // Finish editing when using +/- buttons
+    this.finishEditing(true); // Finish editing when using +/- buttons
     this.increaseQuantity(itemId);
   }
 
   onQuantityDecreased(itemId: string) {
-    this.finishEditing(); // Finish editing when using +/- buttons
+    this.finishEditing(true); // Finish editing when using +/- buttons
     this.decreaseQuantity(itemId);
   }
 
   onCartCleared() {
-    this.finishEditing(); // Finish editing when clearing cart
+    this.finishEditing(false); // Finish editing when clearing cart
     this.clearCart();
   }
 
   onOrderCompleted() {
-    this.finishEditing(); // Finish editing when completing order
+    this.finishEditing(false); // Finish editing when completing order
     this.completeOrder();
   }
 
   onTakeAwaySelected() {
     // Check if there's an existing unpaid 'Take away' receipt
-    const existingTakeAwayReceipt = this.receiptService.getReceiptByTable('Take away');
+    const existingTakeAwayReceipt =
+      this.receiptService.getReceiptByTable('Take away');
 
     if (existingTakeAwayReceipt) {
-      alert('There is an outstanding Take Away order. Please complete or pay it first.');
+      alert(
+        'There is an outstanding Take Away order. Please complete or pay it first.'
+      );
       return;
     }
 
@@ -270,13 +271,13 @@ export class PosComponent implements OnInit {
       alert('Please complete the current take away order first.');
       return;
     }
-    this.finishEditing(); // Finish editing when changing service type
+    this.finishEditing(false); // Finish editing when changing service type
     this.selectTakeAway();
     this.isEditing.set(false);
   }
 
   onTableTypeSelected() {
-    this.finishEditing(); // Finish editing when changing service type
+    this.finishEditing(false); // Finish editing when changing service type
     this.orderType.set('table');
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
@@ -310,8 +311,11 @@ export class PosComponent implements OnInit {
   });
 
   // Method to finish editing
-  private finishEditing() {
+  private finishEditing(applyChanges: boolean) {
     if (this.selectedCartItemId()) {
+      if (applyChanges) {
+        this.autoApplyQuantityChange();
+      }
       this.selectedCartItemId.set(null);
       this.tempQuantity.set('');
     }
@@ -392,7 +396,16 @@ export class PosComponent implements OnInit {
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
-      const newQuantity = Math.min(99.9, updatedCart[itemIndex].quantity + 1);
+      const currentQuantity = updatedCart[itemIndex].quantity;
+      let newQuantity: number;
+
+      if (currentQuantity === 0.5) {
+        newQuantity = currentQuantity + 0.5;
+      } else {
+        newQuantity = currentQuantity + 1;
+      }
+
+      newQuantity = Math.min(100, newQuantity);
       updatedCart[itemIndex].quantity = Math.round(newQuantity * 100) / 100;
       this.cart.set(updatedCart);
     }
@@ -406,12 +419,12 @@ export class PosComponent implements OnInit {
       const updatedCart = [...currentCart];
       const currentQuantity = updatedCart[itemIndex].quantity;
 
-      if (currentQuantity <= 0.1) {
+      if (currentQuantity <= 0.5) {
         // If current quantity is already at or below the minimum, remove the item
         this.removeFromCart(id);
       } else {
         // Otherwise, decrease quantity, ensuring it doesn't go below 0.1
-        const newQuantity = Math.max(0.1, currentQuantity - 1);
+        const newQuantity = Math.max(0.5, currentQuantity - 1);
         updatedCart[itemIndex].quantity = Math.round(newQuantity * 10) / 10;
         this.cart.set(updatedCart);
       }
@@ -513,7 +526,7 @@ export class PosComponent implements OnInit {
     if (this.selectedCartItemId() && this.tempQuantity()) {
       const quantity = parseFloat(this.tempQuantity());
       if (!isNaN(quantity) && quantity > 0) {
-        const validQuantity = Math.max(0.1, Math.min(99.99, quantity));
+        const validQuantity = Math.max(0.1, Math.min(100, quantity));
         this.updateQuantity(this.selectedCartItemId()!, validQuantity);
       }
     }
@@ -536,7 +549,7 @@ export class PosComponent implements OnInit {
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
-      const validQuantity = Math.max(0.1, Math.min(99.9, newQuantity));
+      const validQuantity = Math.max(0.1, Math.min(100, newQuantity));
       updatedCart[itemIndex].quantity = Math.round(validQuantity * 10) / 10;
       this.cart.set(updatedCart);
     }
@@ -563,7 +576,10 @@ export class PosComponent implements OnInit {
     // For 'table' orders, check for an existing receipt to update.
     if (this.orderType() === 'take away') {
       // If there's a current receipt and it's a 'Take away' receipt, update it
-      if (this.currentReceipt() && this.currentReceipt()!.tableName === 'Take away') {
+      if (
+        this.currentReceipt() &&
+        this.currentReceipt()!.tableName === 'Take away'
+      ) {
         const updatedReceipt = { ...this.currentReceipt()! };
         updatedReceipt.items = [...this.cart()];
         updatedReceipt.total = total;
@@ -581,7 +597,8 @@ export class PosComponent implements OnInit {
         };
         this.receiptService.saveReceipt(receipt);
       }
-    } else { // 'table' order
+    } else {
+      // 'table' order
       const existingReceipt = this.receiptService.getReceiptByTable(tableName);
 
       if (existingReceipt) {
@@ -744,7 +761,7 @@ export class PosComponent implements OnInit {
 
     // Clear the cart and reset the UI for the next order
     this.clearCart();
-    this.finishEditing();
+    this.finishEditing(false);
     this.orderType.set('table');
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
