@@ -1,12 +1,42 @@
 <!-- Login Screen -->
 <app-login
-  *ngIf="!isLoggedIn()"
+  *ngIf="currentView() === 'login'"
   (loginSuccess)="onLoginSuccess($event)"
 ></app-login>
 
-<!-- Main POS System (only show when logged in) -->
+<!-- Direction Navigation -->
 <div
-  *ngIf="isLoggedIn()"
+  *ngIf="currentView() === 'direction-nav'"
+  class="flex items-center justify-center h-screen bg-gray-100"
+>
+  <div class="text-center">
+    <h1 class="text-3xl font-bold mb-8">Welcome, Direction!</h1>
+    <div class="space-x-4">
+      <button
+        (click)="navigateTo('application')"
+        class="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
+      >
+        Application
+      </button>
+      <button
+        (click)="navigateTo('settings')"
+        class="px-6 py-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors"
+      >
+        Settings
+      </button>
+      <button
+        (click)="navigateTo('reports')"
+        class="px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors"
+      >
+        Reports
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main POS System (only show when logged in and view is main-app) -->
+<div
+  *ngIf="currentView() === 'main-app'"
   class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden"
 >
   <!-- All Receipts Modal -->
@@ -17,8 +47,6 @@
     (pay)="pay($event)"
     (receiptSelected)="onReceiptSelectedFromModal($event)"
   ></app-all-receipts-modal>
-
-
 
   <!-- Main POS Interface -->
   <div class="h-full flex flex-col" [class.blur-xs]="showAllReceipts()">

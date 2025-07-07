@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { MealService, type Meal } from '../meal.service';
 import { CartItem, Receipt, UserAccount, Table } from '../types/pos.types';
 import { ReceiptService } from '../receipt.service';
+import { Router } from '@angular/router';
 
 // Import all child components
 import { LoginComponent } from '../components/login/login';
@@ -39,10 +40,13 @@ export class PosComponent implements OnInit {
   private mealService = inject(MealService);
   private receiptService = inject(ReceiptService);
   private elementRef = inject(ElementRef);
+  private router = inject(Router);
 
   // Authentication state
   isLoggedIn = signal<boolean>(false);
   currentUser = signal<UserAccount | null>(null);
+  userRole = signal<string>('');
+  currentView = signal<string>('login');
 
   // Maximum meals to display
   private readonly MAX_MEALS = 24;
@@ -160,16 +164,25 @@ export class PosComponent implements OnInit {
   onLoginSuccess(user: UserAccount) {
     this.currentUser.set(user);
     this.isLoggedIn.set(true);
-    this.loadCategories(); // Load data after successful login
-    this.isEditing.set(true);
-    this.syncTablesWithReceipts();
-    this.lastOrderContext.set(null); // Initialize on login
+    this.userRole.set(user.roleName);
+
+    if (user.roleName === 'Direction') {
+      this.currentView.set('direction-nav');
+    } else {
+      this.currentView.set('main-app');
+      this.loadCategories();
+      this.isEditing.set(true);
+      this.syncTablesWithReceipts();
+      this.lastOrderContext.set(null); // Initialize on login
+    }
   }
 
   // Logout method
   logout() {
     this.currentUser.set(null);
     this.isLoggedIn.set(false);
+    this.userRole.set('');
+    this.currentView.set('login');
     this.clearCart(); // Clear cart on logout
     this.finishEditing(false); // Finish any editing
     this.isEditing.set(false);
@@ -179,6 +192,23 @@ export class PosComponent implements OnInit {
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
     this.tableErrorMessage.set(null);
+  }
+
+  // Navigation for Direction role
+  navigateTo(view: string) {
+    if (this.userRole() === 'Direction') {
+      if (view === 'application') {
+        this.currentView.set('main-app');
+        this.loadCategories();
+        this.isEditing.set(true);
+        this.syncTablesWithReceipts();
+        this.lastOrderContext.set(null); // Initialize on login
+      } else if (view === 'settings') {
+        this.router.navigate(['/settings']);
+      } else if (view === 'reports') {
+        this.router.navigate(['/reports']);
+      }
+    }
   }
 
   // ... rest of your existing methods remain exactly the same ...
