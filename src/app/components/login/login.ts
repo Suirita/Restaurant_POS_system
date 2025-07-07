@@ -1,8 +1,25 @@
-import { Component, EventEmitter, Output, signal, computed } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  signal,
+  computed,
+  inject,
+} from '@angular/core';
 import type { UserAccount } from '../../types/pos.types';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Lock, EyeOff, Eye, User, ChevronLeft } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  Lock,
+  EyeOff,
+  Eye,
+  User,
+  ChevronLeft,
+} from 'lucide-angular';
+import { LoginService } from '../../login.service';
+import { catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -18,11 +35,7 @@ export class LoginComponent {
   readonly BackspaceIcon = ChevronLeft;
 
   @Output() loginSuccess = new EventEmitter<UserAccount>();
-  userAccounts: UserAccount[] = [
-    { userId: '1', username: 'user1', password: '1' },
-    { userId: '2', username: 'user2', password: '2' },
-    { userId: '3', username: 'user3', password: '3' },
-  ];
+  private loginService = inject(LoginService);
 
   password = signal<string>('');
   showPassword = signal<boolean>(false);
@@ -30,7 +43,9 @@ export class LoginComponent {
   isLoading = signal<boolean>(false);
 
   passwordDisplay = computed(() => {
-    return this.showPassword() ? this.password() : '* '.repeat(this.password().length);
+    return this.showPassword()
+      ? this.password()
+      : '* '.repeat(this.password().length);
   });
 
   togglePasswordVisibility() {
@@ -61,21 +76,26 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.loginError.set('');
 
-    // Simulate login delay
-    setTimeout(() => {
-      const user = this.userAccounts.find(
-        (u) => u.password === this.password()
-      );
+    const body = {
+      userName: this.password(),
+      password: 'demodemo',
+    };
 
-      if (user) {
-        this.loginSuccess.emit(user);
-      } else {
-        this.loginError.set('Invalid password. Please try again.');
-        this.password.set('');
-      }
-
-      this.isLoading.set(false);
-    }, 1000);
+    this.loginService
+      .login(body)
+      .pipe(
+        tap((userAccount) => {
+          this.loginSuccess.emit(userAccount);
+          this.isLoading.set(false);
+        }),
+        catchError((error) => {
+          this.loginError.set('Invalid password. Please try again.');
+          this.password.set('');
+          this.isLoading.set(false);
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   onPasswordKeyPress(event: KeyboardEvent) {

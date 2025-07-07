@@ -30,7 +30,9 @@ export interface Receipt {
 export interface UserAccount {
   userId: string;
   username: string;
-  password: string;
+  token: string;
+  fullName: string;
+  roleName: string;
 }
 
 export interface Table {
