@@ -45,7 +45,7 @@ export class PosComponent implements OnInit {
   currentUser = signal<UserAccount | null>(null);
 
   // Maximum meals to display
-  private readonly MAX_MEALS = 15;
+  private readonly MAX_MEALS = 24;
 
   // Category images mapping with actual food images
   private categoryImages: { [key: string]: string } = {
