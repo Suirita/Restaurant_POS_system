@@ -255,17 +255,6 @@ export class PosComponent implements OnInit {
   }
 
   onTakeAwaySelected() {
-    // Check if there's an existing unpaid 'Take away' receipt
-    const existingTakeAwayReceipt =
-      this.receiptService.getReceiptByTable('Take away');
-
-    if (existingTakeAwayReceipt) {
-      alert(
-        'There is an outstanding Take Away order. Please complete or pay it first.'
-      );
-      return;
-    }
-
     // If already on a take away order with items, prevent starting a new one
     if (this.orderType() === 'take away' && this.cart().length > 0) {
       alert('Please complete the current take away order first.');
@@ -274,6 +263,7 @@ export class PosComponent implements OnInit {
     this.finishEditing(false); // Finish editing when changing service type
     this.selectTakeAway();
     this.isEditing.set(false);
+    this.clearCart();
   }
 
   onTableTypeSelected() {
@@ -570,33 +560,23 @@ export class PosComponent implements OnInit {
 
     const total = this.total();
     const tableName =
-      this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
+      this.orderType() === 'take away'
+        ? `Take away #${this.receiptService.getAllReceipts().filter(r => r.tableName.startsWith('Take away')).length + 1}`
+        : 'T' + this.tableNumber();
 
     // Always create a new receipt for 'take away' orders.
     // For 'table' orders, check for an existing receipt to update.
     if (this.orderType() === 'take away') {
-      // If there's a current receipt and it's a 'Take away' receipt, update it
-      if (
-        this.currentReceipt() &&
-        this.currentReceipt()!.tableName === 'Take away'
-      ) {
-        const updatedReceipt = { ...this.currentReceipt()! };
-        updatedReceipt.items = [...this.cart()];
-        updatedReceipt.total = total;
-        this.receiptService.updateReceipt(updatedReceipt);
-      } else {
-        // Otherwise, create a new 'Take away' receipt
-        const receipt: Receipt = {
-          orderNumber: this.generateOrderNumber(),
-          tableName: tableName,
-          items: [...this.cart()],
-          total: total,
-          date: new Date(),
-          paymentMethod: 'Cash',
-          userId: this.currentUser()!.userId,
-        };
-        this.receiptService.saveReceipt(receipt);
-      }
+      const receipt: Receipt = {
+        orderNumber: this.generateOrderNumber(),
+        tableName: tableName,
+        items: [...this.cart()],
+        total: total,
+        date: new Date(),
+        paymentMethod: 'Cash',
+        userId: this.currentUser()!.userId,
+      };
+      this.receiptService.saveReceipt(receipt);
     } else {
       // 'table' order
       const existingReceipt = this.receiptService.getReceiptByTable(tableName);
