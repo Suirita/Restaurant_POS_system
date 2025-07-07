@@ -53,7 +53,7 @@
             </p>
           </div>
           <button
-            (click)="onPayClick(receipt.orderNumber)"
+            (click)="onPayClick(receipt.orderNumber); $event.stopPropagation()"
             class="mt-3 w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200"
           >
             Pay

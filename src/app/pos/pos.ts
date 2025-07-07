@@ -560,9 +560,7 @@ export class PosComponent implements OnInit {
 
     const total = this.total();
     const tableName =
-      this.orderType() === 'take away'
-        ? `Take away #${this.receiptService.getAllReceipts().filter(r => r.tableName.startsWith('Take away')).length + 1}`
-        : 'T' + this.tableNumber();
+      this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
     // Always create a new receipt for 'take away' orders.
     // For 'table' orders, check for an existing receipt to update.
@@ -646,6 +644,10 @@ export class PosComponent implements OnInit {
   }
 
   pay(orderNumber: string) {
+    this.onPayFromModal(orderNumber);
+  }
+
+  onPayFromModal(orderNumber: string) {
     const currentUser = this.currentUser();
     if (!currentUser) return;
 
