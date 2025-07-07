@@ -380,7 +380,7 @@ export class PosComponent implements OnInit {
     const item = this.cart().find((item) => item.idMeal === itemId);
     if (item) {
       this.selectedCartItemId.set(itemId);
-      this.tempQuantity.set(item.quantity.toString());
+      this.tempQuantity.set(''); // Clear previous quantity
     }
   }
 
