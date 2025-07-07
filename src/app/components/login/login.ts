@@ -80,7 +80,6 @@ export class LoginComponent {
 
     this.isLoading.set(true);
     this.loginError.set('');
-
     const body = {
       userName: this.password(),
       password: 'demodemo',

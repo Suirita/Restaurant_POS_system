@@ -8,19 +8,25 @@ import { UserAccount } from './types/pos.types';
 })
 export class LoginService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://preprod-axiobat.foliatech.app/omicron/api/Account/login';
+  private apiUrl =
+    'https://preprod-axiobat.foliatech.app/omicron/api/Account/login';
 
-  login(credentials: { userName: string; password: string }): Observable<UserAccount> {
+  login(credentials: {
+    userName: string;
+    password: string;
+  }): Observable<UserAccount> {
     return this.http.post<any>(this.apiUrl, credentials).pipe(
-      map(response => {
+      map((response) => {
         if (response && response.value && response.value.token) {
-          const tokenPayload = JSON.parse(atob(response.value.token.split('.')[1]));
+          const tokenPayload = JSON.parse(
+            atob(response.value.token.split('.')[1])
+          );
           return {
             userId: tokenPayload.userId,
             username: tokenPayload.userName,
             token: response.value.token,
             fullName: tokenPayload.fullName,
-            roleName: tokenPayload.roleName
+            roleName: tokenPayload.roleName,
           };
         } else {
           throw new Error('Invalid login response');
