@@ -53,29 +53,21 @@ export class PosComponent implements OnInit {
 
   // Category images mapping with actual food images
   private categoryImages: { [key: string]: string } = {
-    Beef: 'https://images.unsplash.com/photo-1690983330536-3b0089d07cf9?w=100&h=100&fit=crop&crop=center',
-    Chicken:
+    Bœuf: 'https://images.unsplash.com/photo-1690983330536-3b0089d07cf9?w=100&h=100&fit=crop&crop=center',
+    Poulet:
       'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=100&h=100&fit=crop&crop=center',
     Dessert:
       'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=100&h=100&fit=crop&crop=center',
-    Lamb: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop&crop=center',
-    Miscellaneous:
-      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=100&h=100&fit=crop&crop=center',
-    Pasta:
+    Agneau:
+      'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop&crop=center',
+    Pâtes:
       'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=100&h=100&fit=crop&crop=center',
-    Pork: 'https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=100&h=100&fit=crop&crop=center',
-    Seafood:
+    FruitdeMer:
       'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=100&h=100&fit=crop&crop=center',
-    Side: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center',
-    Starter:
-      'https://images.unsplash.com/photo-1541014741259-de529411b96a?w=100&h=100&fit=crop&crop=center',
-    Vegan:
+    Accompagnement:
+      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center',
+    Végétalien:
       'https://images.unsplash.com/photo-1484980972926-edee96e0960d?w=100&h=100&fit=crop&crop=center',
-    Vegetarian:
-      'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop&crop=center',
-    Breakfast:
-      'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=100&h=100&fit=crop&crop=center',
-    Goat: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop&crop=center',
   };
 
   // Order type and table management signals
@@ -347,14 +339,15 @@ export class PosComponent implements OnInit {
 
   // Core business logic methods
   private loadCategories() {
-    this.mealService.getCategories().subscribe((data) => {
-      const categoryList = data.categories.map((cat: any) => cat.strCategory);
-      this.categories.set(categoryList);
-      if (categoryList.length > 0) {
-        this.selectedCategory.set(categoryList[0]);
-      }
-      this.loadMeals();
-    });
+    this.mealService
+      .getCategories(this.currentUser()?.token)
+      .subscribe((data) => {
+        this.categories.set(data);
+        if (data.length > 0) {
+          this.selectedCategory.set(data[0]);
+        }
+        this.loadMeals();
+      });
   }
 
   private loadMeals() {

@@ -1,7 +1,7 @@
 <!-- Fixed height cart container -->
-<div class="flex flex-col h-full border-b border-gray-200">
+<div class="flex flex-col h-full border-b border-gray-200 rounded-t-2xl">
   <!-- Cart Header - Fixed at top -->
-  <div class="flex justify-between items-center px-2 py-2 border-b border-gray-200 shadow-sm">
+  <div class="flex justify-between items-center px-2 py-2 border-b rounded-t-2xl border-gray-200 shadow-sm">
     <div class="flex items-center gap-2">
       <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
       <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
@@ -113,7 +113,7 @@
   <!-- Cart Total & Actions -->
   <div
     *ngIf="cartItems().length > 0"
-    class="flex-shrink-0 p-3 border-t border-gray-200 bg-white"
+    class="flex-shrink-0 p-3 pt-1 border-t border-gray-200 bg-white"
   >
     <div class="flex justify-between items-center">
       <span class="text-lg font-medium text-gray-700">Total:</span>

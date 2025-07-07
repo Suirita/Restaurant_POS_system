@@ -37,7 +37,7 @@
 <!-- Main POS System (only show when logged in and view is main-app) -->
 <div
   *ngIf="currentView() === 'main-app'"
-  class="h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden"
+  class="h-screen bg-gradient-to-br bg-gray-100 relative overflow-hidden"
 >
   <!-- All Receipts Modal -->
   <app-all-receipts-modal
@@ -53,7 +53,7 @@
     <!-- Main Content -->
     <div class="flex flex-1 min-h-0">
       <!-- Menu Section -->
-      <div class="flex flex-col flex-1 min-h-0 w-2/3">
+      <div class="flex flex-col flex-1 min-h-full w-2/3">
         <!-- Category Navigation -->
         <app-category-nav
           [categories]="categoriesWithImages()"
@@ -81,7 +81,7 @@
 
       <!-- Right Sidebar (Cart Section) -->
       <div
-        class="w-full sm:w-[500px] md:w-[550px] lg:w-[600px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500 flex flex-col"
+        class="sm:w-[400px] md:w-[450px] lg:w-[450px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500 flex flex-col"
       >
         <!-- Cart Items -->
         <div class="flex-1 min-h-0 flex flex-col">
