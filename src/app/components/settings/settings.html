@@ -6,60 +6,58 @@
       <ul>
         <li class="mb-2">
           <button
-            (click)="selectSection('users')"
-            [class.bg-blue-500]="selectedSection() === 'users'"
+            [class.bg-black]="selectedSection() === 'users'"
             [class.text-white]="selectedSection() === 'users'"
-            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+            (click)="selectSection('users')"
           >
             Users
           </button>
         </li>
         <li class="mb-2">
           <button
-            (click)="selectSection('categories')"
-            [class.bg-blue-500]="selectedSection() === 'categories'"
+            [class.bg-black]="selectedSection() === 'categories'"
             [class.text-white]="selectedSection() === 'categories'"
-            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+            (click)="selectSection('categories')"
           >
             Categories
           </button>
         </li>
         <li class="mb-2">
           <button
-            (click)="selectSection('meals')"
-            [class.bg-blue-500]="selectedSection() === 'meals'"
+            [class.bg-black]="selectedSection() === 'meals'"
             [class.text-white]="selectedSection() === 'meals'"
-            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+            (click)="selectSection('meals')"
           >
             Meals
           </button>
         </li>
         <li class="mb-2">
           <button
-            (click)="selectSection('rooms')"
-            [class.bg-blue-500]="selectedSection() === 'rooms'"
+            [class.bg-black]="selectedSection() === 'rooms'"
             [class.text-white]="selectedSection() === 'rooms'"
-            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+            (click)="selectSection('rooms')"
           >
             Rooms
           </button>
         </li>
         <li class="mb-2">
           <button
-            (click)="selectSection('receipts')"
-            [class.bg-blue-500]="selectedSection() === 'receipts'"
+            [class.bg-black]="selectedSection() === 'receipts'"
             [class.text-white]="selectedSection() === 'receipts'"
-            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+            (click)="selectSection('receipts')"
           >
-            Receipts Numeration
+            Receipts
           </button>
         </li>
       </ul>
     </nav>
     <div class="mt-8 text-center">
-      <a routerLink="/pos" class="text-blue-500 hover:underline">
-        Go Back to POS
-      </a>
+      <a routerLink="/pos" class="text-black hover:underline">Back to POS</a>
     </div>
   </div>
 
