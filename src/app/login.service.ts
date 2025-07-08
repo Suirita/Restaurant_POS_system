@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { UserAccount } from './types/pos.types';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
   private http = inject(HttpClient);
-  private apiUrl =
-    'https://preprod-axiobat.foliatech.app/omicron/api/Account/login';
+  private apiUrl = `${environment.apiBaseUrl}/Account/login`;
 
   login(credentials: {
     userName: string;
