@@ -1,38 +1,3 @@
-run this api:"https://preprod-axiobat.foliatech.app/omicron/api/Product/Create"
- with this body:"
- {
-  "reference": "",
-  "description": "",
-  "designation": "",
-  "vat": 0,
-  "unite": "U",
-  "categoryId": "",
-  "labels": [],
-  "purchasePrice": 0,
-  "coefficient": 0,
-  "sellingPrice": 0,
-  "productCategoryType": {
-      "id": "Foliatech88",
-      "label": "Repas",
-      "description": "Repas",
-      "type": 13,
-      "id_html": "Repas"
-    },
-  "productCategoryTypeId": "Foliatech88",
-  "tauxMarge": 0,
-  "disableSellingPrice": false,
-  "totalHT": 20,
-  "totalTTC": "20.00",
-  "productSuppliers": []
-}"
-and this headers:'
-"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ1c2VyQGVtYWlsLmNvbSIsInVzZXJOYW1lIjoidXNlcjAxIiwidXNlcklkIjoiYjAxOWQwYmItY2Q5Ny00YTFlLTk3NzAtNDExYTJhMTMzMDAyIiwiZnVsbE5hbWUiOiJQcmVub21VU0VSIHVzZXIwMSIsInNvY2lldGVJZCI6IkZvbGlhdGVjaCIsImRldmlzZSI6IuKCrCIsImlzUGVyc29ubmVsQ2hhbnRpZXIiOiJGYWxzZSIsInBlcm1pc3Npb25Tb2NpZXRlIjoiWzQyLDEsMiwzLDQsNSw2LDcsOCw5LDEwLDExLDEyLDEzLDE1LDE2LDE3LDE4LDE5LDIwLDIyLDIzLDI0LDI1LDI2LDI3LDI4LDI5LDMxLDMzLDMyLDM4LDM5LDQzLDQ0LDM0LDM1LDQwLDQxLDM2LDQ1LDQ2LDYwLDYxLDYyLDQ3LDMwMCw0OCw2NCw2Myw1MF0iLCJtZXNzYWdlcmllR2xvYmFsIjoie1wiYWNjZXNzVG9rZW5cIjpudWxsLFwidG9rZW5FeHBpcmF0aW9uRGF0ZVwiOm51bGwsXCJlbWFpbFwiOlwiYnJhaGltLmRlcnJvdWljaEBnbWFpbC5jb21cIn0iLCJtZXNzYWdlcmllVXNlciI6IntcImFjY2Vzc1Rva2VuXCI6bnVsbCxcInRva2VuRXhwaXJhdGlvbkRhdGVcIjpudWxsLFwiZW1haWxcIjpcInRlc3Qtc29jaWV0ZUBmb2xpYXRlY2guYXBwXCJ9IiwiZGlzcGFseVByaW1lIjoiRmFsc2UiLCJhYm9ubmVtZW50IjoiIiwicm9sZU5hbWUiOiJEaXJlY3Rpb24iLCJyb2xlSWQiOiJiYjk4MGY3OS1kZjZiLTQ2OGMtYjA1YS04NDIyYjFmYzQwZTAiLCJyb2xlVHlwZSI6IjEiLCJwZXJtaXNzaW9ucyI6IlszMDEsMzA0LDU4MSw1NjEsNTYyLDU2Myw1NjQsNiwxLDIsMyw0LDUsMjUwNiwzMDAwLDIxLDIyLDIzLDI0LDMwMDEsMTAwMCwxMDAxLDEwMDIsMTAwMywxMDA0LDEwMDUsMTAwNiwxMDA3LDEwMjAsMTAyMSwyNDAsMjQxLDI0MiwyNDMsMjQ0LDI4MiwyNjEsMjYyLDI2MywyNjQsMjQwMCwyNDAxLDI0MDIsMjQwMyw2NjAsNjYxLDMwMDIsNjYzLDMwMzAsMzAzMSw0NDAsNDQxLDQ0Miw0NDMsNDQ0LDQwNjAsNDA2NCw0ODcsNDQ1LDQ1MSw0NTIsNDUzLDQ1NiwzMDAzLDY5NCw2OTUsNjk2LDY5NywzMDE3LDYwOTQsNjA5NSw2MDk2LDYwOTcsNjA5OCw2MDk5LDYwOTMsNDA5MSw0MDkyLDQwOTMsNDA5NCwyNTA3LDQ0NiwzMDIyLDQ1NCw0NTUsNDUwLDQwMCw0MDEsNDAyLDQwMyw0MDQsNzAxLDcwNSw3MDQsNzAzLDMwMDQsMjUwNCw0MDYsNDA4LDQwOSw3NzEsMzAyMCw3MDIsNDQ4LDQ2MCw0MjEsNDIyLDQyMyw0MjQsNDI4LDQzMCw0MDQ0LDQwNDUsMzAwNSwyNTAzLDQyNSw0MDQ2LDQwNDcsNzczLDMwMjEsNDQ5LDQyNyw0NjEsNDYyLDQ2Myw0NjQsNDgxLDQ4Miw0ODMsNDg0LDQ4NSw1MDEsODAsODEsODIsODMsODQsODcsOTAsODksMzAwNiw4NSwyNTAwLDg4LDY3MCw2MSw2Miw2Myw2NCwzMDA3LDY5LDI1MDEsMjAyMSwyMDIyLDIwMjMsMjAyNCwyMDI1LDU1MSw1NTksNzAsNzEsNTUwLDMwMDgsNTU1LDU1Nyw1NTgsMzAwOSwxMDEsMTAyLDEwMywxMDQsMzAxMCwxMDUsMjUwMiwxMDYsMTA3LDE0MCwxNDEsMTQyLDE0MywxNDQsMzAxMSwyNTA1LDE0NSwxNDYsMjAxLDIwMiwyMDMsMjA0LDMwNTAsMzAxMiwyMDQxLDIwNDIsMjA0MywyMDQ0LDIwNDUsMjA1LDIwNiw2NzEsNjcyLDY3Myw2NzQsODIwLDgyMSw4MjIsODIzLDgwMCw4MDEsODAyLDgwMywyNTA4LDkwMCw5MDEsOTAyLDkwMywzMDE4LDIyMSwyMjIsMjIzLDIyNCwzMDEzLDU0MSw1NDIsNTQzLDU0NCw0MCw0MSw0Miw0Myw0NCwzMDE0LDQ2LDQ3LDQ1LDQxMTAsNDExMSw0MTEyLDQxMTMsNDEyMCw0MTIxLDQxMjIsNDEyMyw0MTMwLDQxMzEsNDEzMiw0MTMzLDQxNDAsNDE0MSw0MTQyLDQxNDMsNDE1MCw0MTUxLDQxNTIsNDE1Myw2MjEsNjg3MSw2ODcwLDY4NzIsNjg3Myw2ODUxLDY4NTAsNjg1Miw2ODUzLDY4NTUsNjg4MCw2ODgxLDY4ODIsNjg4Myw2ODg1LDY4ODYsNjg4Nyw2ODg4LDY4OTAsNjg5MSwzMDE2LDY4OTIsNjg3NSw1NjUsMzAxNSw2ODc2LDM0MCwzNDEsMzQyLDM0MywyODEsNjAwLDYwMSw3ODAsMzgxLDM4MiwyMDA4LDIwMDksMjAxMCwyMDExLDIwMTIsMzAxOSwyMDAwLDIwMDEsMjAwMiwyMDAzLDIwMTMsMjAwNCwyMDA1LDIwMDYsMjAwNywyMDE0LDMwNDAsMzA0MSwzMDQyLDMwNDMsMzA0NCwzMDQ1LDMwNDYsMzA0N10iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2F1dGhlbnRpY2F0aW9ubWV0aG9kIjoiQmVhcmVyIiwic3ViIjoidXNlcjAxIiwianRpIjoiNzNkMmVkY2EtYWE2NC00MmJmLTljZTEtYmJmZWFiY2E2NDYwIiwiaWF0IjoxNzUxNjM4MTMyLCJuYmYiOjE3NTE2MzgxMzIsImV4cCI6MTc1MjA3MDEzMiwiaXNzIjoiSW5vdmFTcXVhZC5jb20iLCJhdWQiOiJJbm92YVNxdWFkLmNvbSJ9.kUY8AD5CLUxRIsvEKlV6hZKHeFJrGEE4MTUulffWHrY"
-'
-
-for every one of this meals, designation is the name of the meal, categoryId is the id of the category, sellingPrice is random, and for the rest of the fiels, leave them as they are.
-
----
-
 ## Dessert: id: 25c13896-7a24-47a1-ab96-a1e19b816d99
 
 1. **Crème Brûlée** - https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc
@@ -60,7 +25,7 @@ for every one of this meals, designation is the name of the meal, categoryId is 
 23. **Tartelettes aux Fruits** - https://images.unsplash.com/photo-1587736804099-24b711cc1ba3
 24. **Kouign-amann** - https://images.unsplash.com/photo-1581191722513-5ce19be6d0b9
 
-## Dessert: id: 25c13896-7a24-47a1-ab96-a1e19b816d99
+## Fruits de Mer: id: 27d0e688-9d62-49e1-b662-f1859d3e5541
 
 1. **Bouillabaisse** - https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b
 2. **Plateau de Fruits de Mer** - https://images.unsplash.com/photo-1559847844-5315695dadae
@@ -248,3 +213,30 @@ for every one of this meals, designation is the name of the meal, categoryId is 
 22. **Gazpacho de Légumes** - https://images.unsplash.com/photo-1565680018434-b513d5e5fd47
 23. **Poêlée de Légumes** - https://images.unsplash.com/photo-1571091718767-18b5b1457add
 24. **Salade Composée** - https://images.unsplash.com/photo-1467003909585-2f8a72700288
+
+## Boisson: id: c6de36fb-fc28-4608-8ff3-15d018ce35d3
+
+1. **Eau Pétillante** - https://images.unsplash.com/photo-1590086782794-3c49f37eb0a2
+2. **Limonade Maison** - https://images.unsplash.com/photo-1505250469679-203ad9ced0cb
+3. **Citronnade Fraîche** - https://images.unsplash.com/photo-1529921879218-cc07148c87c1
+4. **Thé Glacé à la Menthe** - https://images.unsplash.com/photo-1563201517-e28b2864d8a8
+5. **Jus d’Orange Fraîchement Pressé** - https://images.unsplash.com/photo-1529692236671-f1aa49c7cdfe
+6. **Smoothie Vert Detox** - https://images.unsplash.com/photo-1552332386-f8dd00dc27a8
+7. **Smoothie Tropical** - https://images.unsplash.com/photo-1502759775548-6b7ea9e65f52
+8. **Thé Matcha Latte** - https://images.unsplash.com/photo-1511920170033-f8396924c348
+9. **Chocolat Chaud Classique** - https://images.unsplash.com/photo-1509042239860-f550ce710b93
+10. **Café Noisette** - https://images.unsplash.com/photo-1495474472287-4d71bcdd2085
+11. **Cappuccino** - https://images.unsplash.com/photo-1511920170033-4a8b7aa61cf7
+12. **Espresso** - https://images.unsplash.com/photo-1509042239860-8164b1b1a5a5
+13. **Latte Macchiato** - https://images.unsplash.com/photo-1511920170033-7b54b2e31b5a
+14. **Mocha Glacé** - https://images.unsplash.com/photo-1571091718767-4f1b5c2d5a8d
+15. **Milkshake Vanille** - https://images.unsplash.com/photo-1599785209707-2f1f72c7afb4
+16. **Milkshake Chocolat** - https://images.unsplash.com/photo-1603586405205-0a6a0fdf3c19
+17. **Frappé aux Fruits Rouges** - https://images.unsplash.com/photo-1565299585323-1a3e2b772d5f
+18. **Jus de Pomme Artisanal** - https://images.unsplash.com/photo-1542444459-db30b3f7a3c1
+19. **Jus de Raisin** - https://images.unsplash.com/photo-1570197788417-6e3c3b8a6fa2
+20. **Infusion Camomille** - https://images.unsplash.com/photo-1522938974441-0b5699a1fa3c
+21. **Thé Earl Grey** - https://images.unsplash.com/photo-1509475826633-fed577a2c71b
+22. **Thé à la Menthe** - https://images.unsplash.com/photo-1529070538774-1843cb3265df
+23. **Chocolat Chaud Épicé** - https://images.unsplash.com/photo-1571091655789-5f2c5bc3a3d0
+24. **Jus de Carotte Frais** - https://images.unsplash.com/photo-1527761939622-911902eff03d

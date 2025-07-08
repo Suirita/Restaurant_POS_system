@@ -40,6 +40,7 @@ export class MealService {
   ): Observable<Meal[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
+      PageSize: 24,
       ProdcutCategoryId: categoryId,
     };
     return this.http

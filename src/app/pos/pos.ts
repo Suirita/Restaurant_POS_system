@@ -74,6 +74,8 @@ export class PosComponent implements OnInit {
       'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center',
     Végétalien:
       'https://images.unsplash.com/photo-1484980972926-edee96e0960d?w=100&h=100&fit=crop&crop=center',
+    Boisson:
+      'https://images.unsplash.com/photo-1486428263684-28ec9e4f2584?w=100&h=100&fit=crop&crop=center',
   };
 
   // Order type and table management signals
@@ -363,7 +365,7 @@ export class PosComponent implements OnInit {
     this.mealService
       .getMealsByCategory(this.selectedCategory(), this.currentUser()?.token)
       .subscribe((data) => {
-        console.log('Meals received:', data);
+        console.log('Meals received from API:', data);
         this.meals.set(data.slice(0, this.MAX_MEALS));
         this.loading.set(false);
       });
