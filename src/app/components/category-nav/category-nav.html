@@ -4,11 +4,11 @@
       *ngFor="let category of categories()"
       class="bg-white text-gray-900 flex flex-col items-center p-1 rounded-md border border-gray-200 shadow-sm flex-shrink-0 min-w-[60px] max-w-[60px] sm:min-w-[80px] sm:max-w-[80px] overflow-hidden"
       [class]="
-        selectedCategory() === category.name
+        selectedCategory() === category.id
           ? 'shadow-lg scale-110'
           : ''
       "
-      (click)="onCategorySelect(category.name)"
+      (click)="onCategorySelect(category)"
     >
       <div class="w-full h-14 rounded-md overflow-hidden mb-1 shadow-xs">
         <img

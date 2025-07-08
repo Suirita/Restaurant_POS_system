@@ -1,18 +1,22 @@
 export interface Meal {
-  idMeal: string;
-  strMeal: string;
-  strMealThumb: string;
-  strCategory: string;
-  strInstructions: string;
-  strArea: string;
-  price: number;
+  id: string;
+  designation: string;
+  sellingPrice: number;
+  categoryLabel: string;
+  imageUrl: string;
 }
 
 export interface CartItem extends Meal {
   quantity: number;
 }
 
+export interface Category {
+  id: string;
+  label: string;
+}
+
 export interface CategoryWithImage {
+  id: string;
   name: string;
   image: string;
 }

@@ -93,12 +93,12 @@ export class CartComponent {
   }
 
   getDisplayQuantity(item: CartItem): number | string {
-    return this.selectedCartItemId() === item.idMeal
+    return this.selectedCartItemId() === item.id
       ? this.tempQuantity() || item.quantity
       : item.quantity;
   }
 
   isItemBeingEdited(item: CartItem): boolean {
-    return this.selectedCartItemId() === item.idMeal;
+    return this.selectedCartItemId() === item.id;
   }
 }

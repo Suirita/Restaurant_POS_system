@@ -7,8 +7,8 @@
         class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
       >
         <div class="p-1">
-          <div class="bg-gray-200 h-20 rounded-lg mb-2"></div>
-          <div class="bg-gray-200 h-4 rounded-sm mb-2"></div>
+          <div class="bg-gray-200 h-16 rounded-lg mb-1"></div>
+          <div class="bg-gray-200 h-3 rounded-sm mb-1"></div>
           <div class="bg-gray-200 h-6 rounded-sm"></div>
         </div>
       </div>
@@ -30,8 +30,8 @@
             class="relative overflow-hidden rounded-lg border border-gray-200 shadow-xs"
           >
             <img
-              [src]="meal.strMealThumb || '/placeholder.svg'"
-              [alt]="meal.strMeal"
+              [src]="meal.imageUrl || '/placeholder.svg'"
+              [alt]="meal.designation"
               class="w-full h-20 rounded-lg object-cover"
               loading="lazy"
             />
@@ -48,17 +48,17 @@
             <h3
               class="text-xs font-medium leading-tight text-gray-900 line-clamp-1"
             >
-              {{ meal.strMeal }}
+              {{ meal.designation }}
             </h3>
           </div>
         </div>
         <div class="flex justify-between items-center px-1 pb-1">
           <ng-container
-            *ngIf="getCartItem(meal.idMeal) as cartItem; else addToCartButton"
+            *ngIf="getCartItem(meal.id) as cartItem; else addToCartButton"
           >
             <div class="flex items-center justify-between w-full pt-0.5">
               <button
-                (click)="onDecreaseQuantity(meal.idMeal, $event)"
+                (click)="onDecreaseQuantity(meal.id, $event)"
                 title="Decrease quantity"
                 class="w-7 h-7 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
@@ -71,14 +71,14 @@
                     ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
                     : 'bg-white border border-gray-200 shadow-sm'
                 "
-                (click)="onSelectItem(cartItem.idMeal)"
+                (click)="onSelectItem(cartItem.id)"
                 data-edit-button
                 title="Click to edit quantity"
               >
                 {{ getDisplayQuantity(cartItem) }}
               </button>
               <button
-                (click)="onIncreaseQuantity(meal.idMeal, $event)"
+                (click)="onIncreaseQuantity(meal.id, $event)"
                 [disabled]="cartItem.quantity >= 99.9"
                 [class.opacity-25]="cartItem.quantity >= 99.9"
                 [class.cursor-not-allowed]="cartItem.quantity >= 99.9"
@@ -90,7 +90,7 @@
             </div>
           </ng-container>
           <ng-template #addToCartButton>
-            <span class="text-xs text-gray-500"> ${{ meal.price }} </span>
+            <span class="text-xs text-gray-500"> ${{ meal.sellingPrice }} </span>
             <div class="mt-0.5">
               <button
                 (click)="onMealSelect(meal)"
@@ -123,3 +123,4 @@
     </button>
   </div>
 </div>
+

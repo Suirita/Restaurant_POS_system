@@ -8,8 +8,14 @@ import {
   ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MealService, type Meal } from '../meal.service';
-import { CartItem, Receipt, UserAccount, Table } from '../types/pos.types';
+import { MealService, type Category } from '../meal.service';
+import {
+  CartItem,
+  Receipt,
+  UserAccount,
+  Table,
+  Meal,
+} from '../types/pos.types';
 import { ReceiptService } from '../receipt.service';
 import { Router } from '@angular/router';
 
@@ -62,7 +68,7 @@ export class PosComponent implements OnInit {
       'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop&crop=center',
     Pâtes:
       'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=100&h=100&fit=crop&crop=center',
-    FruitdeMer:
+    'Fruit de Mer':
       'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=100&h=100&fit=crop&crop=center',
     Accompagnement:
       'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center',
@@ -89,8 +95,8 @@ export class PosComponent implements OnInit {
 
   // Signals
   meals = signal<Meal[]>([]);
-  categories = signal<string[]>([]);
-  selectedCategory = signal<string>('All');
+  categories = signal<Category[]>([]);
+  selectedCategory = signal<string>('');
   cart = signal<CartItem[]>([]);
   loading = signal<boolean>(false);
   selectedCartItemId = signal<string | null>(null);
@@ -110,16 +116,17 @@ export class PosComponent implements OnInit {
     return this.categories()
       .slice(0, 12)
       .map((category) => ({
-        name: category,
+        id: category.id,
+        name: category.label,
         image:
-          this.categoryImages[category] ||
+          this.categoryImages[category.label] ||
           'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
       }));
   });
 
   total = computed(() => {
     return this.cart().reduce(
-      (sum, item) => sum + item.price * item.quantity,
+      (sum, item) => sum + item.sellingPrice * item.quantity,
       0
     );
   });
@@ -157,6 +164,7 @@ export class PosComponent implements OnInit {
     this.currentUser.set(user);
     this.isLoggedIn.set(true);
     this.userRole.set(user.roleName);
+    console.log('User logged in:', user);
 
     if (user.roleName === 'Direction') {
       this.currentView.set('direction-nav');
@@ -231,9 +239,9 @@ export class PosComponent implements OnInit {
   }
 
   // Event handlers for child components
-  onCategorySelected(category: string) {
+  onCategorySelected(categoryId: string) {
     this.finishEditing(true); // Finish editing when changing category
-    this.selectedCategory.set(category);
+    this.selectedCategory.set(categoryId);
     this.loadMeals();
   }
 
@@ -334,17 +342,16 @@ export class PosComponent implements OnInit {
     this.isEditing.set(false);
   }
 
-  // ... rest of all your existing methods remain exactly the same ...
-  // (loadCategories, loadMeals, addToCart, etc.)
-
   // Core business logic methods
   private loadCategories() {
     this.mealService
       .getCategories(this.currentUser()?.token)
       .subscribe((data) => {
+        console.log('Categories received:', data);
         this.categories.set(data);
         if (data.length > 0) {
-          this.selectedCategory.set(data[0]);
+          this.selectedCategory.set(data[0].id);
+          console.log('Selected category:', this.selectedCategory());
         }
         this.loadMeals();
       });
@@ -352,17 +359,12 @@ export class PosComponent implements OnInit {
 
   private loadMeals() {
     this.loading.set(true);
+    console.log('Loading meals for category:', this.selectedCategory());
     this.mealService
-      .getMealsByCategory(this.selectedCategory())
+      .getMealsByCategory(this.selectedCategory(), this.currentUser()?.token)
       .subscribe((data) => {
-        const mealsWithPrices = (data.meals || [])
-          .slice(0, this.MAX_MEALS)
-          .map((meal: any) => ({
-            ...meal,
-            price: Math.floor(Math.random() * 25) + 8,
-          }));
-
-        this.meals.set(mealsWithPrices);
+        console.log('Meals received:', data);
+        this.meals.set(data.slice(0, this.MAX_MEALS));
         this.loading.set(false);
       });
   }
@@ -377,7 +379,7 @@ export class PosComponent implements OnInit {
 
     const currentCart = this.cart();
     const existingItemIndex = currentCart.findIndex(
-      (item) => item.idMeal === meal.idMeal
+      (item) => item.id === meal.id
     );
 
     if (existingItemIndex !== -1) {
@@ -390,7 +392,7 @@ export class PosComponent implements OnInit {
   }
 
   private selectCartItemForQuantity(itemId: string) {
-    const item = this.cart().find((item) => item.idMeal === itemId);
+    const item = this.cart().find((item) => item.id === itemId);
     if (item) {
       this.selectedCartItemId.set(itemId);
       this.tempQuantity.set(''); // Clear previous quantity
@@ -399,13 +401,13 @@ export class PosComponent implements OnInit {
 
   private removeFromCart(id: string) {
     const currentCart = this.cart();
-    const filteredCart = currentCart.filter((item) => item.idMeal !== id);
+    const filteredCart = currentCart.filter((item) => item.id !== id);
     this.cart.set(filteredCart);
   }
 
   private increaseQuantity(id: string) {
     const currentCart = this.cart();
-    const itemIndex = currentCart.findIndex((item) => item.idMeal === id);
+    const itemIndex = currentCart.findIndex((item) => item.id === id);
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
@@ -426,7 +428,7 @@ export class PosComponent implements OnInit {
 
   private decreaseQuantity(id: string) {
     const currentCart = this.cart();
-    const itemIndex = currentCart.findIndex((item) => item.idMeal === id);
+    const itemIndex = currentCart.findIndex((item) => item.id === id);
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];
@@ -548,7 +550,7 @@ export class PosComponent implements OnInit {
   private resetToOriginalQuantity() {
     if (this.selectedCartItemId()) {
       const item = this.cart().find(
-        (item) => item.idMeal === this.selectedCartItemId()
+        (item) => item.id === this.selectedCartItemId()
       );
       if (item) {
         this.updateQuantity(this.selectedCartItemId()!, item.quantity);
@@ -558,7 +560,7 @@ export class PosComponent implements OnInit {
 
   private updateQuantity(id: string, newQuantity: number) {
     const currentCart = this.cart();
-    const itemIndex = currentCart.findIndex((item) => item.idMeal === id);
+    const itemIndex = currentCart.findIndex((item) => item.id === id);
 
     if (itemIndex !== -1) {
       const updatedCart = [...currentCart];

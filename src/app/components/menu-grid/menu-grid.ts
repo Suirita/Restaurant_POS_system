@@ -59,7 +59,7 @@ export class MenuGridComponent {
   }
 
   getCartItem(mealId: string): CartItem | undefined {
-    return this.cart().find((item) => item.idMeal === mealId);
+    return this.cart().find((item) => item.id === mealId);
   }
 
   getOverlayMessage(): string {
@@ -73,12 +73,12 @@ export class MenuGridComponent {
   }
 
   getDisplayQuantity(item: CartItem): number | string {
-    return this.selectedCartItemId() === item.idMeal
+    return this.selectedCartItemId() === item.id
       ? this.tempQuantity() || item.quantity
       : item.quantity;
   }
 
   isItemBeingEdited(item: CartItem): boolean {
-    return this.selectedCartItemId() === item.idMeal;
+    return this.selectedCartItemId() === item.id;
   }
 }

@@ -14,7 +14,7 @@ export class CategoryNavComponent {
 
   categorySelected = output<string>();
 
-  onCategorySelect(category: string) {
-    this.categorySelected.emit(category);
+  onCategorySelect(category: CategoryWithImage) {
+    this.categorySelected.emit(category.id);
   }
 }

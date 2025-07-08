@@ -35,8 +35,8 @@
         <div class="flex items-center gap-2">
           <!-- Item Image -->
           <img
-            [src]="item.strMealThumb || '/placeholder.svg'"
-            [alt]="item.strMeal"
+            [src]="item.imageUrl || '/placeholder.svg'"
+            [alt]="item.designation"
             class="w-11 h-11 rounded-lg object-cover"
             loading="lazy"
           />
@@ -45,7 +45,7 @@
             <span
               class="font-medium text-md text-gray-900 leading-tight flex-1 line-clamp-1"
             >
-              {{ item.strMeal }}
+              {{ item.designation }}
             </span>
 
             <div class="flex items-center justify-between">
@@ -53,7 +53,7 @@
               <span
                 class="font-medium text-sm text-gray-500 min-w-0 flex-shrink-0"
               >
-                ${{ (item.quantity * item.price).toFixed(2) }}
+                ${{ (item.quantity * item.sellingPrice).toFixed(2) }}
               </span>
             </div>
           </div>
@@ -62,7 +62,7 @@
             <div class="flex items-center justify-between gap-1">
               <!-- Decrease Button -->
               <button
-                (click)="onDecreaseQuantity(item.idMeal, $event)"
+                (click)="onDecreaseQuantity(item.id, $event)"
                 title="Decrease quantity"
                 class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
@@ -77,7 +77,7 @@
                   ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
                   : 'bg-white border border-gray-200 shadow-xs'
               "
-                (click)="onSelectItem(item.idMeal)"
+                (click)="onSelectItem(item.id)"
                 data-edit-button
                 title="Click to edit quantity"
               >
@@ -86,7 +86,7 @@
 
               <!-- Increase Button -->
               <button
-                (click)="onIncreaseQuantity(item.idMeal, $event)"
+                (click)="onIncreaseQuantity(item.id, $event)"
                 [disabled]="item.quantity >= 100"
                 [class.opacity-25]="item.quantity >= 100"
                 [class.cursor-not-allowed]="item.quantity >= 100"
@@ -99,7 +99,7 @@
             <!-- Remove Button -->
             <button
               class="bg-red-400 text-white w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 shadow-xs"
-              (click)="onRemoveItem(item.idMeal, $event)"
+              (click)="onRemoveItem(item.id, $event)"
               title="Remove item"
             >
               <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
