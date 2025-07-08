@@ -1,0 +1,143 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">Users Management</h2>
+
+  <button
+    (click)="openCreateForm()"
+    class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-600"
+  >
+    Create User
+  </button>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            ID
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Username
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Full Name
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Role
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let user of users()">
+          <td class="px-6 py-4 whitespace-nowrap">{{ user.userId }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ user.username }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ user.fullName }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ user.roleName }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button
+              (click)="openEditForm(user)"
+              class="text-indigo-600 hover:text-indigo-900 mr-2"
+            >
+              Edit
+            </button>
+            <button
+              (click)="deleteUser(user.userId)"
+              class="text-red-600 hover:text-red-900"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="users().length === 0">
+          <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+            No users found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- User Create/Edit Form Modal -->
+  <div
+    *ngIf="showUserForm()"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center"
+  >
+    <div class="bg-white p-8 rounded-lg shadow-xl w-96">
+      <h3 class="text-xl font-bold mb-4">
+        {{ editingUser() ? 'Edit User' : 'Create New User' }}
+      </h3>
+      <form (ngSubmit)="saveUser()">
+        <div class="mb-4">
+          <label for="username" class="block text-gray-700 text-sm font-bold mb-2"
+            >Username:</label
+          >
+          <input
+            type="text"
+            id="username"
+            name="username"
+            [(ngModel)]="newUser.username"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label for="fullName" class="block text-gray-700 text-sm font-bold mb-2"
+            >Full Name:</label
+          >
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            [(ngModel)]="newUser.fullName"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label for="roleName" class="block text-gray-700 text-sm font-bold mb-2"
+            >Role:</label
+          >
+          <select
+            id="roleName"
+            name="roleName"
+            [(ngModel)]="newUser.roleName"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          >
+            <option value="">Select Role</option>
+            <option value="Admin">Admin</option>
+            <option value="Server">Server</option>
+            <!-- Add other roles as needed -->
+          </select>
+        </div>
+        <div class="flex justify-end">
+          <button
+            type="button"
+            (click)="cancelForm()"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2 hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          >
+            {{ editingUser() ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

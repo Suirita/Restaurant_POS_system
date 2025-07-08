@@ -1,0 +1,173 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">Meals Management</h2>
+
+  <button
+    (click)="openCreateForm()"
+    class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-600"
+  >
+    Create Meal
+  </button>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            ID
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Designation
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Price
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Category
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Image
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let meal of meals()">
+          <td class="px-6 py-4 whitespace-nowrap">{{ meal.id }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ meal.designation }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ meal.sellingPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ meal.categoryLabel }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <img
+              [src]="meal.image"
+              alt="{{ meal.designation }}"
+              class="h-10 w-10 rounded-full object-cover"
+            />
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button
+              (click)="openEditForm(meal)"
+              class="text-indigo-600 hover:text-indigo-900 mr-2"
+            >
+              Edit
+            </button>
+            <button
+              (click)="deleteMeal(meal.id)"
+              class="text-red-600 hover:text-red-900"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="meals().length === 0">
+          <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+            No meals found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Meal Create/Edit Form Modal -->
+  <div
+    *ngIf="showMealForm()"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center"
+  >
+    <div class="bg-white p-8 rounded-lg shadow-xl w-96">
+      <h3 class="text-xl font-bold mb-4">
+        {{ editingMeal() ? 'Edit Meal' : 'Create New Meal' }}
+      </h3>
+      <form (ngSubmit)="saveMeal()">
+        <div class="mb-4">
+          <label
+            for="designation"
+            class="block text-gray-700 text-sm font-bold mb-2"
+            >Designation:</label
+          >
+          <input
+            type="text"
+            id="designation"
+            name="designation"
+            [(ngModel)]="newMeal.designation"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="sellingPrice"
+            class="block text-gray-700 text-sm font-bold mb-2"
+            >Selling Price:</label
+          >
+          <input
+            type="number"
+            id="sellingPrice"
+            name="sellingPrice"
+            [(ngModel)]="newMeal.sellingPrice"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="categoryLabel"
+            class="block text-gray-700 text-sm font-bold mb-2"
+            >Category:</label
+          >
+          <select
+            id="categoryLabel"
+            name="categoryLabel"
+            [(ngModel)]="newMeal.categoryLabel"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          >
+            <option value="">Select Category</option>
+            <option *ngFor="let category of categories()" [value]="category.label">
+              {{ category.label }}
+            </option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="image" class="block text-gray-700 text-sm font-bold mb-2"
+            >Image URL:</label
+          >
+          <input
+            type="text"
+            id="image"
+            name="image"
+            [(ngModel)]="newMeal.image"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="flex justify-end">
+          <button
+            type="button"
+            (click)="cancelForm()"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2 hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          >
+            {{ editingMeal() ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

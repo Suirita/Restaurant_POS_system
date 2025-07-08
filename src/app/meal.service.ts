@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { environment } from '../environments/environment';
 
 export interface Meal {
@@ -8,7 +8,7 @@ export interface Meal {
   designation: string;
   sellingPrice: number;
   categoryLabel: string;
-  imageUrl: string;
+  image: string; // Changed from imageUrl to image for consistency
 }
 
 export interface Category {
@@ -20,10 +20,41 @@ export interface Category {
   providedIn: 'root',
 })
 export class MealService {
+  private http = inject(HttpClient);
   private baseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  // Mock data for demonstration (will be replaced by actual API calls)
+  private meals: Meal[] = [
+    {
+      id: 'meal-1',
+      designation: 'Spaghetti Carbonara',
+      sellingPrice: 15.99,
+      categoryLabel: 'Main Courses',
+      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
+    },
+    {
+      id: 'meal-2',
+      designation: 'Caesar Salad',
+      sellingPrice: 9.50,
+      categoryLabel: 'Appetizers',
+      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
+    },
+  ];
 
+  constructor() {
+    const storedMeals = localStorage.getItem('meals');
+    if (storedMeals) {
+      this.meals = JSON.parse(storedMeals);
+    } else {
+      localStorage.setItem('meals', JSON.stringify(this.meals));
+    }
+  }
+
+  private saveMeals() {
+    localStorage.setItem('meals', JSON.stringify(this.meals));
+  }
+
+  // Existing methods
   getCategories(token: string | undefined): Observable<Category[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http
@@ -58,9 +89,41 @@ export class MealService {
             designation: meal.designation,
             sellingPrice: meal.sellingPrice,
             categoryLabel: meal.categoryLabel,
-            imageUrl: `https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center`,
+            image: `https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center`,
           }))
         )
       );
+  }
+
+  // New CRUD methods for meals (using mock data for now)
+  getMeals(): Observable<Meal[]> {
+    return of(this.meals);
+  }
+
+  createMeal(meal: Omit<Meal, 'id'>): Observable<Meal> {
+    const newMeal: Meal = {
+      ...meal,
+      id: `meal-${this.meals.length + 1}`,
+    };
+    this.meals.push(newMeal);
+    this.saveMeals();
+    return of(newMeal);
+  }
+
+  updateMeal(updatedMeal: Meal): Observable<Meal> {
+    const index = this.meals.findIndex((meal) => meal.id === updatedMeal.id);
+    if (index > -1) {
+      this.meals[index] = updatedMeal;
+      this.saveMeals();
+      return of(updatedMeal);
+    }
+    return of();
+  }
+
+  deleteMeal(id: string): Observable<boolean> {
+    const initialLength = this.meals.length;
+    this.meals = this.meals.filter((meal) => meal.id !== id);
+    this.saveMeals();
+    return of(this.meals.length < initialLength);
   }
 }

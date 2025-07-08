@@ -1,6 +1,84 @@
-<div class="flex items-center justify-center h-screen">
-  <h1 class="text-3xl font-bold">Settings</h1>
-  <a routerLink="/pos" class="text-blue-500 hover:underline">
-    Go Back
-  </a>
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <div class="w-64 bg-white shadow-md p-4">
+    <h2 class="text-2xl font-bold mb-6 text-center">Settings</h2>
+    <nav>
+      <ul>
+        <li class="mb-2">
+          <button
+            (click)="selectSection('users')"
+            [class.bg-blue-500]="selectedSection() === 'users'"
+            [class.text-white]="selectedSection() === 'users'"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Users
+          </button>
+        </li>
+        <li class="mb-2">
+          <button
+            (click)="selectSection('categories')"
+            [class.bg-blue-500]="selectedSection() === 'categories'"
+            [class.text-white]="selectedSection() === 'categories'"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Categories
+          </button>
+        </li>
+        <li class="mb-2">
+          <button
+            (click)="selectSection('meals')"
+            [class.bg-blue-500]="selectedSection() === 'meals'"
+            [class.text-white]="selectedSection() === 'meals'"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Meals
+          </button>
+        </li>
+        <li class="mb-2">
+          <button
+            (click)="selectSection('rooms')"
+            [class.bg-blue-500]="selectedSection() === 'rooms'"
+            [class.text-white]="selectedSection() === 'rooms'"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Rooms
+          </button>
+        </li>
+        <li class="mb-2">
+          <button
+            (click)="selectSection('receipts')"
+            [class.bg-blue-500]="selectedSection() === 'receipts'"
+            [class.text-white]="selectedSection() === 'receipts'"
+            class="w-full text-left px-4 py-2 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Receipts Numeration
+          </button>
+        </li>
+      </ul>
+    </nav>
+    <div class="mt-8 text-center">
+      <a routerLink="/pos" class="text-blue-500 hover:underline">
+        Go Back to POS
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 p-6 overflow-auto">
+    <div *ngIf="selectedSection() === 'users'">
+      <app-users-settings></app-users-settings>
+    </div>
+    <div *ngIf="selectedSection() === 'categories'">
+      <app-categories-settings></app-categories-settings>
+    </div>
+    <div *ngIf="selectedSection() === 'meals'">
+      <app-meals-settings></app-meals-settings>
+    </div>
+    <div *ngIf="selectedSection() === 'rooms'">
+      <app-rooms-settings></app-rooms-settings>
+    </div>
+    <div *ngIf="selectedSection() === 'receipts'">
+      <app-receipts-settings></app-receipts-settings>
+    </div>
+  </div>
 </div>
