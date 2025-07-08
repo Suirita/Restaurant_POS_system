@@ -1,6 +1,8 @@
 <div class="container mx-auto p-4">
   <h2 class="text-2xl font-bold mb-4">Meals Settings</h2>
-  <button class="bg-black text-white px-4 py-2 rounded-md mb-4 hover:bg-black">Add New Meal</button>
+  <button class="bg-black text-white px-4 py-2 rounded-md mb-4 hover:bg-black">
+    Add New Meal
+  </button>
 
   <div class="bg-white shadow-md rounded-lg p-4">
     <table class="min-w-full divide-y divide-gray-200">
@@ -42,7 +44,9 @@
         <tr *ngFor="let meal of meals()">
           <td class="px-6 py-4 whitespace-nowrap">{{ meal.id }}</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ meal.designation }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ meal.sellingPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{ meal.sellingPrice | currency:'USD':'symbol':'1.2-2' }}
+          </td>
           <td class="px-6 py-4 whitespace-nowrap">{{ meal.categoryLabel }}</td>
           <td class="px-6 py-4 whitespace-nowrap">
             <img
@@ -56,13 +60,13 @@
               (click)="openEditForm(meal)"
               class="text-indigo-600 hover:text-indigo-900 mr-2"
             >
-              Edit
+              <i-lucide [img]="edit"></i-lucide>
             </button>
             <button
               (click)="deleteMeal(meal.id)"
               class="text-red-600 hover:text-red-900"
             >
-              Delete
+              <i-lucide [img]="trash2"></i-lucide>
             </button>
           </td>
         </tr>
@@ -129,7 +133,10 @@
             required
           >
             <option value="">Select Category</option>
-            <option *ngFor="let category of categories()" [value]="category.label">
+            <option
+              *ngFor="let category of categories()"
+              [value]="category.label"
+            >
               {{ category.label }}
             </option>
           </select>

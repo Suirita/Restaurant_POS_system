@@ -4,14 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { MealService } from '../../../meal.service';
 import { Category, Meal } from '../../../types/pos.types';
 import { CategoryService } from '../../../category.service';
+import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-meals-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './meals-settings.html',
 })
 export class MealsSettingsComponent implements OnInit {
+  readonly edit = Edit;
+  readonly trash2 = Trash2;
+
   private mealService = inject(MealService);
   private categoryService = inject(CategoryService);
 

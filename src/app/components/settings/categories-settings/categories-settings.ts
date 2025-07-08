@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../../category.service';
 import { Category } from '../../../types/pos.types';
+import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-categories-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './categories-settings.html',
 })
 export class CategoriesSettingsComponent implements OnInit {

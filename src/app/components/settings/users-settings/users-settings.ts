@@ -3,14 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../user.service';
 import { UserAccount } from '../../../types/pos.types';
+import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-users-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './users-settings.html',
 })
 export class UsersSettingsComponent implements OnInit {
+  readonly edit = Edit;
+  readonly trash2 = Trash2;
+
   private userService = inject(UserService);
 
   users = signal<UserAccount[]>([]);

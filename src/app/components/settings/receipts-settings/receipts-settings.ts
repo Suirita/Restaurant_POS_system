@@ -2,14 +2,18 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReceiptNumerationService, ReceiptNumeration } from '../../../receipt-numeration.service';
+import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-receipts-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './receipts-settings.html',
 })
 export class ReceiptsSettingsComponent implements OnInit {
+  readonly edit = Edit;
+  readonly trash2 = Trash2;
+
   private receiptNumerationService = inject(ReceiptNumerationService);
 
   numerations = signal<ReceiptNumeration[]>([]);

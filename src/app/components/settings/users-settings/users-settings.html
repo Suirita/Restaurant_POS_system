@@ -1,6 +1,8 @@
 <div class="container mx-auto p-4">
   <h2 class="text-2xl font-bold mb-4">Users Settings</h2>
-  <button class="bg-black text-white px-4 py-2 rounded-md mb-4 hover:bg-black">Add New User</button>
+  <button class="bg-black text-white px-4 py-2 rounded-md mb-4 hover:bg-black">
+    Add New User
+  </button>
 
   <div class="bg-white shadow-md rounded-lg p-4">
     <table class="min-w-full divide-y divide-gray-200">
@@ -44,16 +46,18 @@
               (click)="openEditForm(user)"
               class="text-indigo-600 hover:text-indigo-900 mr-2"
             >
-              Edit
+              <i-lucide [img]="edit"></i-lucide>
             </button>
+
             <button
               (click)="deleteUser(user.userId)"
               class="text-red-600 hover:text-red-900"
             >
-              Delete
+              <i-lucide [img]="trash2"></i-lucide>
             </button>
           </td>
         </tr>
+
         <tr *ngIf="users().length === 0">
           <td colspan="5" class="px-6 py-4 text-center text-gray-500">
             No users found.
@@ -74,7 +78,9 @@
       </h3>
       <form (ngSubmit)="saveUser()">
         <div class="mb-4">
-          <label for="username" class="block text-gray-700 text-sm font-bold mb-2"
+          <label
+            for="username"
+            class="block text-gray-700 text-sm font-bold mb-2"
             >Username:</label
           >
           <input
@@ -87,7 +93,9 @@
           />
         </div>
         <div class="mb-4">
-          <label for="fullName" class="block text-gray-700 text-sm font-bold mb-2"
+          <label
+            for="fullName"
+            class="block text-gray-700 text-sm font-bold mb-2"
             >Full Name:</label
           >
           <input
@@ -100,7 +108,9 @@
           />
         </div>
         <div class="mb-4">
-          <label for="roleName" class="block text-gray-700 text-sm font-bold mb-2"
+          <label
+            for="roleName"
+            class="block text-gray-700 text-sm font-bold mb-2"
             >Role:</label
           >
           <select

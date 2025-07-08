@@ -2,14 +2,18 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Table } from '../../../types/pos.types';
+import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-rooms-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './rooms-settings.html',
 })
 export class RoomsSettingsComponent implements OnInit {
+  readonly edit = Edit;
+  readonly trash2 = Trash2;
+
   tables = signal<Table[]>([]);
   showTableForm = signal<boolean>(false);
   editingTable = signal<Table | null>(null);
