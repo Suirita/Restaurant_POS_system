@@ -8,6 +8,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { MealService, type Category } from '../meal.service';
 import {
   CartItem,
@@ -47,6 +48,7 @@ export class PosComponent implements OnInit {
   private receiptService = inject(ReceiptService);
   private elementRef = inject(ElementRef);
   private router = inject(Router);
+  private http = inject(HttpClient);
 
   // Authentication state
   isLoggedIn = signal<boolean>(false);
@@ -57,26 +59,9 @@ export class PosComponent implements OnInit {
   // Maximum meals to display
   private readonly MAX_MEALS = 24;
 
-  // Category images mapping with actual food images
-  private categoryImages: { [key: string]: string } = {
-    Bœuf: 'https://images.unsplash.com/photo-1690983330536-3b0089d07cf9?w=100&h=100&fit=crop&crop=center',
-    Poulet:
-      'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=100&h=100&fit=crop&crop=center',
-    Dessert:
-      'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=100&h=100&fit=crop&crop=center',
-    Agneau:
-      'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop&crop=center',
-    Pâtes:
-      'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=100&h=100&fit=crop&crop=center',
-    'Fruit de Mer':
-      'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=100&h=100&fit=crop&crop=center',
-    Accompagnement:
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center',
-    Végétalien:
-      'https://images.unsplash.com/photo-1484980972926-edee96e0960d?w=100&h=100&fit=crop&crop=center',
-    Boisson:
-      'https://images.unsplash.com/photo-1486428263684-28ec9e4f2584?w=100&h=100&fit=crop&crop=center',
-  };
+  // Image mappings
+  categoryImages = signal<{ [key: string]: string }>({});
+  mealImages = signal<{ [key: string]: string }>({});
 
   // Order type and table management signals
   orderType = signal<'take away' | 'table'>('table');
@@ -115,13 +100,14 @@ export class PosComponent implements OnInit {
 
   // Computed properties
   categoriesWithImages = computed(() => {
+    const images = this.categoryImages();
     return this.categories()
       .slice(0, 12)
       .map((category) => ({
         id: category.id,
         name: category.label,
         image:
-          this.categoryImages[category.label] ||
+          images[category.label] ||
           'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
       }));
   });
@@ -155,10 +141,24 @@ export class PosComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Don't load categories until user is logged in
-    if (this.isLoggedIn()) {
-      this.loadCategories();
-    }
+    this.loadCategoryImages();
+    // this.loadMealImages();
+  }
+
+  private loadCategoryImages() {
+    this.http
+      .get<{ [key: string]: string }>('/assets/category-images.json')
+      .subscribe((data) => {
+        this.categoryImages.set(data);
+      });
+  }
+
+  private loadMealImages() {
+    this.http
+      .get<{ [key: string]: string }>('assets/meal-images.json')
+      .subscribe((data) => {
+        this.mealImages.set(data);
+      });
   }
 
   // Login event handler
@@ -166,7 +166,6 @@ export class PosComponent implements OnInit {
     this.currentUser.set(user);
     this.isLoggedIn.set(true);
     this.userRole.set(user.roleName);
-    console.log('User logged in:', user);
 
     if (user.roleName === 'Direction') {
       this.currentView.set('direction-nav');
@@ -349,11 +348,9 @@ export class PosComponent implements OnInit {
     this.mealService
       .getCategories(this.currentUser()?.token)
       .subscribe((data) => {
-        console.log('Categories received:', data);
         this.categories.set(data);
         if (data.length > 0) {
           this.selectedCategory.set(data[0].id);
-          console.log('Selected category:', this.selectedCategory());
         }
         this.loadMeals();
       });
@@ -361,12 +358,15 @@ export class PosComponent implements OnInit {
 
   private loadMeals() {
     this.loading.set(true);
-    console.log('Loading meals for category:', this.selectedCategory());
+    const images = this.mealImages();
     this.mealService
       .getMealsByCategory(this.selectedCategory(), this.currentUser()?.token)
       .subscribe((data) => {
-        console.log('Meals received from API:', data);
-        this.meals.set(data.slice(0, this.MAX_MEALS));
+        const mealsWithImages = data.map((meal) => ({
+          ...meal,
+          image: images[meal.designation] || '',
+        }));
+        this.meals.set(mealsWithImages.slice(0, this.MAX_MEALS));
         this.loading.set(false);
       });
   }

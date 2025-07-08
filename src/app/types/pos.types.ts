@@ -3,7 +3,7 @@ export interface Meal {
   designation: string;
   sellingPrice: number;
   categoryLabel: string;
-  imageUrl: string;
+  image: string;
 }
 
 export interface CartItem extends Meal {
