@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { UserAccount } from './types/pos.types';
 import { environment } from '../environments/environment';
 
@@ -31,6 +31,9 @@ export class LoginService {
         } else {
           throw new Error('Invalid login response');
         }
+      }),
+      tap((user) => {
+        localStorage.setItem('user', JSON.stringify(user));
       })
     );
   }

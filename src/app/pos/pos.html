@@ -70,12 +70,15 @@
           [orderType]="orderType()"
           [selectedCartItemId]="selectedCartItemId()"
           [tempQuantity]="tempQuantity()"
+          [userRole]="userRole()"
           (mealSelected)="onMealSelected($event)"
           (quantityIncreased)="onQuantityIncreased($event)"
           (quantityDecreased)="onQuantityDecreased($event)"
           (showAllReceipts)="showAllReceiptsModal()"
           (logout)="logout()"
           (itemSelected)="onCartItemSelected($event)"
+          (settings)="navigateTo('settings')"
+          (reports)="navigateTo('reports')"
         ></app-menu-grid>
       </div>
 

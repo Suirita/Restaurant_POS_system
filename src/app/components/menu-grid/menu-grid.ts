@@ -1,7 +1,15 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Meal, CartItem } from '../../types/pos.types';
-import { LucideAngularModule, Plus, Minus, Receipt, LogOut } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  Plus,
+  Minus,
+  Receipt,
+  LogOut,
+  Settings,
+  FileText,
+} from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -14,6 +22,8 @@ export class MenuGridComponent {
   readonly MinusIcon = Minus;
   readonly ReceiptIcon = Receipt;
   readonly LogOutIcon = LogOut;
+  readonly SettingsIcon = Settings;
+  readonly ReportsIcon = FileText;
 
   meals = input.required<Meal[]>();
   cart = input.required<CartItem[]>();
@@ -22,6 +32,7 @@ export class MenuGridComponent {
   orderType = input.required<'take away' | 'table'>();
   selectedCartItemId = input<string | null>(null);
   tempQuantity = input<string>('');
+  userRole = input.required<string>();
 
   mealSelected = output<Meal>();
   quantityIncreased = output<string>();
@@ -29,6 +40,8 @@ export class MenuGridComponent {
   showAllReceipts = output<void>();
   logout = output<void>();
   itemSelected = output<string>();
+  settings = output<void>();
+  reports = output<void>();
 
   getSkeletonArray(count: number): number[] {
     return Array.from({ length: count }, (_, i) => i + 1);
@@ -56,6 +69,14 @@ export class MenuGridComponent {
 
   onLogout() {
     this.logout.emit();
+  }
+
+  onSettings() {
+    this.settings.emit();
+  }
+
+  onReports() {
+    this.reports.emit();
   }
 
   getCartItem(mealId: string): CartItem | undefined {

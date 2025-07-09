@@ -101,8 +101,4 @@ export class LoginComponent {
       )
       .subscribe();
   }
-
-  onPasswordKeyPress(event: KeyboardEvent) {
-    // This method is no longer needed as input is handled by number pad
-  }
 }

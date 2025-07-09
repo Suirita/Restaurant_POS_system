@@ -108,6 +108,22 @@
   <!-- Actions -->
   <div class="flex justify-end gap-4 p-2 bg-gray-100">
     <button
+      *ngIf="userRole() === 'Direction'"
+      (click)="onSettings()"
+      class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="SettingsIcon" [size]="16"></i-lucide>
+      Settings
+    </button>
+    <button
+      *ngIf="userRole() === 'Direction'"
+      (click)="onReports()"
+      class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="ReportsIcon" [size]="16"></i-lucide>
+      Reports
+    </button>
+    <button
       (click)="onShowAllReceipts()"
       class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >

@@ -137,6 +137,10 @@ export class PosComponent implements OnInit {
 
   constructor() {
     this.isEditing.set(false);
+    const user = localStorage.getItem('user');
+    if (user) {
+      this.onLoginSuccess(JSON.parse(user));
+    }
   }
 
   ngOnInit() {
@@ -166,15 +170,11 @@ export class PosComponent implements OnInit {
     this.isLoggedIn.set(true);
     this.userRole.set(user.roleName);
 
-    if (user.roleName === 'Direction') {
-      this.currentView.set('direction-nav');
-    } else {
-      this.currentView.set('main-app');
-      this.loadCategories();
-      this.isEditing.set(true);
-      this.syncTablesWithReceipts();
-      this.lastOrderContext.set(null); // Initialize on login
-    }
+    this.currentView.set('main-app');
+    this.loadCategories();
+    this.isEditing.set(true);
+    this.syncTablesWithReceipts();
+    this.lastOrderContext.set(null); // Initialize on login
   }
 
   // Logout method
@@ -186,6 +186,7 @@ export class PosComponent implements OnInit {
     this.clearCart(); // Clear cart on logout
     this.finishEditing(false); // Finish any editing
     this.isEditing.set(false);
+    localStorage.removeItem('user');
 
     // Reset table state
     this.orderType.set('table');
