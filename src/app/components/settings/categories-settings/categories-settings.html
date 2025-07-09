@@ -11,6 +11,11 @@
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
+            Image
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
             Label
           </th>
           <th
@@ -22,8 +27,14 @@
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr *ngFor="let category of categories()">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <img
+              [src]="categoryImages()[category.label] || '/placeholder.svg'"
+              [alt]="category.label"
+              class="h-10 w-10 rounded-lg object-cover"
+            />
+          </td>
           <td class="px-6 py-4 whitespace-nowrap">{{ category.label }}</td>
-          <!-- <td class="px-6 py-4 whitespace-nowrap">{{ category.image }}</td> -->
           <td class="px-6 py-4 whitespace-nowrap">
             <button
               (click)="openEditForm(category)"

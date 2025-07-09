@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../../category.service';
 import { Category } from '../../../types/pos.types';
 import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   standalone: true,
@@ -16,8 +17,10 @@ export class CategoriesSettingsComponent implements OnInit {
   readonly trash2 = Trash2;
 
   private categoryService = inject(CategoryService);
+  private http = inject(HttpClient);
 
   categories = signal<Category[]>([]);
+  categoryImages = signal<{ [key: string]: string }>({});
   showCategoryForm = signal<boolean>(false);
   editingCategory = signal<Category | null>(null);
 
@@ -25,6 +28,15 @@ export class CategoriesSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+    this.loadCategoryImages();
+  }
+
+  loadCategoryImages() {
+    this.http
+      .get<{ [key: string]: string }>('/assets/category-images.json')
+      .subscribe((data) => {
+        this.categoryImages.set(data);
+      });
   }
 
   loadCategories(): void {
