@@ -43,6 +43,7 @@
   <app-all-receipts-modal
     *ngIf="showAllReceipts()"
     [userId]="currentUser()!.userId"
+    [token]="currentUser()!.token"
     (close)="hideAllReceiptsModal()"
     (pay)="pay($event)"
     (receiptSelected)="onReceiptSelectedFromModal($event)"

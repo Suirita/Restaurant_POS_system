@@ -503,16 +503,6 @@ export class PosComponent implements OnInit {
         return;
       }
 
-      // Capture the occupied status of the table *before* the new confirmation
-      const previousTableName =
-        this.orderType() === 'table' && this.isTableNumberComplete()
-          ? 'T' + this.tableNumber()
-          : null;
-      const previousTable = previousTableName
-        ? this.tables().find((t) => t.name === previousTableName)
-        : null;
-      const previousTableWasOccupied = previousTable?.occupied || false;
-
       if (table.occupied) {
         if (table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
@@ -521,20 +511,19 @@ export class PosComponent implements OnInit {
           );
           return;
         }
-        const receipt = this.receiptService.getReceiptByTable(tableName);
-        if (receipt) {
-          this.cart.set([...receipt.items]);
-          this.isTableNumberComplete.set(true);
-          this.orderType.set('table');
-        } else {
-          this.isTableNumberComplete.set(true);
-        }
+        this.receiptService
+          .getReceiptByTable(tableName, this.currentUser()!.token)
+          .subscribe((receipt) => {
+            if (receipt) {
+              this.cart.set([...receipt.items]);
+              this.isTableNumberComplete.set(true);
+              this.orderType.set('table');
+            } else {
+              this.isTableNumberComplete.set(true);
+            }
+          });
       } else {
         // Table is NOT occupied
-        // Clear cart ONLY if switching from an occupied table to an unoccupied one, and cart is not empty
-        if (previousTableWasOccupied && this.cart().length > 0) {
-          this.clearCart();
-        }
         this.isTableNumberComplete.set(true);
       }
     }
@@ -585,42 +574,20 @@ export class PosComponent implements OnInit {
     const tableName =
       this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
-    // Always create a new receipt for 'take away' orders.
-    // For 'table' orders, check for an existing receipt to update.
-    if (this.orderType() === 'take away') {
-      const receipt: Receipt = {
-        orderNumber: '',
-        tableName: tableName,
-        items: [...this.cart()],
-        total: total,
-        date: new Date(),
-        paymentMethod: 'Cash',
-        userId: this.currentUser()!.userId,
-      };
-      this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
-    } else {
-      // 'table' order
-      const existingReceipt = this.receiptService.getReceiptByTable(tableName);
-
-      if (existingReceipt) {
-        // Update existing receipt for table orders
-        existingReceipt.items = [...this.cart()];
-        existingReceipt.total = total;
-        this.receiptService.updateReceipt(existingReceipt);
-      } else {
-        // Create a new receipt for table orders if none exists
-        const receipt: Receipt = {
-          orderNumber: '',
-          tableName: tableName,
-          items: [...this.cart()],
-          total: total,
-          date: new Date(),
-          paymentMethod: 'Cash',
-          userId: this.currentUser()!.userId,
-        };
-        this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
-      }
-    }
+    const receipt: Receipt = {
+      id: '',
+      orderNumber: '',
+      tableName: tableName,
+      items: [...this.cart()],
+      total: total,
+      date: new Date(),
+      paymentMethod: 'Cash',
+      userId: this.currentUser()!.userId,
+      client: null,
+      orderDetails: null,
+      status: 'in_progress',
+    };
+    this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
 
     // Reset currentReceipt after completing the order
     this.currentReceipt.set(null);
@@ -649,21 +616,22 @@ export class PosComponent implements OnInit {
   }
 
   private syncTablesWithReceipts() {
-    const allReceipts = this.receiptService.getAllReceipts();
-    const occupiedTables = allReceipts.reduce((acc, receipt) => {
-      if (receipt.tableName.startsWith('T')) {
-        acc[receipt.tableName] = receipt.userId;
-      }
-      return acc;
-    }, {} as { [key: string]: string });
+    this.receiptService.getAllReceipts(this.currentUser()!.token).subscribe((allReceipts) => {
+      const occupiedTables = allReceipts.reduce((acc, receipt) => {
+        if (receipt.tableName.startsWith('T')) {
+          acc[receipt.tableName] = receipt.userId;
+        }
+        return acc;
+      }, {} as { [key: string]: string });
 
-    this.tables.set(
-      this.tables().map((table) => ({
-        ...table,
-        occupied: !!occupiedTables[table.name],
-        userId: occupiedTables[table.name] || null,
-      }))
-    );
+      this.tables.set(
+        this.tables().map((table) => ({
+          ...table,
+          occupied: !!occupiedTables[table.name],
+          userId: occupiedTables[table.name] || null,
+        }))
+      );
+    });
   }
 
   pay(orderNumber: string) {
@@ -674,23 +642,25 @@ export class PosComponent implements OnInit {
     const currentUser = this.currentUser();
     if (!currentUser) return;
 
-    const receipt = this.receiptService
-      .getReceipts(currentUser.userId)
-      .find((r) => r.orderNumber === orderNumber);
-    if (receipt) {
-      const tables = this.tables().map((t) =>
-        t.name === receipt.tableName
-          ? { ...t, occupied: false, userId: null }
-          : t
-      );
-      this.tables.set(tables);
-      this.receiptService.deleteReceiptByOrderNumber(orderNumber);
-      this.orderType.set('table');
-      this.tableNumber.set('');
-      this.isTableNumberComplete.set(false);
-      this.tableErrorMessage.set(null);
-      this.isEditing.set(true);
-    }
+    this.receiptService
+      .getReceipts(currentUser.userId, currentUser.token)
+      .subscribe((receipts) => {
+        const receipt = receipts.find((r) => r.orderNumber === orderNumber);
+        if (receipt) {
+          const tables = this.tables().map((t) =>
+            t.name === receipt.tableName
+              ? { ...t, occupied: false, userId: null }
+              : t
+          );
+          this.tables.set(tables);
+          this.receiptService.deleteReceiptByOrderNumber(orderNumber);
+          this.orderType.set('table');
+          this.tableNumber.set('');
+          this.isTableNumberComplete.set(false);
+          this.tableErrorMessage.set(null);
+          this.isEditing.set(true);
+        }
+      });
   }
 
   showAllReceiptsModal() {
@@ -729,48 +699,55 @@ export class PosComponent implements OnInit {
     const tableName =
       this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
-    // Check if there is an existing receipt for this table
-    const existingReceipt = this.receiptService.getReceiptByTable(tableName);
+    this.receiptService
+      .getReceiptByTable(tableName, this.currentUser()!.token)
+      .subscribe((existingReceipt) => {
+        if (existingReceipt) {
+          // Update existing receipt and mark as paid
+          existingReceipt.items = [...this.cart()];
+          existingReceipt.total = total;
+          existingReceipt.paymentMethod = 'Paid';
+          
+          // Immediately delete the receipt as it's now paid and settled
+          this.receiptService.deleteReceiptByOrderNumber(
+            existingReceipt.orderNumber
+          );
+        } else {
+          // Create a new receipt if none exists
+          const receipt: Receipt = {
+            id: '',
+            orderNumber: '',
+            tableName: tableName,
+            items: [...this.cart()],
+            total: total,
+            date: new Date(),
+            paymentMethod: 'Paid',
+            userId: this.currentUser()!.userId,
+            client: null,
+            orderDetails: null,
+            status: 'completed',
+          };
+          this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
+        }
 
-    if (existingReceipt) {
-      // Update existing receipt and mark as paid
-      existingReceipt.items = [...this.cart()];
-      existingReceipt.total = total;
-      existingReceipt.paymentMethod = 'Paid';
-      this.receiptService.updateReceipt(existingReceipt);
-      // Immediately delete the receipt as it's now paid and settled
-      this.receiptService.deleteReceiptByOrderNumber(
-        existingReceipt.orderNumber
-      );
-    } else {
-      // Create a new receipt if none exists
-      const receipt: Receipt = {
-        orderNumber: '',
-        tableName: tableName,
-        items: [...this.cart()],
-        total: total,
-        date: new Date(),
-        paymentMethod: 'Paid',
-        userId: this.currentUser()!.userId,
-      };
-      this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
-    }
+        // Free up the table if it was a table order
+        if (this.orderType() === 'table') {
+          const tables = this.tables().map((t) =>
+            t.name === tableName
+              ? { ...t, occupied: false, userId: null }
+              : t
+          );
+          this.tables.set(tables);
+        }
 
-    // Free up the table if it was a table order
-    if (this.orderType() === 'table') {
-      const tables = this.tables().map((t) =>
-        t.name === tableName ? { ...t, occupied: false, userId: null } : t
-      );
-      this.tables.set(tables);
-    }
-
-    // Clear the cart and reset the UI for the next order
-    this.clearCart();
-    this.finishEditing(false);
-    this.orderType.set('table');
-    this.tableNumber.set('');
-    this.isTableNumberComplete.set(false);
-    this.tableErrorMessage.set(null);
-    this.isEditing.set(true);
+        // Clear the cart and reset the UI for the next order
+        this.clearCart();
+        this.finishEditing(false);
+        this.orderType.set('table');
+        this.tableNumber.set('');
+        this.isTableNumberComplete.set(false);
+        this.tableErrorMessage.set(null);
+        this.isEditing.set(true);
+      });
   }
 }

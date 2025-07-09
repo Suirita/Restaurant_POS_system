@@ -3,7 +3,7 @@ import { Receipt } from './types/pos.types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { ConfigurationService } from './configuration.service';
 
 @Injectable({
@@ -22,6 +22,7 @@ export class ReceiptService {
     token: string,
     uniqueReference: string
   ): Observable<any> {
+    console.log(uniqueReference);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
       labels: [],
@@ -304,17 +305,13 @@ export class ReceiptService {
       .getUniqueReference(token)
       .pipe(
         switchMap((response) => {
-          const uniqueReference = response.value;
+          const uniqueReference = response;
           receipt.orderNumber = uniqueReference;
           return this.createReceipt(receipt, token, uniqueReference);
         })
       )
       .subscribe({
-        next: () => {
-          const allReceipts = this.getAllReceipts();
-          allReceipts.push(receipt);
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
-        },
+        next: () => {},
         error: (error) => {
           console.error('Error creating receipt:', error);
         },
@@ -322,43 +319,56 @@ export class ReceiptService {
   }
 
 
-  getReceipts(userId: string): Receipt[] {
-    const allReceipts = this.getAllReceipts();
-    return allReceipts.filter(receipt => receipt.userId === userId);
+  getReceipts(userId: string, token: string): Observable<Receipt[]> {
+    return this.getAllReceipts(token).pipe(
+      map((receipts) => receipts.filter((receipt) => receipt.userId === userId))
+    );
   }
 
-  getReceiptByTable(tableName: string): Receipt | undefined {
-    const allReceipts = this.getAllReceipts();
-    return allReceipts.find(receipt => receipt.tableName === tableName);
-  }
-
-  deleteReceiptByTable(tableName: string): void {
-    let allReceipts = this.getAllReceipts();
-    allReceipts = allReceipts.filter(receipt => receipt.tableName !== tableName);
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
+  getReceiptByTable(tableName: string, token: string): Observable<Receipt | undefined> {
+    return this.getAllReceipts(token).pipe(
+      map((receipts) => receipts.find((receipt) => receipt.tableName === tableName))
+    );
   }
 
   deleteReceiptByOrderNumber(orderNumber: string): void {
-    let allReceipts = this.getAllReceipts();
-    allReceipts = allReceipts.filter(
-      (receipt) => receipt.orderNumber !== orderNumber
-    );
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
+    // TODO: Implement backend call to delete receipt by order number
+    console.log(`Deleting receipt with order number: ${orderNumber}`);
   }
 
-  updateReceipt(updatedReceipt: Receipt): void {
-    const allReceipts = this.getAllReceipts();
-    const index = allReceipts.findIndex(
-      (r) => r.orderNumber === updatedReceipt.orderNumber
-    );
-    if (index !== -1) {
-      allReceipts[index] = updatedReceipt;
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allReceipts));
-    }
-  }
-
-  public getAllReceipts(): Receipt[] {
-    const receiptsJson = localStorage.getItem(this.STORAGE_KEY);
-    return receiptsJson ? JSON.parse(receiptsJson) : [];
+  public getAllReceipts(token: string): Observable<Receipt[]> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      Page: 1,
+      PageSize: 1000,
+      OrderBy: 'client',
+      SortDirection: 1,
+      SearchQuery: '',
+      allVersions: false,
+      techniciansId: [],
+      ParentId: null,
+    };
+    return this.http
+      .post<any>(`${this.baseUrl}/Quote`, body, { headers })
+      .pipe(
+        map((response) =>
+          response.value.map(
+            (quote: any) =>
+              ({
+                id: quote.id,
+                orderNumber: quote.reference,
+                tableName: quote.client, // Use client string directly
+                items: [], // No line items in this response
+                total: quote.totalTTC,
+                date: new Date(quote.creationDate),
+                paymentMethod: '', // Not available in quote object
+                userId: quote.userAdd, // Use userAdd for userId
+                client: quote.client,
+                orderDetails: null, // Not available in this response
+                status: quote.status,
+              } as Receipt)
+          )
+        )
+      );
   }
 }

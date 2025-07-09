@@ -22,6 +22,7 @@ export interface CategoryWithImage {
 }
 
 export interface Receipt {
+  id: string;
   orderNumber: string;
   tableName: string;
   items: CartItem[];
@@ -29,6 +30,9 @@ export interface Receipt {
   date: Date;
   paymentMethod: string;
   userId: string;
+  client: any;
+  orderDetails: any;
+  status: string;
 }
 
 export interface UserAccount {

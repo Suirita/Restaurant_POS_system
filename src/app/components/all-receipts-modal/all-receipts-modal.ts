@@ -1,6 +1,6 @@
-import { Component, output, inject, input } from '@angular/core';
+import { Component, output, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Receipt } from '../../types/pos.types';
+import { Receipt, UserAccount } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
 import { LucideAngularModule, X } from 'lucide-angular';
 
@@ -14,15 +14,24 @@ export class AllReceiptsModalComponent {
   readonly XIcon = X;
 
   private receiptService = inject(ReceiptService);
-  receipts: Receipt[] = [];
+  receipts = signal<Receipt[]>([]);
   userId = input.required<string>();
+  token = input.required<string>();
 
   close = output<void>();
   pay = output<string>();
   receiptSelected = output<Receipt>();
 
   ngOnInit() {
-    this.receipts = this.receiptService.getReceipts(this.userId());
+    this.loadReceipts();
+  }
+
+  loadReceipts() {
+    this.receiptService
+      .getReceipts(this.userId(), this.token())
+      .subscribe((receipts) => {
+        this.receipts.set(receipts);
+      });
   }
 
   onClose() {
@@ -31,7 +40,7 @@ export class AllReceiptsModalComponent {
 
   onPay(orderNumber: string) {
     this.pay.emit(orderNumber);
-    this.receipts = this.receiptService.getReceipts(this.userId());
+    this.loadReceipts();
   }
 
   onPayClick(orderNumber: string) {
