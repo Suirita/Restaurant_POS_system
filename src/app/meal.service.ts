@@ -87,7 +87,7 @@ export class MealService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
       Page: 1,
-      PageSize: 100,
+      PageSize: 1000,
       OrderBy: 'reference',
       SortDirection: 1,
       SearchQuery: '',
