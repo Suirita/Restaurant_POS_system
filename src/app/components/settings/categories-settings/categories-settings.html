@@ -65,11 +65,16 @@
   <!-- Category Create/Edit Form Modal -->
   <div
     *ngIf="showCategoryForm()"
-    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center"
+    class="fixed inset-0 flex items-center justify-center z-50"
   >
-    <div class="bg-white p-8 rounded-lg shadow-xl w-96">
+    <div
+      class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
+    ></div>
+    <div
+      class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
+    >
       <h3 class="text-xl font-bold mb-4">
-        {{ editingCategory() ? 'Modifier la catégorie' : 'Créer une nouvelle catégorie' }}
+        {{ editingCategory() ? 'Modifier la catégorie': 'Créer une nouvelle catégorie' }}
       </h3>
       <form (ngSubmit)="saveCategory()">
         <div class="mb-4">
