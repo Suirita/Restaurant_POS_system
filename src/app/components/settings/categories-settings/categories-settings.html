@@ -1,7 +1,7 @@
 <div class="container mx-auto p-4">
-  <h2 class="text-2xl font-bold mb-4">Categories Settings</h2>
+  <h2 class="text-2xl font-bold mb-4">Paramètres des catégories</h2>
   <button class="bg-black text-white px-4 py-2 rounded-md mb-4 hover:bg-black">
-    Add New Category
+    Ajouter une nouvelle catégorie
   </button>
 
   <div class="bg-white shadow-md rounded-lg p-4">
@@ -16,7 +16,7 @@
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            Label
+            Libellé
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -52,7 +52,7 @@
         </tr>
         <tr *ngIf="categories().length === 0">
           <td colspan="3" class="px-6 py-4 text-center text-gray-500">
-            No categories found.
+            Aucune catégorie trouvée.
           </td>
         </tr>
       </tbody>
@@ -66,12 +66,12 @@
   >
     <div class="bg-white p-8 rounded-lg shadow-xl w-96">
       <h3 class="text-xl font-bold mb-4">
-        {{ editingCategory() ? 'Edit Category' : 'Create New Category' }}
+        {{ editingCategory() ? 'Modifier la catégorie' : 'Créer une nouvelle catégorie' }}
       </h3>
       <form (ngSubmit)="saveCategory()">
         <div class="mb-4">
           <label for="label" class="block text-gray-700 text-sm font-bold mb-2"
-            >Category Label:</label
+            >Libellé de la catégorie :</label
           >
           <input
             type="text"
@@ -88,13 +88,13 @@
             (click)="cancelForm()"
             class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2 hover:bg-gray-400"
           >
-            Cancel
+            Annuler
           </button>
           <button
             type="submit"
             class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
           >
-            {{ editingCategory() ? 'Update' : 'Create' }}
+            {{ editingCategory() ? 'Mettre à jour' : 'Créer' }}
           </button>
         </div>
       </form>

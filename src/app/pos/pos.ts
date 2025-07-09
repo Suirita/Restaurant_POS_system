@@ -288,7 +288,7 @@ export class PosComponent implements OnInit {
   onTakeAwaySelected() {
     // If already on a take away order with items, prevent starting a new one
     if (this.orderType() === 'take away' && this.cart().length > 0) {
-      alert('Please complete the current take away order first.');
+      alert("Veuillez d'abord terminer la commande à emporter en cours.");
       return;
     }
     this.finishEditing(false); // Finish editing when changing service type
@@ -374,7 +374,7 @@ export class PosComponent implements OnInit {
   private addToCart(meal: Meal) {
     if (!this.canAddToCart()) {
       if (this.orderType() === 'table') {
-        alert('Please enter and confirm table number first!');
+        alert("Veuillez d'abord entrer et confirmer le numéro de table !");
       }
       return;
     }
@@ -499,7 +499,7 @@ export class PosComponent implements OnInit {
 
       if (!table) {
         this.isTableNumberComplete.set(false);
-        this.tableErrorMessage.set('Invalid table number.');
+        this.tableErrorMessage.set('Numéro de table invalide.');
         return;
       }
 
@@ -516,7 +516,9 @@ export class PosComponent implements OnInit {
       if (table.occupied) {
         if (table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
-          this.tableErrorMessage.set('This table is served by another server.');
+          this.tableErrorMessage.set(
+            'Cette table est servie par un autre serveur.'
+          );
           return;
         }
         const receipt = this.receiptService.getReceiptByTable(tableName);

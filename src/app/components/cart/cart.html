@@ -22,8 +22,8 @@
 
     <!-- Empty Cart -->
     <div *ngIf="cartItems().length === 0" class="text-center py-6 lg:py-12">
-      <p class="text-gray-600 font-medium mb-1">No items in cart</p>
-      <p class="text-gray-400 text-sm">Add items from the menu</p>
+      <p class="text-gray-600 font-medium mb-1">Aucun article dans le panier</p>
+      <p class="text-gray-400 text-sm">Ajouter des articles depuis le menu</p>
     </div>
 
     <!-- Cart Items List -->
@@ -53,7 +53,7 @@
               <span
                 class="font-medium text-sm text-gray-500 min-w-0 flex-shrink-0"
               >
-                ${{ (item.quantity * item.sellingPrice).toFixed(2) }}
+                {{ (item.quantity * item.sellingPrice).toFixed(2) }} €
               </span>
             </div>
           </div>
@@ -63,7 +63,7 @@
               <!-- Decrease Button -->
               <button
                 (click)="onDecreaseQuantity(item.id, $event)"
-                title="Decrease quantity"
+                title="Diminuer la quantité"
                 class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
                 <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
@@ -79,7 +79,7 @@
               "
                 (click)="onSelectItem(item.id)"
                 data-edit-button
-                title="Click to edit quantity"
+                title="Cliquer pour modifier la quantité"
               >
                 {{ getDisplayQuantity(item) }}
               </button>
@@ -90,7 +90,7 @@
                 [disabled]="item.quantity >= 100"
                 [class.opacity-25]="item.quantity >= 100"
                 [class.cursor-not-allowed]="item.quantity >= 100"
-                title="Increase quantity"
+                title="Augmenter la quantité"
                 class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
                 <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
@@ -100,7 +100,7 @@
             <button
               class="bg-red-400 text-white w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 shadow-xs"
               (click)="onRemoveItem(item.id, $event)"
-              title="Remove item"
+              title="Supprimer l'article"
             >
               <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
             </button>
@@ -116,9 +116,9 @@
     class="flex-shrink-0 p-3 pt-1 border-t border-gray-200 bg-white"
   >
     <div class="flex justify-between items-center">
-      <span class="text-lg font-medium text-gray-700">Total:</span>
+      <span class="text-lg font-medium text-gray-700">Total :</span>
       <span class="text-lg font-medium text-gray-900">
-        ${{ total().toFixed(2) }}
+        {{ total().toFixed(2) }} €
       </span>
     </div>
 
@@ -133,13 +133,13 @@
         [disabled]="!canAddToCart()"
         (click)="onCompleteOrder()"
       >
-        {{ canAddToCart() ? "Save Receipt" : "Setup Required" }}
+        {{ canAddToCart() ? "Enregistrer le reçu" : "Configuration requise" }}
       </button>
       <button
         class="text-sm w-full bg-white py-2 rounded-lg font-medium border border-gray-200 shadow-sm"
         (click)="onPay()"
       >
-        Pay Now
+        Payer maintenant
       </button>
     </div>
   </div>

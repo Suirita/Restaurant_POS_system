@@ -85,7 +85,7 @@ export class CategoriesSettingsComponent implements OnInit {
 
   deleteCategory(categoryId: string): void {
     const user = JSON.parse(localStorage.getItem('user')!);
-    if (confirm('Are you sure you want to delete this category?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
       this.categoryService
         .deleteCategory(categoryId, user.token)
         .subscribe(() => {

@@ -85,8 +85,8 @@ export class MenuGridComponent {
 
   getOverlayMessage(): string {
     return this.orderType() === 'table'
-      ? 'Enter Table Number Or Slect Take Away'
-      : 'Select Service';
+      ? 'Entrez le numéro de table ou sélectionnez à emporter'
+      : 'Sélectionnez un service';
   }
 
   onSelectItem(itemId: string) {

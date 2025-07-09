@@ -59,7 +59,7 @@
             <div class="flex items-center justify-between w-full pt-0.5">
               <button
                 (click)="onDecreaseQuantity(meal.id, $event)"
-                title="Decrease quantity"
+                title="Diminuer la quantité"
                 class="w-7 h-7 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
                 <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
@@ -73,7 +73,7 @@
                 "
                 (click)="onSelectItem(cartItem.id)"
                 data-edit-button
-                title="Click to edit quantity"
+                title="Cliquer pour modifier la quantité"
               >
                 {{ getDisplayQuantity(cartItem) }}
               </button>
@@ -82,7 +82,7 @@
                 [disabled]="cartItem.quantity >= 99.9"
                 [class.opacity-25]="cartItem.quantity >= 99.9"
                 [class.cursor-not-allowed]="cartItem.quantity >= 99.9"
-                title="Increase quantity"
+                title="Augmenter la quantité"
                 class="w-7 h-7 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
                 <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
@@ -90,7 +90,7 @@
             </div>
           </ng-container>
           <ng-template #addToCartButton>
-            <span class="text-xs text-gray-500"> ${{ meal.sellingPrice }} </span>
+            <span class="text-xs text-gray-500"> {{ meal.sellingPrice }} € </span>
             <div class="mt-0.5">
               <button
                 (click)="onMealSelect(meal)"
@@ -113,7 +113,7 @@
       class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
       <i-lucide [img]="SettingsIcon" [size]="16"></i-lucide>
-      Settings
+      Paramètres
     </button>
     <button
       *ngIf="userRole() === 'Direction'"
@@ -121,21 +121,21 @@
       class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
       <i-lucide [img]="ReportsIcon" [size]="16"></i-lucide>
-      Reports
+      Rapports
     </button>
     <button
       (click)="onShowAllReceipts()"
       class="flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
       <i-lucide [img]="ReceiptIcon" [size]="16"></i-lucide>
-      All Receipts
+      Tous les reçus
     </button>
     <button
       (click)="onLogout()"
       class="flex justify-center items-center gap-2 bg-red-400 text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
       <i-lucide [img]="LogOutIcon" [size]="16"></i-lucide>
-      Logout
+      Déconnexion
     </button>
   </div>
 </div>

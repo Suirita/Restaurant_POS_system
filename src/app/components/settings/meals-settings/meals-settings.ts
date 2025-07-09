@@ -88,7 +88,7 @@ export class MealsSettingsComponent implements OnInit {
 
   deleteMeal(mealId: string): void {
     const user = JSON.parse(localStorage.getItem('user')!);
-    if (confirm('Are you sure you want to delete this meal?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce plat ?')) {
       this.mealService.deleteMeal(mealId, user.token).subscribe(() => {
         this.loadMeals();
       });

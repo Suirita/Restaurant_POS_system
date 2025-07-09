@@ -1,7 +1,7 @@
 <div class="container mx-auto p-4">
-  <h2 class="text-2xl font-bold mb-4">Users Settings</h2>
+  <h2 class="text-2xl font-bold mb-4">Paramètres des utilisateurs</h2>
   <button class="bg-black text-white px-4 py-2 rounded-md mb-4 hover:bg-black">
-    Add New User
+    Ajouter un nouvel utilisateur
   </button>
 
   <div class="bg-white shadow-md rounded-lg p-4">
@@ -16,17 +16,17 @@
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            Username
+            Nom d'utilisateur
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            Full Name
+            Nom complet
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            Role
+            Rôle
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -60,7 +60,7 @@
 
         <tr *ngIf="users().length === 0">
           <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-            No users found.
+            Aucun utilisateur trouvé.
           </td>
         </tr>
       </tbody>
@@ -74,14 +74,14 @@
   >
     <div class="bg-white p-8 rounded-lg shadow-xl w-96">
       <h3 class="text-xl font-bold mb-4">
-        {{ editingUser() ? 'Edit User' : 'Create New User' }}
+        {{ editingUser() ? 'Modifier l'utilisateur' : 'Créer un nouvel utilisateur' }}
       </h3>
       <form (ngSubmit)="saveUser()">
         <div class="mb-4">
           <label
             for="username"
             class="block text-gray-700 text-sm font-bold mb-2"
-            >Username:</label
+            >Nom d'utilisateur :</label
           >
           <input
             type="text"
@@ -96,7 +96,7 @@
           <label
             for="fullName"
             class="block text-gray-700 text-sm font-bold mb-2"
-            >Full Name:</label
+            >Nom complet :</label
           >
           <input
             type="text"
@@ -111,7 +111,7 @@
           <label
             for="roleName"
             class="block text-gray-700 text-sm font-bold mb-2"
-            >Role:</label
+            >Rôle :</label
           >
           <select
             id="roleName"
@@ -120,9 +120,9 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           >
-            <option value="">Select Role</option>
+            <option value="">Sélectionner un rôle</option>
             <option value="Admin">Admin</option>
-            <option value="Server">Server</option>
+            <option value="Server">Serveur</option>
             <!-- Add other roles as needed -->
           </select>
         </div>
@@ -132,13 +132,13 @@
             (click)="cancelForm()"
             class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2 hover:bg-gray-400"
           >
-            Cancel
+            Annuler
           </button>
           <button
             type="submit"
             class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
           >
-            {{ editingUser() ? 'Update' : 'Create' }}
+            {{ editingUser() ? 'Mettre à jour' : 'Créer' }}
           </button>
         </div>
       </form>
