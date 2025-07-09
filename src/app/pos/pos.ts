@@ -107,8 +107,7 @@ export class PosComponent implements OnInit {
         id: category.id,
         name: category.label,
         image:
-          images[category.label] ||
-          'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
+          images[category.label] || '',
       }));
   });
 

@@ -1,11 +1,15 @@
-
 {
-  "Bœuf": "https://images.unsplash.com/photo-1690983330536-3b0089d07cf9?w=100&h=100&fit=crop&crop=center",
-  "Poulet": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=100&h=100&fit=crop&crop=center",
-  "Dessert": "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=100&h=100&fit=crop&crop=center",
-  "Agneau": "https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop&crop=center",
-  "Pâtes": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=100&h=100&fit=crop&crop=center",
-  "Fruit de Mer": "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=100&h=100&fit=crop&crop=center",
-  "Accompagnement": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&h=100&fit=crop&crop=center",
-  "Végétalien": "https://images.unsplash.com/photo-1484980972926-edee96e0960d?w=100&h=100&fit=crop&crop=center"
+  "Bœuf": "../assets/img/Bœuf.jpeg",
+  "Poulet": "../assets/img/Poulet.jpeg",
+  "Dessert": "../assets/img/Dessert.jpeg",
+  "Agneau": "../assets/img/Agneau.jpeg",
+  "Fruits de mer": "../assets/img/Fruits de mer.jpeg",
+  "Poissons": "../assets/img/Poissons.jpeg",
+  "Végétaliens": "../assets/img/Végétaliens.jpeg",
+  "Boissons": "../assets/img/Boissons.jpeg",
+  "Pâtes": "../assets/img/Pâtes.jpeg",
+  "Fruit de Mer": "../assets/img/Fruit de Mer.jpeg",
+  "Boisson": "../assets/img/Boisson.jpeg",
+  "Accompagnement": "../assets/img/Accompagnement.jpeg",
+  "Végétalien": "../assets/img/Végétalien.jpeg"
 }

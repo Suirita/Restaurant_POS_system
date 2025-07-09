@@ -30,14 +30,14 @@ export class MealService {
       designation: 'Spaghetti Carbonara',
       sellingPrice: 15.99,
       categoryLabel: 'Main Courses',
-      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
+      image: '',
     },
     {
       id: 'meal-2',
       designation: 'Caesar Salad',
       sellingPrice: 9.50,
       categoryLabel: 'Appetizers',
-      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center',
+      image: '',
     },
   ];
 
@@ -89,7 +89,7 @@ export class MealService {
             designation: meal.designation,
             sellingPrice: meal.sellingPrice,
             categoryLabel: meal.categoryLabel,
-            image: `https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop&crop=center`,
+            image: '',
           }))
         )
       );
