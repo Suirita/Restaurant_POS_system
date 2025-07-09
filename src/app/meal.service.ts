@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../environments/environment';
 
 export interface Meal {
@@ -8,7 +8,7 @@ export interface Meal {
   designation: string;
   sellingPrice: number;
   categoryLabel: string;
-  image: string; // Changed from imageUrl to image for consistency
+  image: string;
 }
 
 export interface Category {
@@ -23,23 +23,7 @@ export class MealService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiBaseUrl;
 
-  // Mock data for demonstration (will be replaced by actual API calls)
-  private meals: Meal[] = [
-    {
-      id: 'meal-1',
-      designation: 'Spaghetti Carbonara',
-      sellingPrice: 15.99,
-      categoryLabel: 'Main Courses',
-      image: '',
-    },
-    {
-      id: 'meal-2',
-      designation: 'Caesar Salad',
-      sellingPrice: 9.50,
-      categoryLabel: 'Appetizers',
-      image: '',
-    },
-  ];
+  private meals: Meal[] = [];
 
   constructor() {
     const storedMeals = localStorage.getItem('meals');
@@ -48,10 +32,6 @@ export class MealService {
     } else {
       localStorage.setItem('meals', JSON.stringify(this.meals));
     }
-  }
-
-  private saveMeals() {
-    localStorage.setItem('meals', JSON.stringify(this.meals));
   }
 
   // Existing methods
@@ -77,7 +57,15 @@ export class MealService {
   ): Observable<Meal[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
-      PageSize: 24,
+      Page: 1,
+      PageSize: 100,
+      OrderBy: 'reference',
+      SortDirection: 1,
+      SearchQuery: '',
+      IgnorePagination: false,
+      isArchived: false,
+      showTarifeo: false,
+      TypeProductId: 'Foliatech88',
       ProdcutCategoryId: categoryId,
     };
     return this.http
@@ -95,35 +83,75 @@ export class MealService {
       );
   }
 
-  // New CRUD methods for meals (using mock data for now)
-  getMeals(): Observable<Meal[]> {
-    return of(this.meals);
-  }
-
-  createMeal(meal: Omit<Meal, 'id'>): Observable<Meal> {
-    const newMeal: Meal = {
-      ...meal,
-      id: `meal-${this.meals.length + 1}`,
+  getMeals(token: string | undefined): Observable<Meal[]> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      Page: 1,
+      PageSize: 100,
+      OrderBy: 'reference',
+      SortDirection: 1,
+      SearchQuery: '',
+      IgnorePagination: false,
+      isArchived: false,
+      showTarifeo: false,
+      TypeProductId: 'Foliatech88',
     };
-    this.meals.push(newMeal);
-    this.saveMeals();
-    return of(newMeal);
+    return this.http
+      .post<any>(
+        'https://preprod-axiobat.foliatech.app/omicron/api/Product',
+        body,
+        { headers }
+      )
+      .pipe(
+        map((response) =>
+          response.value.map((meal: any) => ({
+            id: meal.id,
+            designation: meal.designation,
+            sellingPrice: meal.sellingPrice,
+            categoryLabel: meal.categoryLabel,
+            image: '',
+          }))
+        )
+      );
   }
 
-  updateMeal(updatedMeal: Meal): Observable<Meal> {
-    const index = this.meals.findIndex((meal) => meal.id === updatedMeal.id);
-    if (index > -1) {
-      this.meals[index] = updatedMeal;
-      this.saveMeals();
-      return of(updatedMeal);
-    }
-    return of();
+  createMeal(
+    meal: Omit<Meal, 'id'>,
+    token: string | undefined
+  ): Observable<Meal> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      ...meal,
+      productCategoryType: {
+        id: 'Foliatech88',
+        label: 'Repas',
+        description: 'Repas',
+        type: 13,
+        id_html: 'Repas',
+      },
+      productCategoryTypeId: 'Foliatech88',
+    };
+    return this.http.post<Meal>(
+      'https://preprod-axiobat.foliatech.app/omicron/api/Product/create',
+      body,
+      { headers }
+    );
   }
 
-  deleteMeal(id: string): Observable<boolean> {
-    const initialLength = this.meals.length;
-    this.meals = this.meals.filter((meal) => meal.id !== id);
-    this.saveMeals();
-    return of(this.meals.length < initialLength);
+  updateMeal(meal: Meal, token: string | undefined): Observable<Meal> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<Meal>(
+      `https://preprod-axiobat.foliatech.app/omicron/api/Product/update`,
+      meal,
+      { headers }
+    );
+  }
+
+  deleteMeal(id: string, token: string | undefined): Observable<boolean> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<boolean>(
+      `https://preprod-axiobat.foliatech.app/omicron/api/Product/${id}`,
+      { headers }
+    );
   }
 }

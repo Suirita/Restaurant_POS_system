@@ -37,13 +37,15 @@ export class MealsSettingsComponent implements OnInit {
   }
 
   loadMeals(): void {
-    this.mealService.getMeals().subscribe((meals) => {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.mealService.getMeals(user.token).subscribe((meals) => {
       this.meals.set(meals);
     });
   }
 
   loadCategories(): void {
-    this.categoryService.getCategories().subscribe((categories) => {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.categoryService.getCategories(user.token).subscribe((categories) => {
       this.categories.set(categories);
     });
   }
@@ -66,15 +68,18 @@ export class MealsSettingsComponent implements OnInit {
   }
 
   saveMeal(): void {
+    const user = JSON.parse(localStorage.getItem('user')!);
     if (this.editingMeal()) {
       // Update existing meal
-      this.mealService.updateMeal(this.editingMeal()!).subscribe(() => {
-        this.loadMeals();
-        this.showMealForm.set(false);
-      });
+      this.mealService
+        .updateMeal(this.editingMeal()!, user.token)
+        .subscribe(() => {
+          this.loadMeals();
+          this.showMealForm.set(false);
+        });
     } else {
       // Create new meal
-      this.mealService.createMeal(this.newMeal).subscribe(() => {
+      this.mealService.createMeal(this.newMeal, user.token).subscribe(() => {
         this.loadMeals();
         this.showMealForm.set(false);
       });
@@ -82,8 +87,9 @@ export class MealsSettingsComponent implements OnInit {
   }
 
   deleteMeal(mealId: string): void {
+    const user = JSON.parse(localStorage.getItem('user')!);
     if (confirm('Are you sure you want to delete this meal?')) {
-      this.mealService.deleteMeal(mealId).subscribe(() => {
+      this.mealService.deleteMeal(mealId, user.token).subscribe(() => {
         this.loadMeals();
       });
     }

@@ -1,63 +1,65 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of, map } from 'rxjs';
 import { Category } from './types/pos.types';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
   private http = inject(HttpClient);
-  private apiUrl = 'api/categories';
+  private baseUrl = environment.apiBaseUrl;
 
-  private categories: Category[] = [
-    { id: 'cat-1', label: 'Appetizers' },
-    { id: 'cat-2', label: 'Main Courses' },
-    { id: 'cat-3', label: 'Desserts' },
-    { id: 'cat-4', label: 'Drinks' },
-  ];
-
-  constructor() {
-    const storedCategories = localStorage.getItem('categories');
-    if (storedCategories) {
-      this.categories = JSON.parse(storedCategories);
-    } else {
-      localStorage.setItem('categories', JSON.stringify(this.categories));
-    }
+  getCategories(token: string | undefined): Observable<Category[]> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http
+      .get<any>(`${this.baseUrl}/Configuration/Classification/type/sales`, {
+        headers,
+      })
+      .pipe(
+        map((response) =>
+          response.value[4].subClassification.map((c: any) => ({
+            id: c.id,
+            label: c.label,
+          }))
+        )
+      );
   }
 
-  private saveCategories() {
-    localStorage.setItem('categories', JSON.stringify(this.categories));
-  }
-
-  getCategories(): Observable<Category[]> {
-    return of(this.categories);
-  }
-
-  createCategory(label: string): Observable<Category> {
-    const newCategory: Category = {
-      id: `cat-${this.categories.length + 1}`,
+  createCategory(
+    label: string,
+    token: string | undefined
+  ): Observable<Category> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
       label: label,
+      type: 'sales',
     };
-    this.categories.push(newCategory);
-    this.saveCategories();
-    return of(newCategory);
+    return this.http.post<Category>(
+      `${this.baseUrl}/Configuration/Classification`,
+      body,
+      { headers }
+    );
   }
 
-  updateCategory(updatedCategory: Category): Observable<Category> {
-    const index = this.categories.findIndex((cat) => cat.id === updatedCategory.id);
-    if (index > -1) {
-      this.categories[index] = updatedCategory;
-      this.saveCategories();
-      return of(updatedCategory);
-    }
-    return of();
+  updateCategory(
+    category: Category,
+    token: string | undefined
+  ): Observable<Category> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<Category>(
+      `${this.baseUrl}/Configuration/Classification`,
+      category,
+      { headers }
+    );
   }
 
-  deleteCategory(id: string): Observable<boolean> {
-    const initialLength = this.categories.length;
-    this.categories = this.categories.filter((cat) => cat.id !== id);
-    this.saveCategories();
-    return of(this.categories.length < initialLength);
+  deleteCategory(id: string, token: string | undefined): Observable<boolean> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<boolean>(
+      `${this.baseUrl}/Configuration/Classification/${id}`,
+      { headers }
+    );
   }
 }
