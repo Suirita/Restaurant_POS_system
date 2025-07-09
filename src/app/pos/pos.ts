@@ -91,7 +91,7 @@ export class PosComponent implements OnInit {
   tableErrorMessage = signal<string | null>(null);
 
   // Order counter for receipt numbers
-  private orderCounter = 1;
+  
 
   isEditing = signal(false);
   lastOrderContext = signal<
@@ -574,13 +574,7 @@ export class PosComponent implements OnInit {
     }
   }
 
-  private generateOrderNumber(): string {
-    const date = new Date();
-    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
-    const orderNum = this.orderCounter.toString().padStart(3, '0');
-    this.orderCounter++;
-    return `${dateStr}-${orderNum}`;
-  }
+  
 
   private completeOrder() {
     if (!this.canAddToCart() || this.cart().length === 0) {
@@ -595,7 +589,7 @@ export class PosComponent implements OnInit {
     // For 'table' orders, check for an existing receipt to update.
     if (this.orderType() === 'take away') {
       const receipt: Receipt = {
-        orderNumber: this.generateOrderNumber(),
+        orderNumber: '',
         tableName: tableName,
         items: [...this.cart()],
         total: total,
@@ -603,7 +597,7 @@ export class PosComponent implements OnInit {
         paymentMethod: 'Cash',
         userId: this.currentUser()!.userId,
       };
-      this.receiptService.saveReceipt(receipt);
+      this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
     } else {
       // 'table' order
       const existingReceipt = this.receiptService.getReceiptByTable(tableName);
@@ -616,7 +610,7 @@ export class PosComponent implements OnInit {
       } else {
         // Create a new receipt for table orders if none exists
         const receipt: Receipt = {
-          orderNumber: this.generateOrderNumber(),
+          orderNumber: '',
           tableName: tableName,
           items: [...this.cart()],
           total: total,
@@ -624,7 +618,7 @@ export class PosComponent implements OnInit {
           paymentMethod: 'Cash',
           userId: this.currentUser()!.userId,
         };
-        this.receiptService.saveReceipt(receipt);
+        this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
       }
     }
 
@@ -751,7 +745,7 @@ export class PosComponent implements OnInit {
     } else {
       // Create a new receipt if none exists
       const receipt: Receipt = {
-        orderNumber: this.generateOrderNumber(),
+        orderNumber: '',
         tableName: tableName,
         items: [...this.cart()],
         total: total,
@@ -759,7 +753,7 @@ export class PosComponent implements OnInit {
         paymentMethod: 'Paid',
         userId: this.currentUser()!.userId,
       };
-      this.receiptService.saveReceipt(receipt);
+      this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
     }
 
     // Free up the table if it was a table order
