@@ -320,8 +320,16 @@ export class ReceiptService {
 
 
   getReceipts(userId: string, token: string): Observable<Receipt[]> {
+    console.log('Filtering receipts for userId:', userId);
     return this.getAllReceipts(token).pipe(
-      map((receipts) => receipts.filter((receipt) => receipt.userId === userId))
+      map((receipts) =>
+        receipts.filter((receipt) => {
+          console.log(
+            `Receipt orderNumber: ${receipt.orderNumber}, userId: ${receipt.userId}`
+          );
+          return receipt.userId === userId;
+        })
+      )
     );
   }
 
@@ -351,8 +359,9 @@ export class ReceiptService {
     return this.http
       .post<any>(`${this.baseUrl}/Quote`, body, { headers })
       .pipe(
-        map((response) =>
-          response.value.map(
+        map((response) => {
+          console.log('Raw getAllReceipts response:', response);
+          return response.value.map(
             (quote: any) =>
               ({
                 id: quote.id,
@@ -367,8 +376,8 @@ export class ReceiptService {
                 orderDetails: null, // Not available in this response
                 status: quote.status,
               } as Receipt)
-          )
-        )
+          );
+        })
       );
   }
 }
