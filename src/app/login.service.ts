@@ -22,7 +22,7 @@ export class LoginService {
             atob(response.value.token.split('.')[1])
           );
           return {
-            userId: tokenPayload.userName,
+            userId: tokenPayload.userId,
             username: tokenPayload.userName,
             token: response.value.token,
             fullName: tokenPayload.fullName,

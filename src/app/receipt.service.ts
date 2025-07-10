@@ -318,24 +318,19 @@ export class ReceiptService {
       });
   }
 
-
   getReceipts(userId: string, token: string): Observable<Receipt[]> {
     console.log('Filtering receipts for userId:', userId);
-    return this.getAllReceipts(token).pipe(
-      map((receipts) =>
-        receipts.filter((receipt) => {
-          console.log(
-            `Receipt orderNumber: ${receipt.orderNumber}, userId: ${receipt.userId}`
-          );
-          return receipt.userId === userId;
-        })
-      )
-    );
+    return this.getAllReceipts(token, userId);
   }
 
-  getReceiptByTable(tableName: string, token: string): Observable<Receipt | undefined> {
+  getReceiptByTable(
+    tableName: string,
+    token: string
+  ): Observable<Receipt | undefined> {
     return this.getAllReceipts(token).pipe(
-      map((receipts) => receipts.find((receipt) => receipt.tableName === tableName))
+      map((receipts) =>
+        receipts.find((receipt) => receipt.tableName === tableName)
+      )
     );
   }
 
@@ -344,40 +339,41 @@ export class ReceiptService {
     console.log(`Deleting receipt with order number: ${orderNumber}`);
   }
 
-  public getAllReceipts(token: string): Observable<Receipt[]> {
+  public getAllReceipts(token: string, userId?: string): Observable<Receipt[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = {
+    const body: any = {
       Page: 1,
       PageSize: 1000,
       OrderBy: 'client',
       SortDirection: 1,
       SearchQuery: '',
       allVersions: false,
-      techniciansId: [],
       ParentId: null,
     };
-    return this.http
-      .post<any>(`${this.baseUrl}/Quote`, body, { headers })
-      .pipe(
-        map((response) => {
-          console.log('Raw getAllReceipts response:', response);
-          return response.value.map(
-            (quote: any) =>
-              ({
-                id: quote.id,
-                orderNumber: quote.reference,
-                tableName: quote.client, // Use client string directly
-                items: [], // No line items in this response
-                total: quote.totalTTC,
-                date: new Date(quote.creationDate),
-                paymentMethod: '', // Not available in quote object
-                userId: quote.userAdd, // Use userAdd for userId
-                client: quote.client,
-                orderDetails: null, // Not available in this response
-                status: quote.status,
-              } as Receipt)
-          );
-        })
-      );
+    console.log('userID', userId);
+    if (userId) {
+      body.techniciansId = [userId];
+    }
+    return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
+      map((response) => {
+        console.log('Raw getAllReceipts response:', response);
+        return response.value.map(
+          (quote: any) =>
+            ({
+              id: quote.id,
+              orderNumber: quote.reference,
+              tableName: quote.client, // Use client string directly
+              items: [], // No line items in this response
+              total: quote.totalTTC,
+              date: new Date(quote.creationDate),
+              paymentMethod: '', // Not available in quote object
+              userId: quote.userAdd, // Use userAdd for userId
+              client: quote.client,
+              orderDetails: null, // Not available in this response
+              status: quote.status,
+            } as Receipt)
+        );
+      })
+    );
   }
 }
