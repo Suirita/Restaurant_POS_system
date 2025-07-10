@@ -171,7 +171,7 @@ export class ReceiptService {
       },
       note: '<div><br></div>',
       paymentCondition: '',
-      purpose: null,
+      purpose: receipt.tableName,
       workshopId: null,
       affaireId: null,
       parentId: null,
@@ -358,7 +358,7 @@ export class ReceiptService {
             ({
               id: quote.id,
               orderNumber: quote.reference,
-              tableName: quote.client, // Use client string directly
+              tableName: quote.purpose,
               items: [], // No line items in this response
               total: quote.totalTTC,
               date: new Date(quote.creationDate),
