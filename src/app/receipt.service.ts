@@ -22,7 +22,6 @@ export class ReceiptService {
     token: string,
     uniqueReference: string
   ): Observable<any> {
-    console.log(uniqueReference);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
       labels: [],
@@ -319,7 +318,6 @@ export class ReceiptService {
   }
 
   getReceipts(userId: string, token: string): Observable<Receipt[]> {
-    console.log('Filtering receipts for userId:', userId);
     return this.getAllReceipts(token, userId);
   }
 
@@ -350,13 +348,11 @@ export class ReceiptService {
       allVersions: false,
       ParentId: null,
     };
-    console.log('userID', userId);
     if (userId) {
       body.techniciansId = [userId];
     }
     return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
       map((response) => {
-        console.log('Raw getAllReceipts response:', response);
         return response.value.map(
           (quote: any) =>
             ({
