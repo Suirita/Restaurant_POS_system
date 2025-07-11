@@ -1,90 +1,99 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UserAccount } from './types/pos.types';
+import { LoginService } from './login.service';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private http = inject(HttpClient);
-  // In a real application, this would be an API endpoint
-  private apiUrl = 'api/users';
-
-  // Mock data for demonstration
-  private users: UserAccount[] = [
-    {
-      userId: 'user-1',
-      username: 'john.doe',
-      fullName: 'John Doe',
-      roleName: 'Admin',
-      token: 'mock-token-admin',
-    },
-    {
-      userId: 'user-2',
-      username: 'jane.smith',
-      fullName: 'Jane Smith',
-      roleName: 'Server',
-      token: 'mock-token-server',
-    },
-    {
-      userId: 'user-3',
-      username: 'peter.jones',
-      fullName: 'Peter Jones',
-      roleName: 'Server',
-      token: 'mock-token-server',
-    },
-  ];
-
-  constructor() {
-    // Load users from localStorage if available
-    const storedUsers = localStorage.getItem('users');
-    if (storedUsers) {
-      this.users = JSON.parse(storedUsers);
-    } else {
-      // Save initial mock data to localStorage if not present
-      localStorage.setItem('users', JSON.stringify(this.users));
-    }
-  }
-
-  private saveUsers() {
-    localStorage.setItem('users', JSON.stringify(this.users));
-  }
+  private loginService = inject(LoginService);
+  private apiUrl = `${environment.apiBaseUrl}/Account`;
 
   getUsers(): Observable<UserAccount[]> {
-    // In a real app, this would be an HTTP GET request
-    return of(this.users);
-  }
-
-  getUserById(id: string): Observable<UserAccount | undefined> {
-    return of(this.users.find((user) => user.userId === id));
-  }
-
-  createUser(user: Omit<UserAccount, 'userId' | 'token'>): Observable<UserAccount> {
-    const newUser: UserAccount = {
-      ...user,
-      userId: `user-${this.users.length + 1}`,
-      token: `mock-token-${user.roleName.toLowerCase()}`,
+    const token = this.loginService.getToken();
+    if (!token) {
+      return of([]);
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      Page: 1,
+      PageSize: 1000,
+      showAllUsers: true,
+      label: ['chndr1lvpq3321'],
     };
-    this.users.push(newUser);
-    this.saveUsers();
-    return of(newUser);
+    return this.http
+      .post<any>(this.apiUrl, body, { headers })
+      .pipe(
+        map((response) =>
+          response.value.map((user: any) => ({
+            userId: user.id,
+            username: user.userName,
+            fullName: user.fullName,
+            roleName: user.roleName,
+            token: '', // Token is not returned by this endpoint
+          }))
+        )
+      );
+  }
+
+  // The following methods (createUser, updateUser, deleteUser) would need
+  // to be implemented with the correct API endpoints and payloads.
+  // For now, they will remain as they are, but they will not work correctly.
+
+  createUser(user: any): Observable<UserAccount> {
+    const token = this.loginService.getToken();
+    if (!token) {
+      return of();
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const roleId =
+      user.roleName === 'admin'
+        ? 'bb980f79-df6b-468c-b05a-8422b1fc40e0'
+        : '133cd9c0-b5e0-4c1a-b1f1-880b666bdc30';
+    const body = {
+      userName: user.username,
+      password: 'demodemo',
+      firstName: user.username,
+      lastName: user.username,
+      reference: user.reference,
+      coutUser: {
+        userCost: 49,
+        userCostPerDay: 392,
+        nbrHourPerDay: '08:00',
+        nbrHourPerSupp: '00:00',
+        userCostExtra: 0,
+        userCostPerDayExtra: 0,
+      },
+      statut: true,
+      email: null,
+      phoneNumber: '',
+      memorySize: 0,
+      roleId: roleId,
+      labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
+      image: null,
+      typeUser: 'Normal',
+      licenceUser: 0,
+      permissions: [],
+    };
+    return this.http.post<UserAccount>(`${this.apiUrl}/Create`, body, {
+      headers,
+    });
   }
 
   updateUser(updatedUser: UserAccount): Observable<UserAccount> {
-    const index = this.users.findIndex((user) => user.userId === updatedUser.userId);
-    if (index > -1) {
-      this.users[index] = updatedUser;
-      this.saveUsers();
-      return of(updatedUser);
-    }
-    return of(); // Or throw an error
+    // TODO: Implement API call
+    console.warn('updateUser not implemented with API');
+    return of();
   }
 
   deleteUser(id: string): Observable<boolean> {
-    const initialLength = this.users.length;
-    this.users = this.users.filter((user) => user.userId !== id);
-    this.saveUsers();
-    return of(this.users.length < initialLength);
+    // TODO: Implement API call
+    console.warn('deleteUser not implemented with API');
+    return of(false);
   }
 }
