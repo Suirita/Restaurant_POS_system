@@ -32,7 +32,7 @@
         <tr *ngFor="let category of categories()">
           <td class="px-6 py-4 whitespace-nowrap">
             <img
-              [src]="categoryImages()[category.label] || '/placeholder.svg'"
+              [src]="categoryImages()[category.label]"
               [alt]="category.label"
               class="h-10 w-10 rounded-lg object-cover"
             />
@@ -74,7 +74,8 @@
       class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
     >
       <h3 class="text-xl font-bold mb-4">
-        {{ editingCategory() ? 'Modifier la catégorie': 'Créer une nouvelle catégorie' }}
+        {{ editingCategory() ? 'Modifier la catégorie': 'Créer une nouvelle
+        catégorie' }}
       </h3>
       <form (ngSubmit)="saveCategory()">
         <div class="mb-4">

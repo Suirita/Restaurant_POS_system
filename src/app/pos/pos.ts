@@ -91,7 +91,6 @@ export class PosComponent implements OnInit {
   tableErrorMessage = signal<string | null>(null);
 
   // Order counter for receipt numbers
-  
 
   isEditing = signal(false);
   lastOrderContext = signal<
@@ -106,8 +105,7 @@ export class PosComponent implements OnInit {
       .map((category) => ({
         id: category.id,
         name: category.label,
-        image:
-          images[category.label] || '',
+        image: images[category.label] || '',
       }));
   });
 
@@ -504,7 +502,8 @@ export class PosComponent implements OnInit {
       }
 
       if (table.occupied) {
-        if (table.userId !== this.currentUser()!.userId) {
+        console.log('[PosComponent] Table is occupied. Current user:', this.currentUser()!.userId, 'Table user:', table.userId);
+        if (table.userId && table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
           this.tableErrorMessage.set(
             'Cette table est servie par un autre serveur.'
@@ -563,8 +562,6 @@ export class PosComponent implements OnInit {
     }
   }
 
-  
-
   private completeOrder() {
     if (!this.canAddToCart() || this.cart().length === 0) {
       return;
@@ -616,22 +613,34 @@ export class PosComponent implements OnInit {
   }
 
   private syncTablesWithReceipts() {
-    this.receiptService.getAllReceipts(this.currentUser()!.token).subscribe((allReceipts) => {
-      const occupiedTables = allReceipts.reduce((acc, receipt) => {
-        if (receipt.tableName.startsWith('T')) {
-          acc[receipt.tableName] = receipt.userId;
-        }
-        return acc;
-      }, {} as { [key: string]: string });
+    this.receiptService
+      .getAllReceipts(this.currentUser()!.token)
+      .subscribe((allReceipts) => {
+        console.log('[PosComponent-sync] All receipts from service:', allReceipts);
+        const occupiedTables = allReceipts.reduce((acc, receipt) => {
+          if (receipt.tableName) {
+            if (receipt.tableName.startsWith('T')) {
+              acc[receipt.tableName] = receipt.userId;
+            }
+          }
 
-      this.tables.set(
-        this.tables().map((table) => ({
-          ...table,
-          occupied: !!occupiedTables[table.name],
-          userId: occupiedTables[table.name] || null,
-        }))
-      );
-    });
+          return acc;
+        }, {} as { [key: string]: string });
+
+        console.log('[PosComponent-sync] Calculated occupied tables:', occupiedTables);
+
+        this.tables.set(
+          this.tables().map((table) => ({
+            ...table,
+            occupied: Object.prototype.hasOwnProperty.call(
+              occupiedTables,
+              table.name
+            ),
+            userId: occupiedTables[table.name] || null,
+          }))
+        );
+        console.log('[PosComponent-sync] Final table states:', this.tables());
+      });
   }
 
   pay(orderNumber: string) {
@@ -707,7 +716,7 @@ export class PosComponent implements OnInit {
           existingReceipt.items = [...this.cart()];
           existingReceipt.total = total;
           existingReceipt.paymentMethod = 'Paid';
-          
+
           // Immediately delete the receipt as it's now paid and settled
           this.receiptService.deleteReceiptByOrderNumber(
             existingReceipt.orderNumber
@@ -733,9 +742,7 @@ export class PosComponent implements OnInit {
         // Free up the table if it was a table order
         if (this.orderType() === 'table') {
           const tables = this.tables().map((t) =>
-            t.name === tableName
-              ? { ...t, occupied: false, userId: null }
-              : t
+            t.name === tableName ? { ...t, occupied: false, userId: null } : t
           );
           this.tables.set(tables);
         }

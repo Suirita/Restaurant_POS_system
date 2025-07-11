@@ -10,7 +10,6 @@ import { ConfigurationService } from './configuration.service';
   providedIn: 'root',
 })
 export class ReceiptService {
-  private readonly STORAGE_KEY = 'receipts';
   private http = inject(HttpClient);
   private baseUrl = environment.apiBaseUrl;
   private configurationService = inject(ConfigurationService);
@@ -325,10 +324,38 @@ export class ReceiptService {
     tableName: string,
     token: string
   ): Observable<Receipt | undefined> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.getAllReceipts(token).pipe(
-      map((receipts) =>
-        receipts.find((receipt) => receipt.tableName === tableName)
-      )
+      switchMap((receipts) => {
+        const receipt = receipts.find((r) => r.tableName === tableName);
+        if (receipt) {
+          const body = { quoteId: receipt.id };
+          return this.http
+            .post<any>(`${this.baseUrl}/Quote/GetQuote`, body, {
+              headers,
+            })
+            .pipe(
+              map((quote) => {
+                const lineItems = quote.value.orderDetails.lineItems.map(
+                  (item: any) => ({
+                    id: item.productId,
+                    designation: item.product.designation,
+                    sellingPrice: item.product.sellingPrice,
+                    quantity: item.quantity,
+                    categoryLabel: item.product.categoryLabel,
+                    image: '', // No image in this response
+                  })
+                );
+                return {
+                  ...receipt,
+                  items: lineItems,
+                };
+              })
+            );
+        } else {
+          return of(undefined);
+        }
+      })
     );
   }
 
@@ -341,34 +368,32 @@ export class ReceiptService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body: any = {
       Page: 1,
-      PageSize: 1000,
-      OrderBy: 'client',
-      SortDirection: 1,
-      SearchQuery: '',
-      allVersions: false,
-      ParentId: null,
+      PageSize: 100,
     };
     if (userId) {
       body.techniciansId = [userId];
     }
     return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
       map((response) => {
-        return response.value.map(
-          (quote: any) =>
-            ({
-              id: quote.id,
-              orderNumber: quote.reference,
-              tableName: quote.purpose,
-              items: [], // No line items in this response
-              total: quote.totalTTC,
-              date: new Date(quote.creationDate),
-              paymentMethod: '', // Not available in quote object
-              userId: quote.userAdd, // Use userAdd for userId
-              client: quote.client,
-              orderDetails: null, // Not available in this response
-              status: quote.status,
-            } as Receipt)
-        );
+        if (response && response.value) {
+          return response.value.map(
+            (quote: any) =>
+              ({
+                id: quote.id,
+                orderNumber: quote.reference,
+                tableName: quote.purpose,
+                items: [], // No line items in this response
+                total: quote.totalTTC,
+                date: new Date(quote.creationDate),
+                paymentMethod: '', // Not available in quote object
+                userId: quote.responsables && quote.responsables.length > 0 ? quote.responsables[0] : null,
+                client: quote.client,
+                orderDetails: null, // Not available in this response
+                status: quote.status,
+              } as Receipt)
+          );
+        }
+        return [];
       })
     );
   }

@@ -17,4 +17,20 @@ export class ConfigurationService {
       { headers }
     );
   }
+
+  getCounters(token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.baseUrl}/Configuration/counter`, {
+      headers,
+    });
+  }
+
+  updateCounters(token: string, counters: any): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(
+      `${this.baseUrl}/Configuration/counter`,
+      { value: JSON.stringify(counters) },
+      { headers }
+    );
+  }
 }

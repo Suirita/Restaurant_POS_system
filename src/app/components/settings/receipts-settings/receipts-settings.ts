@@ -1,78 +1,68 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ReceiptNumerationService, ReceiptNumeration } from '../../../receipt-numeration.service';
-import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
+import { ConfigurationService } from '../../../configuration.service';
+import { LoginService } from '../../../login.service';
 
 @Component({
   standalone: true,
   selector: 'app-receipts-settings',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './receipts-settings.html',
 })
 export class ReceiptsSettingsComponent implements OnInit {
-  readonly edit = Edit;
-  readonly trash2 = Trash2;
+  private configService = inject(ConfigurationService);
+  private loginService = inject(LoginService);
 
-  private receiptNumerationService = inject(ReceiptNumerationService);
-
-  numerations = signal<ReceiptNumeration[]>([]);
-  showNumerationForm = signal<boolean>(false);
-  editingNumeration = signal<ReceiptNumeration | null>(null);
-
-  newNumeration: Omit<ReceiptNumeration, 'id'> = {
-    prefix: '',
-    nextNumber: 0,
-  };
+  counters = signal<any[]>([]);
+  counterSettings = signal<any>({});
+  uniqueReference = signal<string>('');
 
   ngOnInit(): void {
-    this.loadNumerations();
+    this.loadCounters();
+    this.loadUniqueReference();
   }
 
-  loadNumerations(): void {
-    this.receiptNumerationService.getNumerations().subscribe((numerations) => {
-      this.numerations.set(numerations);
-    });
-  }
-
-  openCreateForm(): void {
-    this.editingNumeration.set(null);
-    this.newNumeration = { prefix: '', nextNumber: 0 };
-    this.showNumerationForm.set(true);
-  }
-
-  openEditForm(numeration: ReceiptNumeration): void {
-    this.editingNumeration.set(numeration);
-    this.newNumeration = { ...numeration }; // Populate form with existing numeration data
-    this.showNumerationForm.set(true);
-  }
-
-  saveNumeration(): void {
-    if (this.editingNumeration()) {
-      // Update existing numeration
-      this.receiptNumerationService.updateNumeration(this.editingNumeration()!).subscribe(() => {
-        this.loadNumerations();
-        this.showNumerationForm.set(false);
-      });
-    } else {
-      // Create new numeration
-      this.receiptNumerationService.createNumeration(this.newNumeration.prefix, this.newNumeration.nextNumber).subscribe(() => {
-        this.loadNumerations();
-        this.showNumerationForm.set(false);
+  loadUniqueReference(): void {
+    const token = this.loginService.getToken();
+    if (token) {
+      this.configService.getUniqueReference(token).subscribe((ref) => {
+        this.uniqueReference.set(ref.value);
       });
     }
   }
 
-  deleteNumeration(numerationId: string): void {
-    if (confirm('Are you sure you want to delete this numeration rule?')) {
-      this.receiptNumerationService.deleteNumeration(numerationId).subscribe(() => {
-        this.loadNumerations();
+  loadCounters(): void {
+    const token = this.loginService.getToken();
+    if (token) {
+      this.configService.getCounters(token).subscribe((data) => {
+        this.counters.set(data.value);
+        const receiptCounter = data.value.find(
+          (c: any) => c.documentType === 4
+        );
+        if (receiptCounter) {
+          this.counterSettings.set(receiptCounter);
+        }
       });
     }
   }
 
-  cancelForm(): void {
-    this.showNumerationForm.set(false);
-    this.editingNumeration.set(null);
+  saveCounterSettings(): void {
+    const token = this.loginService.getToken();
+    if (token) {
+      const updatedCounters = this.counters().map((c) => {
+        if (c.documentType === 4) {
+          return this.counterSettings();
+        }
+        return c;
+      });
+
+      this.configService
+        .updateCounters(token, updatedCounters)
+        .subscribe(() => {
+          this.loadCounters();
+          this.loadUniqueReference();
+        });
+    }
   }
 }
