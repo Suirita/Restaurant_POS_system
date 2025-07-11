@@ -502,7 +502,12 @@ export class PosComponent implements OnInit {
       }
 
       if (table.occupied) {
-        console.log('[PosComponent] Table is occupied. Current user:', this.currentUser()!.userId, 'Table user:', table.userId);
+        console.log(
+          '[PosComponent] Table is occupied. Current user:',
+          this.currentUser()!.userId,
+          'Table user:',
+          table.userId
+        );
         if (table.userId && table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
           this.tableErrorMessage.set(
@@ -510,6 +515,24 @@ export class PosComponent implements OnInit {
           );
           return;
         }
+
+        // If table is occupied by a null user, claim it.
+        if (!table.userId) {
+          this.receiptService
+            .getQuoteByTable(tableName, this.currentUser()!.token)
+            .subscribe((quote) => {
+              if (quote) {
+                quote.userId = this.currentUser()!.userId;
+                quote.responsables = [this.currentUser()!.userId];
+                this.receiptService
+                  .updateQuote(quote, this.currentUser()!.token)
+                  .subscribe(() => {
+                    this.syncTablesWithReceipts();
+                  });
+              }
+            });
+        }
+
         this.receiptService
           .getReceiptByTable(tableName, this.currentUser()!.token)
           .subscribe((receipt) => {

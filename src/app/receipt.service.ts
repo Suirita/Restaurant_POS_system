@@ -329,27 +329,31 @@ export class ReceiptService {
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
         if (receipt) {
-          const body = { quoteId: receipt.id };
+          const body = { id: receipt.id };
           return this.http
-            .post<any>(`${this.baseUrl}/Quote/GetQuote`, body, {
+            .post<any>(`${this.baseUrl}/Quote`, body, {
               headers,
             })
             .pipe(
-              map((quote) => {
-                const lineItems = quote.value.orderDetails.lineItems.map(
-                  (item: any) => ({
-                    id: item.productId,
-                    designation: item.product.designation,
-                    sellingPrice: item.product.sellingPrice,
-                    quantity: item.quantity,
-                    categoryLabel: item.product.categoryLabel,
-                    image: '', // No image in this response
-                  })
-                );
-                return {
-                  ...receipt,
-                  items: lineItems,
-                };
+              map((response) => {
+                if (response && response.value && response.value.length > 0) {
+                  const quote = response.value[0];
+                  const lineItems = quote.orderDetails.lineItems.map(
+                    (item: any) => ({
+                      id: item.productId,
+                      designation: item.product.designation,
+                      sellingPrice: item.product.sellingPrice,
+                      quantity: item.quantity,
+                      categoryLabel: item.product.categoryLabel,
+                      image: '',
+                    })
+                  );
+                  return {
+                    ...receipt,
+                    items: lineItems,
+                  };
+                }
+                return undefined;
               })
             );
         } else {
@@ -382,11 +386,15 @@ export class ReceiptService {
                 id: quote.id,
                 orderNumber: quote.reference,
                 tableName: quote.purpose,
-                items: [], // No line items in this response
+                items: [], 
                 total: quote.totalTTC,
                 date: new Date(quote.creationDate),
-                paymentMethod: '', // Not available in quote object
-                userId: quote.responsables && quote.responsables.length > 0 ? quote.responsables[0] : null,
+                paymentMethod: '',
+                userId:
+                  quote.userId ||
+                  (quote.responsables && quote.responsables.length > 0
+                    ? quote.responsables[0]
+                    : null),
                 client: quote.client,
                 orderDetails: null, // Not available in this response
                 status: quote.status,
@@ -394,6 +402,42 @@ export class ReceiptService {
           );
         }
         return [];
+      })
+    );
+  }
+
+  updateQuote(quote: any, token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>(`${this.baseUrl}/Quote/Update`, quote, {
+      headers,
+    });
+  }
+
+  getQuoteByTable(
+    tableName: string,
+    token: string
+  ): Observable<any | undefined> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.getAllReceipts(token).pipe(
+      switchMap((receipts) => {
+        const receipt = receipts.find((r) => r.tableName === tableName);
+        if (receipt) {
+          const body = { id: receipt.id };
+          return this.http
+            .post<any>(`${this.baseUrl}/Quote`, body, {
+              headers,
+            })
+            .pipe(
+              map((response) => {
+                if (response && response.value && response.value.length > 0) {
+                  return response.value[0];
+                }
+                return undefined;
+              })
+            );
+        } else {
+          return of(undefined);
+        }
       })
     );
   }
