@@ -14,7 +14,7 @@
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            Account
+            Compte
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -47,7 +47,7 @@
             </button>
 
             <button
-              (click)="deleteUser(user.userId)"
+              (click)="deleteUser(user)"
               class="text-red-600 hover:text-red-900"
             >
               <i-lucide [img]="trash2"></i-lucide>
@@ -78,12 +78,18 @@
       <h3 class="text-xl font-bold mb-4">
         {{ editingUser() ? "Modifier l'utilisateur" : 'Créer un nouvel utilisateur' }}
       </h3>
-      <form (ngSubmit)="saveUser()">
+      <form (ngSubmit)="saveUser()" #userForm="ngForm">
         <div class="mb-4">
+          <input
+            type="hidden"
+            id="userId"
+            name="userId"
+            [(ngModel)]="newUser.userId"
+          />
           <label
             for="username"
             class="block text-gray-700 text-sm font-bold mb-2"
-            >Account :</label
+            >Compte :</label
           >
           <input
             type="text"
@@ -92,7 +98,18 @@
             [(ngModel)]="newUser.username"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
+            pattern="^\d{4}$"
+            #username="ngModel"
           />
+          <div *ngIf="username.invalid && (username.dirty || username.touched)"
+               class="text-red-500 text-xs italic">
+            <div *ngIf="username.errors?.['required']">
+              Compte est requis.
+            </div>
+            <div *ngIf="username.errors?.['pattern']">
+              Compte doit être composé de 4 chiffres.
+            </div>
+          </div>
         </div>
         <div class="mb-4">
           <label
@@ -138,7 +155,8 @@
           </button>
           <button
             type="submit"
-            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            [disabled]="userForm.invalid"
+            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 disabled:bg-gray-400"
           >
             {{ editingUser() ? 'Mettre à jour' : 'Créer' }}
           </button>

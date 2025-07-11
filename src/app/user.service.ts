@@ -58,8 +58,8 @@ export class UserService {
     const body = {
       userName: user.username,
       password: 'demodemo',
-      firstName: user.username,
-      lastName: user.username,
+      firstName: user.fullName.split(' ')[0],
+      lastName: user.fullName.split(' ')[1],
       reference: user.reference,
       coutUser: {
         userCost: 49,
@@ -85,15 +85,56 @@ export class UserService {
     });
   }
 
-  updateUser(updatedUser: UserAccount): Observable<UserAccount> {
-    // TODO: Implement API call
-    console.warn('updateUser not implemented with API');
-    return of();
+  updateUser(user: UserAccount): Observable<UserAccount> {
+    const token = this.loginService.getToken();
+    if (!token) {
+      return of();
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const roleId =
+      user.roleName === 'Admin'
+        ? 'bb980f79-df6b-468c-b05a-8422b1fc40e0'
+        : '133cd9c0-b5e0-4c1a-b1f1-880b666bdc30';
+    const body = {
+      userName: user.username,
+      password: 'demodemo',
+      firstName: user.fullName.split(' ')[0],
+      lastName: user.fullName.split(' ')[1],
+      reference: user.reference,
+      coutUser: {
+        userCost: 49,
+        userCostPerDay: 392,
+        nbrHourPerDay: '08:00',
+        nbrHourPerSupp: '00:00',
+        userCostExtra: 0,
+        userCostPerDayExtra: 0,
+      },
+      statut: true,
+      email: null,
+      phoneNumber: '',
+      memorySize: 0,
+      roleId: roleId,
+      labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
+      image: null,
+      typeUser: 'Normal',
+      licenceUser: 0,
+      permissions: [],
+    };
+    return this.http.put<UserAccount>(
+      `${this.apiUrl}/${user.userId}/Update`,
+      body,
+      {
+        headers,
+      }
+    );
   }
 
-  deleteUser(id: string): Observable<boolean> {
-    // TODO: Implement API call
-    console.warn('deleteUser not implemented with API');
-    return of(false);
+  deleteUser(userId: string): Observable<any> {
+    const token = this.loginService.getToken();
+    if (!token) {
+      return of(null);
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/${userId}/Delete`, { headers });
   }
 }

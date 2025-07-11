@@ -21,10 +21,12 @@ export class UsersSettingsComponent implements OnInit {
   showUserForm = signal<boolean>(false);
   editingUser = signal<UserAccount | null>(null);
 
-  newUser: Omit<UserAccount, 'userId' | 'token'> & { reference: string } = {
+  newUser: UserAccount & { reference: string } = {
+    userId: '',
     username: '',
     fullName: '',
     roleName: '',
+    token: '',
     reference: '',
   };
 
@@ -40,20 +42,27 @@ export class UsersSettingsComponent implements OnInit {
 
   openCreateForm(): void {
     this.editingUser.set(null);
-    this.newUser = { username: '', fullName: '', roleName: '', reference: '' };
+    this.newUser = {
+      userId: '',
+      username: '',
+      fullName: '',
+      roleName: '',
+      token: '',
+      reference: '',
+    };
     this.showUserForm.set(true);
   }
 
   openEditForm(user: UserAccount): void {
     this.editingUser.set(user);
-    this.newUser = { ...user, reference: '' }; // Populate form with existing user data
+    this.newUser = { ...user, reference: '' };
     this.showUserForm.set(true);
   }
 
   saveUser(): void {
     if (this.editingUser()) {
       // Update existing user
-      this.userService.updateUser(this.editingUser()!).subscribe(() => {
+      this.userService.updateUser(this.newUser).subscribe(() => {
         this.loadUsers();
         this.showUserForm.set(false);
       });
@@ -66,10 +75,9 @@ export class UsersSettingsComponent implements OnInit {
     }
   }
 
-  deleteUser(userId: string): void {
+  deleteUser(user: UserAccount): void {
     if (confirm('Are you sure you want to delete this user?')) {
-      const idToDelete = userId.split('::')[0];
-      this.userService.deleteUser(idToDelete).subscribe(() => {
+      this.userService.deleteUser(user.userId).subscribe(() => {
         this.loadUsers();
       });
     }

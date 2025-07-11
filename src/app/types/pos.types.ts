@@ -41,6 +41,7 @@ export interface UserAccount {
   token: string;
   fullName: string;
   roleName: string;
+  reference: string;
 }
 
 export interface Table {
