@@ -502,12 +502,6 @@ export class PosComponent implements OnInit {
       }
 
       if (table.occupied) {
-        console.log(
-          '[PosComponent] Table is occupied. Current user:',
-          this.currentUser()!.userId,
-          'Table user:',
-          table.userId
-        );
         if (table.userId && table.userId !== this.currentUser()!.userId) {
           this.isTableNumberComplete.set(false);
           this.tableErrorMessage.set(
@@ -639,7 +633,6 @@ export class PosComponent implements OnInit {
     this.receiptService
       .getAllReceipts(this.currentUser()!.token)
       .subscribe((allReceipts) => {
-        console.log('[PosComponent-sync] All receipts from service:', allReceipts);
         const occupiedTables = allReceipts.reduce((acc, receipt) => {
           if (receipt.tableName) {
             if (receipt.tableName.startsWith('T')) {
@@ -649,8 +642,6 @@ export class PosComponent implements OnInit {
 
           return acc;
         }, {} as { [key: string]: string });
-
-        console.log('[PosComponent-sync] Calculated occupied tables:', occupiedTables);
 
         this.tables.set(
           this.tables().map((table) => ({
@@ -662,7 +653,6 @@ export class PosComponent implements OnInit {
             userId: occupiedTables[table.name] || null,
           }))
         );
-        console.log('[PosComponent-sync] Final table states:', this.tables());
       });
   }
 
