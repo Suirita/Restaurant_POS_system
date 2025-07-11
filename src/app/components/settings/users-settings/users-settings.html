@@ -140,9 +140,9 @@
             required
           >
             <option value="">Sélectionner un rôle</option>
-            <option value="Admin">Admin</option>
-            <option value="Server">Serveur</option>
-            <!-- Add other roles as needed -->
+            <option *ngFor="let role of roles()" [value]="role.name">
+              {{ role.name === 'Direction' ? 'admin' : (role.name === 'utilisateur' ? 'serveur' : role.name) }}
+            </option>
           </select>
         </div>
         <div class="flex justify-end">

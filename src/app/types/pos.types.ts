@@ -49,3 +49,8 @@ export interface Table {
   occupied: boolean;
   userId: string | null;
 }
+
+export interface Role {
+  id: string;
+  name: string;
+}

@@ -52,7 +52,7 @@ export class UserService {
     }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const roleId =
-      user.roleName === 'admin'
+      user.roleName === 'Direction'
         ? 'bb980f79-df6b-468c-b05a-8422b1fc40e0'
         : '133cd9c0-b5e0-4c1a-b1f1-880b666bdc30';
     const body = {

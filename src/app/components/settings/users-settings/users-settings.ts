@@ -2,7 +2,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../user.service';
-import { UserAccount } from '../../../types/pos.types';
+import { RoleService } from '../../../role.service';
+import { UserAccount, Role } from '../../../types/pos.types';
 import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 
 @Component({
@@ -16,8 +17,10 @@ export class UsersSettingsComponent implements OnInit {
   readonly trash2 = Trash2;
 
   private userService = inject(UserService);
+  private roleService = inject(RoleService);
 
   users = signal<UserAccount[]>([]);
+  roles = signal<Role[]>([]);
   showUserForm = signal<boolean>(false);
   editingUser = signal<UserAccount | null>(null);
 
@@ -32,11 +35,18 @@ export class UsersSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
+    this.loadRoles();
   }
 
   loadUsers(): void {
     this.userService.getUsers().subscribe((users) => {
       this.users.set(users);
+    });
+  }
+
+  loadRoles(): void {
+    this.roleService.getRoles().subscribe((roles) => {
+      this.roles.set(roles.filter(role => role.name === 'Direction' || role.name === 'utilisateur'));
     });
   }
 
