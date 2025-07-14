@@ -5,54 +5,49 @@
     <nav>
       <ul>
         <li class="mb-2">
-          <button
-            [class.bg-black]="selectedSection() === 'users'"
-            [class.text-white]="selectedSection() === 'users'"
-            class="w-full text-left px-4 py-2 rounded-md"
-            (click)="selectSection('users')"
+          <a
+            routerLink="users"
+            routerLinkActive="bg-black text-white"
+            class="w-full text-left px-4 py-2 rounded-md block"
           >
             Utilisateurs
-          </button>
+          </a>
         </li>
         <li class="mb-2">
-          <button
-            [class.bg-black]="selectedSection() === 'categories'"
-            [class.text-white]="selectedSection() === 'categories'"
-            class="w-full text-left px-4 py-2 rounded-md"
-            (click)="selectSection('categories')"
+          <a
+            routerLink="categories"
+            routerLinkActive="bg-black text-white"
+            class="w-full text-left px-4 py-2 rounded-md block"
           >
             Catégories
-          </button>
+          </a>
         </li>
         <li class="mb-2">
-          <button
-            [class.bg-black]="selectedSection() === 'meals'"
-            [class.text-white]="selectedSection() === 'meals'"
-            class="w-full text-left px-4 py-2 rounded-md"
-            (click)="selectSection('meals')"
+          <a
+            routerLink="meals"
+            routerLinkActive="bg-black text-white"
+            class="w-full text-left px-4 py-2 rounded-md block"
           >
             Plats
-          </button>
+          </a>
         </li>
         <li class="mb-2">
-          <button
-            [class.bg-black]="selectedSection() === 'rooms'"
-            [class.text-white]="selectedSection() === 'rooms'"
-            class="w-full text-left px-4 py-2 rounded-md"
-            (click)="selectSection('rooms')"
+          <a
+            routerLink="rooms"
+            routerLinkActive="bg-black text-white"
+            class="w-full text-left px-4 py-2 rounded-md block"
           >
             Salles
-          </button>
+          </a>
         </li>
         <li class="mb-2">
-          <button
-            [class.bg-black]="selectedSection() === 'receipts'"
-            [class.text-white]="selectedSection() === 'receipts'"
-            class="w-full text-left px-4 py-2 rounded-md"
-            (click)="selectSection('receipts')"
+          <a
+            routerLink="receipts"
+            routerLinkActive="bg-black text-white"
+            class="w-full text-left px-4 py-2 rounded-md block"
           >
             Reçus
-          </button>
+          </a>
         </li>
       </ul>
     </nav>
@@ -67,20 +62,6 @@
 
   <!-- Main Content Area -->
   <div class="flex-1 p-6 overflow-auto">
-    <div *ngIf="selectedSection() === 'users'">
-      <app-users-settings></app-users-settings>
-    </div>
-    <div *ngIf="selectedSection() === 'categories'">
-      <app-categories-settings></app-categories-settings>
-    </div>
-    <div *ngIf="selectedSection() === 'meals'">
-      <app-meals-settings></app-meals-settings>
-    </div>
-    <div *ngIf="selectedSection() === 'rooms'">
-      <app-rooms-settings></app-rooms-settings>
-    </div>
-    <div *ngIf="selectedSection() === 'receipts'">
-      <app-receipts-settings></app-receipts-settings>
-    </div>
+    <router-outlet></router-outlet>
   </div>
 </div>
