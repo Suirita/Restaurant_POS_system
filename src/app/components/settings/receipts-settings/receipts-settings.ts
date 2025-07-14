@@ -18,6 +18,7 @@ import { LoginService } from '../../../login.service';
   templateUrl: './receipts-settings.html',
 })
 export class ReceiptsSettingsComponent implements OnInit {
+  selectedTab = 0;
   private configService = inject(ConfigurationService);
   private loginService = inject(LoginService);
 
