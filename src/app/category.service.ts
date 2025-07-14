@@ -32,11 +32,19 @@ export class CategoryService {
     token: string | undefined
   ): Observable<Category> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = {
-      label: label,
-      type: 'sales',
-    };
-    return this.http.post<Category>(
+    const body = [
+      {
+        id: null,
+        type: 'sales',
+        label: label,
+        description: label,
+        chartAccountItemId: '2FhdckGHLkunUFuXjV6LVw',
+        parentId: 'Foliatech88',
+        isDefault: false,
+        categoryType: -1,
+      },
+    ];
+    return this.http.put<Category>(
       `${this.baseUrl}/Configuration/Classification`,
       body,
       { headers }

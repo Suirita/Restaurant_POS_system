@@ -25,6 +25,7 @@ export class CategoriesSettingsComponent implements OnInit {
   editingCategory = signal<Category | null>(null);
 
   newCategoryLabel: string = '';
+  newCategoryImage: File | null = null;
 
   ngOnInit(): void {
     this.loadCategories();
@@ -49,13 +50,22 @@ export class CategoriesSettingsComponent implements OnInit {
   openCreateForm(): void {
     this.editingCategory.set(null);
     this.newCategoryLabel = '';
+    this.newCategoryImage = null;
     this.showCategoryForm.set(true);
   }
 
   openEditForm(category: Category): void {
     this.editingCategory.set(category);
     this.newCategoryLabel = category.label; // Populate form with existing category label
+    this.newCategoryImage = null;
     this.showCategoryForm.set(true);
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.newCategoryImage = input.files[0];
+    }
   }
 
   saveCategory(): void {
@@ -77,8 +87,39 @@ export class CategoriesSettingsComponent implements OnInit {
       this.categoryService
         .createCategory(this.newCategoryLabel, user.token)
         .subscribe(() => {
-          this.loadCategories();
-          this.showCategoryForm.set(false);
+          if (this.newCategoryImage) {
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+              const imageContent = e.target.result;
+              this.http
+                .post('http://localhost:3000/api/save-image', {
+                  path: `src/assets/img/${this.newCategoryLabel}.jpeg`,
+                  content: imageContent.split(',')[1],
+                })
+                .subscribe(() => {
+                  this.http
+                    .get('/assets/category-images.json')
+                    .subscribe((data: any) => {
+                      data[this.newCategoryLabel] =
+                        `assets/img/${this.newCategoryLabel}.jpeg`;
+                      this.http
+                        .post('/api/update-json', {
+                          path: 'src/assets/category-images.json',
+                          content: data,
+                        })
+                        .subscribe(() => {
+                          this.loadCategories();
+                          this.loadCategoryImages();
+                          this.showCategoryForm.set(false);
+                        });
+                    });
+                });
+            };
+            reader.readAsDataURL(this.newCategoryImage);
+          } else {
+            this.loadCategories();
+            this.showCategoryForm.set(false);
+          }
         });
     }
   }
