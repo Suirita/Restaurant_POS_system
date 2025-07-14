@@ -5,6 +5,7 @@ import { CategoryService } from '../../../category.service';
 import { Category } from '../../../types/pos.types';
 import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 import { HttpClient } from '@angular/common/http';
+import { switchMap } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -96,23 +97,29 @@ export class CategoriesSettingsComponent implements OnInit {
                   path: `src/assets/img/${this.newCategoryLabel}.jpeg`,
                   content: imageContent.split(',')[1],
                 })
-                .subscribe(() => {
-                  this.http
-                    .get('/assets/category-images.json')
-                    .subscribe((data: any) => {
-                      data[this.newCategoryLabel] =
-                        `assets/img/${this.newCategoryLabel}.jpeg`;
-                      this.http
-                        .post('/api/update-json', {
-                          path: 'src/assets/category-images.json',
-                          content: data,
-                        })
-                        .subscribe(() => {
-                          this.loadCategories();
-                          this.loadCategoryImages();
-                          this.showCategoryForm.set(false);
-                        });
-                    });
+                .pipe(
+                  switchMap(() => {
+                    const currentImages = this.categoryImages();
+                    currentImages[this.newCategoryLabel] =
+                      `assets/img/${this.newCategoryLabel}.jpeg`;
+                    return this.http.post(
+                      'http://localhost:3000/api/update-json',
+                      {
+                        path: 'src/assets/category-images.json',
+                        content: currentImages,
+                      }
+                    );
+                  })
+                )
+                .subscribe({
+                  next: () => {
+                    this.loadCategories();
+                    this.loadCategoryImages();
+                    this.showCategoryForm.set(false);
+                  },
+                  error: (err) => {
+                    console.error('Error during save process:', err);
+                  },
                 });
             };
             reader.readAsDataURL(this.newCategoryImage);
