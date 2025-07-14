@@ -66,7 +66,7 @@ export class CategoryService {
   deleteCategory(id: string, token: string | undefined): Observable<boolean> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete<boolean>(
-      `${this.baseUrl}/Configuration/Classification/${id}`,
+      `${this.baseUrl}/Configuration/Classification/${id}/Delete`,
       { headers }
     );
   }
