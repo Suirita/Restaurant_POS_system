@@ -134,11 +134,31 @@ export class CategoriesSettingsComponent implements OnInit {
   deleteCategory(categoryId: string): void {
     const user = JSON.parse(localStorage.getItem('user')!);
     if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-      this.categoryService
-        .deleteCategory(categoryId, user.token)
-        .subscribe(() => {
-          this.loadCategories();
-        });
+      const categoryToDelete = this.categories().find(c => c.id === categoryId);
+      if (categoryToDelete) {
+        const imagePath = this.categoryImages()[categoryToDelete.label];
+        // Prepend 'src/' to the path for the backend
+        const backendImagePath = 'src/' + imagePath; 
+        this.http.post('http://localhost:3000/api/delete-image', { path: backendImagePath })
+          .pipe(
+            switchMap(() => {
+              const updatedImages = { ...this.categoryImages() };
+              delete updatedImages[categoryToDelete.label];
+              return this.http.post('http://localhost:3000/api/update-json', {
+                path: 'src/assets/category-images.json',
+                content: updatedImages,
+              });
+            }),
+            switchMap(() => this.categoryService.deleteCategory(categoryId, user.token))
+          )
+          .subscribe({
+            next: () => {
+              this.loadCategories();
+              this.loadCategoryImages();
+            },
+            error: (err) => console.error('Error deleting category:', err),
+          });
+      }
     }
   }
 

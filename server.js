@@ -43,6 +43,17 @@ app.post("/api/update-json", (req, res) => {
   );
 });
 
+app.post("/api/delete-image", (req, res) => {
+  const { path: imagePath } = req.body;
+  fs.unlink(path.join(__dirname, imagePath), (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error deleting image");
+    }
+    res.status(200).json({ message: "Image deleted successfully" });
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
