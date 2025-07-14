@@ -56,9 +56,21 @@ export class CategoryService {
     token: string | undefined
   ): Observable<Category> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = [
+      {
+        id: category.id,
+        type: 'sales',
+        label: category.label,
+        description: category.label,
+        chartAccountItemId: '2FhdckGHLkunUFuXjV6LVw',
+        parentId: 'Foliatech88',
+        isDefault: false,
+        categoryType: -1,
+      },
+    ];
     return this.http.put<Category>(
       `${this.baseUrl}/Configuration/Classification`,
-      category,
+      body,
       { headers }
     );
   }
