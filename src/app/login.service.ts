@@ -28,6 +28,7 @@ export class LoginService {
             fullName: tokenPayload.fullName,
             roleName: tokenPayload.roleName,
             reference: '',
+            phoneNumber: '',
           };
         } else {
           throw new Error('Invalid login response');

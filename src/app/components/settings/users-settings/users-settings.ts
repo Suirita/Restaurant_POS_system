@@ -31,6 +31,7 @@ export class UsersSettingsComponent implements OnInit {
     roleName: '',
     token: '',
     reference: '',
+    phoneNumber: '', // Added phoneNumber
   };
 
   ngOnInit(): void {
@@ -46,7 +47,11 @@ export class UsersSettingsComponent implements OnInit {
 
   loadRoles(): void {
     this.roleService.getRoles().subscribe((roles) => {
-      this.roles.set(roles.filter(role => role.name === 'Direction' || role.name === 'utilisateur'));
+      this.roles.set(
+        roles.filter(
+          (role) => role.name === 'Direction' || role.name === 'utilisateur'
+        )
+      );
     });
   }
 
@@ -59,13 +64,18 @@ export class UsersSettingsComponent implements OnInit {
       roleName: '',
       token: '',
       reference: '',
+      phoneNumber: '', // Added phoneNumber
     };
     this.showUserForm.set(true);
   }
 
   openEditForm(user: UserAccount): void {
     this.editingUser.set(user);
-    this.newUser = { ...user, reference: '' };
+    this.newUser = {
+      ...user,
+      reference: user.reference || '',
+      phoneNumber: user.phoneNumber || '',
+    };
     this.showUserForm.set(true);
   }
 

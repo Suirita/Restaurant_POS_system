@@ -42,6 +42,7 @@ export interface UserAccount {
   fullName: string;
   roleName: string;
   reference: string;
+  phoneNumber: string;
 }
 
 export interface Table {

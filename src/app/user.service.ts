@@ -26,19 +26,18 @@ export class UserService {
       showAllUsers: true,
       label: ['chndr1lvpq3321'],
     };
-    return this.http
-      .post<any>(this.apiUrl, body, { headers })
-      .pipe(
-        map((response) =>
-          response.value.map((user: any) => ({
-            userId: user.id,
-            username: user.userName,
-            fullName: user.fullName,
-            roleName: user.roleName,
-            token: '', // Token is not returned by this endpoint
-          }))
-        )
-      );
+    return this.http.post<any>(this.apiUrl, body, { headers }).pipe(
+      map((response) =>
+        response.value.map((user: any) => ({
+          userId: user.id,
+          username: user.userName,
+          fullName: user.fullName,
+          phoneNumber: user.phoneNumber,
+          roleName: user.roleName,
+          token: '', // Token is not returned by this endpoint
+        }))
+      )
+    );
   }
 
   // The following methods (createUser, updateUser, deleteUser) would need
@@ -71,7 +70,7 @@ export class UserService {
       },
       statut: true,
       email: null,
-      phoneNumber: '',
+      phoneNumber: user.phoneNumber || '',
       memorySize: 0,
       roleId: roleId,
       labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
@@ -111,7 +110,7 @@ export class UserService {
       },
       statut: true,
       email: null,
-      phoneNumber: '',
+      phoneNumber: user.phoneNumber || '',
       memorySize: 0,
       roleId: roleId,
       labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
