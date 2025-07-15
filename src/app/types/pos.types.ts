@@ -41,6 +41,7 @@ export interface UserAccount {
   token: string;
   fullName: string;
   roleName: string;
+  roleId?: string;
   reference: string;
   phoneNumber: string;
 }

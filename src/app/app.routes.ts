@@ -22,6 +22,7 @@ export const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
     children: [
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
       { path: 'users', component: UsersSettingsComponent },
       { path: 'categories', component: CategoriesSettingsComponent },
       { path: 'meals', component: MealsSettingsComponent },

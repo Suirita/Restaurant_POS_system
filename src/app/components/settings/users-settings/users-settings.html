@@ -165,37 +165,27 @@
           </div>
         </div>
         <div class="mb-4">
-          <label
-            for="roleName"
-            class="block text-gray-700 text-sm font-bold mb-2"
-            >Rôle :</label
-          >
-          <select
-            id="roleName"
-            name="roleName"
-            [(ngModel)]="newUser.roleName"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          >
-            <option value="">Sélectionner un rôle</option>
-            <option *ngFor="let role of roles()" [value]="role.name">
-              {{ role.name === 'Direction' ? 'admin' : (role.name ===
-              'utilisateur' ? 'serveur' : role.name) }}
-            </option>
-          </select>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Rôle :</label>
+          <div class="flex items-center">
+            <span class="mr-2">{{ newUser.isAdmin ? 'Admin' : 'Serveur' }}</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" name="isAdmin" [(ngModel)]="newUser.isAdmin" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
         </div>
         <div class="flex justify-end">
           <button
             type="button"
             (click)="cancelForm()"
-            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2 hover:bg-gray-400"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2"
           >
             Annuler
           </button>
           <button
             type="submit"
             [disabled]="userForm.invalid"
-            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 disabled:bg-gray-400"
+            class="bg-green-500 text-white px-4 py-2 rounded-md disabled:bg-gray-400"
           >
             {{ editingUser() ? 'Mettre à jour' : 'Créer' }}
           </button>

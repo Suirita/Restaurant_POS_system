@@ -24,14 +24,15 @@ export class UsersSettingsComponent implements OnInit {
   showUserForm = signal<boolean>(false);
   editingUser = signal<UserAccount | null>(null);
 
-  newUser: UserAccount & { reference: string } = {
+  newUser: UserAccount & { reference: string; isAdmin: boolean } = {
     userId: '',
     username: '',
     fullName: '',
-    roleName: '',
+    roleName: 'utilisateur',
     token: '',
     reference: '',
-    phoneNumber: '', // Added phoneNumber
+    phoneNumber: '',
+    isAdmin: false,
   };
 
   ngOnInit(): void {
@@ -61,10 +62,11 @@ export class UsersSettingsComponent implements OnInit {
       userId: '',
       username: '',
       fullName: '',
-      roleName: '',
+      roleName: 'utilisateur',
       token: '',
       reference: '',
-      phoneNumber: '', // Added phoneNumber
+      phoneNumber: '',
+      isAdmin: false,
     };
     this.showUserForm.set(true);
   }
@@ -75,20 +77,33 @@ export class UsersSettingsComponent implements OnInit {
       ...user,
       reference: user.reference || '',
       phoneNumber: user.phoneNumber || '',
+      isAdmin: user.roleName === 'Direction',
     };
     this.showUserForm.set(true);
   }
 
   saveUser(): void {
+    const roleName = this.newUser.isAdmin ? 'Direction' : 'utilisateur';
+    const role = this.roles().find((r) => r.name === roleName);
+
+    if (!role) {
+      console.error('Role not found');
+      return;
+    }
+
+    const userToSave: UserAccount = {
+      ...this.newUser,
+      roleName: role.name,
+      roleId: role.id,
+    };
+
     if (this.editingUser()) {
-      // Update existing user
-      this.userService.updateUser(this.newUser).subscribe(() => {
+      this.userService.updateUser(userToSave).subscribe(() => {
         this.loadUsers();
         this.showUserForm.set(false);
       });
     } else {
-      // Create new user
-      this.userService.createUser(this.newUser).subscribe(() => {
+      this.userService.createUser(userToSave).subscribe(() => {
         this.loadUsers();
         this.showUserForm.set(false);
       });
