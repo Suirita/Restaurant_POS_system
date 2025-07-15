@@ -1,6 +1,7 @@
 // main.js
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { exec } = require('child_process');
 
 // Error Handling
 process.on('uncaughtException', (error) => {
@@ -25,4 +26,8 @@ app.on('window-all-closed', () => {
 });
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
+
+ipcMain.on('open-keyboard', () => {
+  exec('osk');
 });

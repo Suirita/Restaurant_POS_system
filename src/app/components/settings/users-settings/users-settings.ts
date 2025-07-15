@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../user.service';
@@ -20,6 +21,7 @@ export class UsersSettingsComponent implements OnInit {
 
   private userService = inject(UserService);
   private roleService = inject(RoleService);
+  private keyboardService = inject(KeyboardService);
 
   users = signal<UserAccount[]>([]);
   roles = signal<Role[]>([]);
@@ -200,5 +202,9 @@ export class UsersSettingsComponent implements OnInit {
   cancelForm(): void {
     this.showUserForm.set(false);
     this.editingUser.set(null);
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
   }
 }

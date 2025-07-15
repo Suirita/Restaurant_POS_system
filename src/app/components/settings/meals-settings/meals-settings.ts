@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MealService } from '../../../meal.service';
@@ -18,6 +19,7 @@ export class MealsSettingsComponent implements OnInit {
 
   private mealService = inject(MealService);
   private categoryService = inject(CategoryService);
+  private keyboardService = inject(KeyboardService);
 
   meals = signal<Meal[]>([]);
   categories = signal<Category[]>([]);
@@ -98,5 +100,9 @@ export class MealsSettingsComponent implements OnInit {
   cancelForm(): void {
     this.showMealForm.set(false);
     this.editingMeal.set(null);
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
   }
 }

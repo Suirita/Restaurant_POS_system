@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
+import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Table } from '../../../types/pos.types';
@@ -13,6 +14,8 @@ import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 export class RoomsSettingsComponent implements OnInit {
   readonly edit = Edit;
   readonly trash2 = Trash2;
+
+  private keyboardService = inject(KeyboardService);
 
   tables = signal<Table[]>([]);
   showTableForm = signal<boolean>(false);
@@ -90,5 +93,9 @@ export class RoomsSettingsComponent implements OnInit {
   cancelForm(): void {
     this.showTableForm.set(false);
     this.editingTable.set(null);
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
   }
 }

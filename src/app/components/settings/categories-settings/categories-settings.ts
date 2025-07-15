@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../../category.service';
@@ -19,6 +20,7 @@ export class CategoriesSettingsComponent implements OnInit {
 
   private categoryService = inject(CategoryService);
   private http = inject(HttpClient);
+  private keyboardService = inject(KeyboardService);
 
   categories = signal<Category[]>([]);
   categoryImages = signal<{ [key: string]: string }>({});
@@ -165,5 +167,9 @@ export class CategoriesSettingsComponent implements OnInit {
   cancelForm(): void {
     this.showCategoryForm.set(false);
     this.editingCategory.set(null);
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
   }
 }

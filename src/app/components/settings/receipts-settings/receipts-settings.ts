@@ -7,6 +7,7 @@ import {
   computed,
   WritableSignal,
 } from '@angular/core';
+import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfigurationService } from '../../../configuration.service';
@@ -22,6 +23,7 @@ export class ReceiptsSettingsComponent implements OnInit {
   selectedTab = signal(0);
   private configService = inject(ConfigurationService);
   private loginService = inject(LoginService);
+  private keyboardService = inject(KeyboardService);
 
   counters = signal<any[]>([]);
   receiptCounterSettings: WritableSignal<any | null> = signal(null);
@@ -152,5 +154,9 @@ export class ReceiptsSettingsComponent implements OnInit {
     if (settings) {
       this.editableCounterSettings.set({ ...settings });
     }
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
   }
 }
