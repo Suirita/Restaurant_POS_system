@@ -46,7 +46,11 @@
       <tbody class="bg-white divide-y divide-gray-200">
         <tr *ngFor="let user of users()">
           <td class="px-6 py-2 whitespace-nowrap">
-            <img [src]="getImageUrl(user)" alt="User Image" class="w-10 h-10 rounded-full">
+            <img
+              [src]="getImageUrl(user)"
+              alt="User Image"
+              class="w-10 h-10 rounded-full"
+            />
           </td>
           <td class="px-6 py-2 whitespace-nowrap">{{ user.fullName }}</td>
           <td class="px-6 py-2 whitespace-nowrap">{{ user.username }}</td>
@@ -93,10 +97,52 @@
       class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
     >
       <h3 class="text-xl font-bold mb-4">
-        {{ editingUser() ? "Modifier l'utilisateur" : 'Créer un nouvel
-        utilisateur' }}
+        {{ editingUser() ? "Modifier l'utilisateur" : 'Créer un nouvel utilisateur' }}
       </h3>
       <form (ngSubmit)="saveUser()" #userForm="ngForm">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            Image:
+          </label>
+          <div class="relative w-20 h-20">
+            <!-- the visible circle -->
+            <label
+              for="fileInput"
+              class="w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden"
+            >
+              <ng-container *ngIf="imagePreview(); else placeholder">
+                <!-- previewed image fills the circle -->
+                <img
+                  [src]="imagePreview()"
+                  alt="Preview"
+                  class="w-full h-full object-cover"
+                />
+              </ng-container>
+              <ng-template #placeholder>
+                <!-- three-dots icon centered -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M6 10a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+              </ng-template>
+            </label>
+
+            <!-- actual file input is invisible, sits on top -->
+            <input
+              id="fileInput"
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          </div>
+        </div>
         <div class="mb-4">
           <input
             type="hidden"
@@ -176,19 +222,23 @@
           </div>
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2">Image :</label>
+          <label class="block text-gray-700 text-sm font-bold mb-2"
+            >Rôle :</label
+          >
           <div class="flex items-center">
-            <img [src]="imagePreview()" alt="Preview" class="w-20 h-20 object-cover rounded-md mr-4" *ngIf="imagePreview()">
-            <input type="file" (change)="onFileSelected($event)" accept="image/*" class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-          </div>
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2">Rôle :</label>
-          <div class="flex items-center">
-            <span class="mr-2">{{ newUser.isAdmin ? 'Admin' : 'Serveur' }}</span>
+            <span class="mr-2"
+              >{{ newUser.isAdmin ? 'Admin' : 'Serveur' }}</span
+            >
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" name="isAdmin" [(ngModel)]="newUser.isAdmin" class="sr-only peer">
-              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              <input
+                type="checkbox"
+                name="isAdmin"
+                [(ngModel)]="newUser.isAdmin"
+                class="sr-only peer"
+              />
+              <div
+                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+              ></div>
             </label>
           </div>
         </div>
