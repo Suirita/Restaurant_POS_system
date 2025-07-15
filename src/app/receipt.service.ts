@@ -300,7 +300,7 @@ export class ReceiptService {
 
   saveReceipt(receipt: Receipt, token: string): void {
     this.configurationService
-      .getUniqueReference(token)
+      .getUniqueReference(token, 4)
       .pipe(
         switchMap((response) => {
           const uniqueReference = response;

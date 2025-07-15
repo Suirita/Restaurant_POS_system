@@ -10,10 +10,10 @@ export class ConfigurationService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiBaseUrl;
 
-  getUniqueReference(token: string): Observable<any> {
+  getUniqueReference(token: string, documentType: number): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(
-      `${this.baseUrl}/Configuration/4/reference`,
+      `${this.baseUrl}/Configuration/${documentType}/reference`,
       { headers }
     );
   }

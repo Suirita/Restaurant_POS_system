@@ -5,6 +5,7 @@ import {
   signal,
   effect,
   computed,
+  WritableSignal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -18,14 +19,28 @@ import { LoginService } from '../../../login.service';
   templateUrl: './receipts-settings.html',
 })
 export class ReceiptsSettingsComponent implements OnInit {
-  selectedTab = 0;
+  selectedTab = signal(0);
   private configService = inject(ConfigurationService);
   private loginService = inject(LoginService);
 
   counters = signal<any[]>([]);
-  counterSettings = signal<any | null>(null);
+  receiptCounterSettings: WritableSignal<any | null> = signal(null);
+  invoiceCounterSettings: WritableSignal<any | null> = signal(null);
   editableCounterSettings = signal<any | null>(null);
-  uniqueReference = signal<string>('');
+  uniqueReceiptReference = signal<string>('');
+  uniqueInvoiceReference = signal<string>('');
+
+  currentCounterSettings = computed(() => {
+    return this.selectedTab() === 0
+      ? this.receiptCounterSettings()
+      : this.invoiceCounterSettings();
+  });
+
+  uniqueReference = computed(() => {
+    return this.selectedTab() === 0
+      ? this.uniqueReceiptReference()
+      : this.uniqueInvoiceReference();
+  });
 
   newReferencePreview = computed(() => {
     const settings = this.editableCounterSettings();
@@ -59,7 +74,7 @@ export class ReceiptsSettingsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const settings = this.counterSettings();
+      const settings = this.currentCounterSettings();
       if (settings) {
         this.editableCounterSettings.set({ ...settings });
       }
@@ -68,18 +83,21 @@ export class ReceiptsSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCounters();
-    this.loadUniqueReference();
+    this.loadUniqueReferences();
   }
 
   onSettingsChange(newSettings: any) {
     this.editableCounterSettings.set({ ...newSettings });
   }
 
-  loadUniqueReference(): void {
+  loadUniqueReferences(): void {
     const token = this.loginService.getToken();
     if (token) {
-      this.configService.getUniqueReference(token).subscribe((ref) => {
-        this.uniqueReference.set(ref);
+      this.configService.getUniqueReference(token, 4).subscribe((ref) => {
+        this.uniqueReceiptReference.set(ref);
+      });
+      this.configService.getUniqueReference(token, 6).subscribe((ref) => {
+        this.uniqueInvoiceReference.set(ref);
       });
     }
   }
@@ -88,21 +106,21 @@ export class ReceiptsSettingsComponent implements OnInit {
     const token = this.loginService.getToken();
     if (token) {
       this.configService.getCounters(token).subscribe((data: any) => {
-        if (typeof data === 'string') {
-          const countersArray = JSON.parse(data);
-          this.counters.set(countersArray);
-          const receiptCounter = countersArray.find(
-            (c: any) => c.documentType == 4
-          );
-          if (receiptCounter) {
-            this.counterSettings.set(receiptCounter);
-          }
-        } else {
-          this.counters.set(data);
-          const receiptCounter = data.find((c: any) => c.documentType == 4);
-          if (receiptCounter) {
-            this.counterSettings.set(receiptCounter);
-          }
+        const countersArray = typeof data === 'string' ? JSON.parse(data) : data;
+        this.counters.set(countersArray);
+
+        const receiptCounter = countersArray.find(
+          (c: any) => c.documentType == 4
+        );
+        if (receiptCounter) {
+          this.receiptCounterSettings.set(receiptCounter);
+        }
+
+        const invoiceCounter = countersArray.find(
+          (c: any) => c.documentType == 6
+        );
+        if (invoiceCounter) {
+          this.invoiceCounterSettings.set(invoiceCounter);
         }
       });
     }
@@ -111,8 +129,9 @@ export class ReceiptsSettingsComponent implements OnInit {
   saveCounterSettings(): void {
     const token = this.loginService.getToken();
     if (token && this.editableCounterSettings()) {
+      const documentType = this.selectedTab() === 0 ? 4 : 6;
       const updatedCounters = this.counters().map((c) => {
-        if (c.documentType === 4) {
+        if (c.documentType === documentType) {
           return this.editableCounterSettings();
         }
         return c;
@@ -122,8 +141,16 @@ export class ReceiptsSettingsComponent implements OnInit {
         .updateCounters(token, updatedCounters)
         .subscribe(() => {
           this.loadCounters();
-          this.loadUniqueReference();
+          this.loadUniqueReferences();
         });
+    }
+  }
+
+  selectTab(index: number): void {
+    this.selectedTab.set(index);
+    const settings = this.currentCounterSettings();
+    if (settings) {
+      this.editableCounterSettings.set({ ...settings });
     }
   }
 }
