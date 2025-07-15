@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../user.service';
 import { RoleService } from '../../../role.service';
-import { UserAccount, Role } from '../../../types/pos.types';
+import { UserAccount, Role, UserImage } from '../../../types/pos.types';
 import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
+import { forkJoin, of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -23,6 +25,7 @@ export class UsersSettingsComponent implements OnInit {
   roles = signal<Role[]>([]);
   showUserForm = signal<boolean>(false);
   editingUser = signal<UserAccount | null>(null);
+  imagePreview = signal<string | null>(null);
 
   newUser: UserAccount & { reference: string; isAdmin: boolean } = {
     userId: '',
@@ -33,6 +36,7 @@ export class UsersSettingsComponent implements OnInit {
     reference: '',
     phoneNumber: '',
     isAdmin: false,
+    image: null,
   };
 
   ngOnInit(): void {
@@ -41,9 +45,29 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getUsers().subscribe((users) => {
-      this.users.set(users);
-    });
+    this.userService
+      .getUsers()
+      .pipe(
+        switchMap((users) => {
+          const userObservables = users.map((user) => {
+            if (user.image && user.image.fileId) {
+              return this.userService.getFile(user.image.fileId).pipe(
+                map((response) => {
+                  if (response.hasValue && user.image) {
+                    user.image.content = response.value;
+                  }
+                  return user;
+                })
+              );
+            }
+            return of(user);
+          });
+          return forkJoin(userObservables);
+        })
+      )
+      .subscribe((users) => {
+        this.users.set(users);
+      });
   }
 
   loadRoles(): void {
@@ -56,8 +80,16 @@ export class UsersSettingsComponent implements OnInit {
     });
   }
 
+  getImageUrl(user: UserAccount): string {
+    if (user.image && user.image.content) {
+      return user.image.content;
+    }
+    return 'https://via.placeholder.com/150'; // Default placeholder
+  }
+
   openCreateForm(): void {
     this.editingUser.set(null);
+    this.imagePreview.set(null);
     this.newUser = {
       userId: '',
       username: '',
@@ -67,6 +99,7 @@ export class UsersSettingsComponent implements OnInit {
       reference: '',
       phoneNumber: '',
       isAdmin: false,
+      image: null,
     };
     this.showUserForm.set(true);
   }
@@ -79,7 +112,38 @@ export class UsersSettingsComponent implements OnInit {
       phoneNumber: user.phoneNumber || '',
       isAdmin: user.roleName === 'Direction',
     };
+
+    if (user.image && user.image.content) {
+      this.imagePreview.set(user.image.content);
+    } else {
+      this.imagePreview.set(null);
+    }
+
     this.showUserForm.set(true);
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const content = reader.result as string;
+        this.imagePreview.set(content);
+        const fileType = file.type.split('/')[1] || '';
+        this.newUser.image = {
+          fileId: this.generateSimpleId(),
+          content: content,
+          fileName: file.name,
+          fileType: fileType,
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  generateSimpleId(): string {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
   saveUser(): void {
@@ -91,22 +155,37 @@ export class UsersSettingsComponent implements OnInit {
       return;
     }
 
-    const userToSave: UserAccount = {
-      ...this.newUser,
-      roleName: role.name,
-      roleId: role.id,
+    const saveUserAction = (image: UserImage | null | undefined) => {
+      const userToSave: UserAccount = {
+        ...this.newUser,
+        roleName: role.name,
+        roleId: role.id,
+        image: image,
+      };
+
+      if (this.editingUser()) {
+        this.userService.updateUser(userToSave).subscribe(() => {
+          this.loadUsers();
+          this.showUserForm.set(false);
+        });
+      } else {
+        this.userService.createUser(userToSave).subscribe(() => {
+          this.loadUsers();
+          this.showUserForm.set(false);
+        });
+      }
     };
 
-    if (this.editingUser()) {
-      this.userService.updateUser(userToSave).subscribe(() => {
-        this.loadUsers();
-        this.showUserForm.set(false);
+    if (this.newUser.image && this.newUser.image.content) {
+      const imageToSave = {
+        id: this.newUser.image.fileId as string,
+        base64: this.newUser.image.content as string,
+      };
+      this.userService.saveFile(imageToSave).subscribe(() => {
+        saveUserAction(this.newUser.image);
       });
     } else {
-      this.userService.createUser(userToSave).subscribe(() => {
-        this.loadUsers();
-        this.showUserForm.set(false);
-      });
+      saveUserAction(this.newUser.image);
     }
   }
 

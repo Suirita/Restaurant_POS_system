@@ -44,6 +44,18 @@ export interface UserAccount {
   roleId?: string;
   reference: string;
   phoneNumber: string;
+  image?: UserImage | null;
+}
+
+export interface UserImage {
+  fileId?: string;
+  content?: string;
+  fileName?: string;
+  fileType?: string;
+  fileMin?: any;
+  uploadDate?: string;
+  fileSize?: number;
+  orignalFileName?: any;
 }
 
 export interface Table {

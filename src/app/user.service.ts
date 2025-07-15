@@ -13,6 +13,7 @@ export class UserService {
   private http = inject(HttpClient);
   private loginService = inject(LoginService);
   private apiUrl = `${environment.apiBaseUrl}/Account`;
+  private fileApiUrl = `${environment.apiBaseUrl}/File`;
 
   getUsers(): Observable<UserAccount[]> {
     const token = this.loginService.getToken();
@@ -34,15 +35,30 @@ export class UserService {
           fullName: user.fullName,
           phoneNumber: user.phoneNumber,
           roleName: user.roleName,
+          image: user.image,
           token: '', // Token is not returned by this endpoint
         }))
       )
     );
   }
 
-  // The following methods (createUser, updateUser, deleteUser) would need
-  // to be implemented with the correct API endpoints and payloads.
-  // For now, they will remain as they are, but they will not work correctly.
+  getFile(fileId: string): Observable<any> {
+    const token = this.loginService.getToken();
+    if (!token) {
+      return of(null);
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.fileApiUrl}/${fileId}`, { headers });
+  }
+
+  saveFile(image: { id: string; base64: string }): Observable<any> {
+    const token = this.loginService.getToken();
+    if (!token) {
+      return of(null);
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.fileApiUrl}/save`, [image], { headers });
+  }
 
   createUser(user: any): Observable<UserAccount> {
     const token = this.loginService.getToken();
@@ -58,7 +74,7 @@ export class UserService {
       userName: user.username,
       password: 'demodemo',
       firstName: user.fullName.split(' ')[0],
-      lastName: user.fullName.split(' ')[1],
+      lastName: user.fullName.split(' ')[1] || user.fullName.split(' ')[0],
       reference: user.reference,
       coutUser: {
         userCost: 49,
@@ -74,7 +90,7 @@ export class UserService {
       memorySize: 0,
       roleId: roleId,
       labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
-      image: null,
+      image: user.image ? { fileId: user.image.fileId } : null,
       typeUser: 'Normal',
       licenceUser: 0,
       permissions: [],
@@ -98,7 +114,7 @@ export class UserService {
       userName: user.username,
       password: 'demodemo',
       firstName: user.fullName.split(' ')[0],
-      lastName: user.fullName.split(' ')[1],
+      lastName: user.fullName.split(' ')[1] || user.fullName.split(' ')[0],
       reference: user.reference,
       coutUser: {
         userCost: 49,
@@ -114,7 +130,7 @@ export class UserService {
       memorySize: 0,
       roleId: roleId,
       labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
-      image: null,
+      image: user.image ? { fileId: user.image.fileId } : null,
       typeUser: 'Normal',
       licenceUser: 0,
       permissions: [],
