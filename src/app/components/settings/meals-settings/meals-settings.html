@@ -180,105 +180,114 @@
         {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
       </h3>
       <form (ngSubmit)="saveMeal()">
-        <div class="mb-4">
-          <label
-            for="designation"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Désignation :
-          </label>
-          <input
-            type="text"
-            id="designation"
-            name="designation"
-            [(ngModel)]="newMeal.designation"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
+        <div class="flex justify-around gap-4 mb-4">
+          <div>
+            <label
+              for="designation"
+              class="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Désignation :
+            </label>
+            <input
+              type="text"
+              id="designation"
+              name="designation"
+              [(ngModel)]="newMeal.designation"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div>
+            <label
+              for="categoryId"
+              class="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Catégorie :
+            </label>
+            <select
+              id="categoryId"
+              name="categoryId"
+              [(ngModel)]="newMeal.categoryId"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            >
+              <option value="">Sélectionner une catégorie</option>
+              <option
+                *ngFor="let category of categories()"
+                [value]="category.id"
+              >
+                {{ category.label }}
+              </option>
+            </select>
+          </div>
         </div>
-        <div class="mb-4">
-          <label
-            for="categoryId"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Catégorie :
-          </label>
-          <select
-            id="categoryId"
-            name="categoryId"
-            [(ngModel)]="newMeal.categoryId"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          >
-            <option value="">Sélectionner une catégorie</option>
-            <option *ngFor="let category of categories()" [value]="category.id">
-              {{ category.label }}
-            </option>
-          </select>
+        <div class="flex justify-around gap-4 mb-4">
+          <div>
+            <label
+              for="purchasePrice"
+              class="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Prix d'achat :
+            </label>
+            <input
+              type="number"
+              id="purchasePrice"
+              name="purchasePrice"
+              [(ngModel)]="newMeal.purchasePrice"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div>
+            <label
+              for="sellingPrice"
+              class="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Prix hors taxes :
+            </label>
+            <input
+              type="number"
+              id="sellingPrice"
+              name="sellingPrice"
+              [(ngModel)]="newMeal.sellingPrice"
+              (ngModelChange)="calculateTTC()"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
         </div>
-        <div class="mb-4">
-          <label
-            for="purchasePrice"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Prix d'achat :
-          </label>
-          <input
-            type="number"
-            id="purchasePrice"
-            name="purchasePrice"
-            [(ngModel)]="newMeal.purchasePrice"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label
-            for="sellingPrice"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Prix hors taxes :
-          </label>
-          <input
-            type="number"
-            id="sellingPrice"
-            name="sellingPrice"
-            [(ngModel)]="newMeal.sellingPrice"
-            (ngModelChange)="calculateTTC()"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label for="tva" class="block text-gray-700 text-sm font-bold mb-2">
-            TVA (%) :
-          </label>
-          <input
-            type="number"
-            id="tva"
-            name="tva"
-            [(ngModel)]="newMeal.tva"
-            (ngModelChange)="calculateTTC()"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label
-            for="totalTTC"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Prix TTC :
-          </label>
-          <input
-            type="number"
-            id="totalTTC"
-            name="totalTTC"
-            [(ngModel)]="newMeal.totalTTC"
-            (ngModelChange)="calculateSellingPrice()"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
+        <div class="flex justify-around gap-4 mb-4">
+          <div>
+            <label for="tva" class="block text-gray-700 text-sm font-bold mb-2">
+              TVA (%) :
+            </label>
+            <input
+              type="number"
+              id="tva"
+              name="tva"
+              [(ngModel)]="newMeal.tva"
+              (ngModelChange)="calculateTTC()"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div>
+            <label
+              for="totalTTC"
+              class="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Prix TTC :
+            </label>
+            <input
+              type="number"
+              id="totalTTC"
+              name="totalTTC"
+              [(ngModel)]="newMeal.totalTTC"
+              (ngModelChange)="calculateSellingPrice()"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
         </div>
         <div class="mb-4">
           <label for="image" class="block text-gray-700 text-sm font-bold mb-2">
@@ -325,7 +334,7 @@
                 (click)="removeLabel(i)"
                 class="ml-2 text-red-500 hover:text-red-700"
               >
-                <i-lucide name="trash-2"></i-lucide>
+                <i-lucide [img]="trash2"></i-lucide>
               </button>
             </span>
           </div>
