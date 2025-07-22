@@ -82,6 +82,7 @@ export class MealsSettingsComponent implements OnInit {
     sellingPrice: 0,
     purchasePrice: 0,
     totalTTC: 0,
+    tva: 20,
     categoryId: '',
     image: '',
     labels: [],
@@ -145,6 +146,7 @@ export class MealsSettingsComponent implements OnInit {
       sellingPrice: 0,
       purchasePrice: 0,
       totalTTC: 0,
+      tva: 20,
       categoryId: '',
       image: '',
       labels: [],
@@ -156,6 +158,18 @@ export class MealsSettingsComponent implements OnInit {
     this.editingMeal.set(meal);
     this.newMeal = { ...meal }; // Populate form with existing meal data
     this.showMealForm.set(true);
+  }
+
+  calculateTTC(): void {
+    if (this.newMeal.sellingPrice && this.newMeal.tva) {
+      this.newMeal.totalTTC = this.newMeal.sellingPrice * (1 + this.newMeal.tva / 100);
+    }
+  }
+
+  calculateSellingPrice(): void {
+    if (this.newMeal.totalTTC && this.newMeal.tva) {
+      this.newMeal.sellingPrice = this.newMeal.totalTTC / (1 + this.newMeal.tva / 100);
+    }
   }
 
   saveMeal(): void {

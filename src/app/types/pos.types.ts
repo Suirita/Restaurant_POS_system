@@ -4,6 +4,7 @@ export interface Meal {
   sellingPrice: number;
   purchasePrice: number;
   totalTTC: number;
+  tva: number;
   categoryId: string;
   categoryLabel: string;
   image: string;
