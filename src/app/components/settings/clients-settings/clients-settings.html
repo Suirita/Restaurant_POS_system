@@ -113,14 +113,14 @@
       class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
     ></div>
     <div
-      class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
+      class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
     >
       <h3 class="text-xl font-bold mb-4">
         {{ editingClient() ? "Modifier le client" : 'Créer un nouveau client' }}
       </h3>
       <form (ngSubmit)="saveClient()" #clientForm="ngForm">
         <div class="flex justify-around gap-4 mb-4">
-          <div>
+          <div class="w-full">
             <label
               for="name"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -137,7 +137,7 @@
               required
             />
           </div>
-          <div>
+          <div class="w-full">
             <label
               for="email"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -155,7 +155,7 @@
           </div>
         </div>
         <div class="flex justify-around gap-4 mb-4">
-          <div>
+          <div class="w-full">
             <label
               for="mobile"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -171,7 +171,7 @@
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div>
+          <div class="w-full">
             <label for="ice" class="block text-gray-700 text-sm font-bold mb-2">
               ICE :
             </label>
@@ -186,7 +186,7 @@
           </div>
         </div>
         <div class="flex justify-around gap-4 mb-4">
-          <div>
+          <div class="w-full">
             <label
               for="address"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -202,7 +202,7 @@
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div>
+          <div class="w-full">
             <label
               for="postalCode"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -220,7 +220,7 @@
           </div>
         </div>
         <div class="flex justify-around gap-4 mb-4">
-          <div>
+          <div class="w-full">
             <label
               for="city"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -236,7 +236,7 @@
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div>
+          <div class="w-full">
             <label
               for="country"
               class="block text-gray-700 text-sm font-bold mb-2"

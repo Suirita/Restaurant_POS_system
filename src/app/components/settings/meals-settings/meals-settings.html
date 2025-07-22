@@ -174,14 +174,14 @@
       class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
     ></div>
     <div
-      class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
+      class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
     >
       <h3 class="text-xl font-bold mb-4">
         {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
       </h3>
       <form (ngSubmit)="saveMeal()">
-        <div class="flex justify-around gap-4 mb-4">
-          <div>
+        <div class="flex justify-between gap-4 mb-4">
+          <div class="w-full">
             <label
               for="designation"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -197,7 +197,7 @@
               required
             />
           </div>
-          <div>
+          <div class="w-full">
             <label
               for="categoryId"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -221,8 +221,8 @@
             </select>
           </div>
         </div>
-        <div class="flex justify-around gap-4 mb-4">
-          <div>
+        <div class="flex justify-between gap-4 mb-4">
+          <div class="w-full">
             <label
               for="purchasePrice"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -238,7 +238,7 @@
               required
             />
           </div>
-          <div>
+          <div class="w-full">
             <label
               for="sellingPrice"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -256,8 +256,8 @@
             />
           </div>
         </div>
-        <div class="flex justify-around gap-4 mb-4">
-          <div>
+        <div class="flex justify-between gap-4 mb-4">
+          <div class="w-full">
             <label for="tva" class="block text-gray-700 text-sm font-bold mb-2">
               TVA (%) :
             </label>
@@ -271,7 +271,7 @@
               required
             />
           </div>
-          <div>
+          <div class="w-full">
             <label
               for="totalTTC"
               class="block text-gray-700 text-sm font-bold mb-2"

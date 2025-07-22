@@ -15,7 +15,8 @@ export class ClientService {
   getClients(token: string | undefined): Observable<Client[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http
-      .post<any>(`${this.baseURL}/Client`,
+      .post<any>(
+        `${this.baseURL}/Client`,
         {
           Page: 1,
           PageSize: 1000,
@@ -51,7 +52,7 @@ export class ClientService {
 
   deleteClient(id: string, token: string | undefined): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.baseURL}/Client/${id}`, { headers });
+    return this.http.delete(`${this.baseURL}/Client/${id}/Delete`, { headers });
   }
 
   createClient(client: Client, token: string | undefined): Observable<Client> {
@@ -80,7 +81,9 @@ export class ClientService {
         },
       ],
     };
-    return this.http.post<Client>(`${this.baseURL}/Client/Create`, body, { headers });
+    return this.http.post<Client>(`${this.baseURL}/Client/Create`, body, {
+      headers,
+    });
   }
 
   updateClient(client: Client, token: string | undefined): Observable<Client> {
@@ -109,6 +112,10 @@ export class ClientService {
         },
       ],
     };
-    return this.http.put<Client>(`${this.baseURL}/Client/${client.id}/Update`, body, { headers });
+    return this.http.put<Client>(
+      `${this.baseURL}/Client/${client.id}/Update`,
+      body,
+      { headers }
+    );
   }
 }
