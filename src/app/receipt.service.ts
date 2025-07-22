@@ -338,7 +338,7 @@ export class ReceiptService {
               map((response) => {
                 if (response && response.value && response.value.length > 0) {
                   const quote = response.value[0];
-                  const lineItems = quote.orderDetails.lineItems.map(
+                  const lineItems = quote.orderDetails?.lineItems?.map(
                     (item: any) => ({
                       id: item.productId,
                       designation: item.product.designation,
@@ -347,7 +347,7 @@ export class ReceiptService {
                       categoryLabel: item.product.categoryLabel,
                       image: '',
                     })
-                  );
+                  ) || [];
                   return {
                     ...receipt,
                     items: lineItems,
