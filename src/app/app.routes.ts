@@ -8,6 +8,7 @@ import { MealsSettingsComponent } from './components/settings/meals-settings/mea
 import { RoomsSettingsComponent } from './components/settings/rooms-settings/rooms-settings';
 import { ReceiptsSettingsComponent } from './components/settings/receipts-settings/receipts-settings';
 import { CompanySettingsComponent } from './components/settings/company-settings/company-settings';
+import { ClientsSettingsComponent } from './components/settings/clients-settings/clients-settings';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,7 @@ export const routes: Routes = [
       { path: 'rooms', component: RoomsSettingsComponent },
       { path: 'receipts', component: ReceiptsSettingsComponent },
       { path: 'company', component: CompanySettingsComponent },
+      { path: 'clients', component: ClientsSettingsComponent },
     ],
   },
   {

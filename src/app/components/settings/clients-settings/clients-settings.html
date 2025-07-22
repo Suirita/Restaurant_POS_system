@@ -1,0 +1,259 @@
+<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
+  <h2 class="text-2xl font-bold mb-2">Paramètres des clients</h2>
+  <div class="w-full flex justify-between mb-2">
+    <!-- Search and Filter -->
+    <div class="w-2/3 flex gap-4">
+      <input
+        type="text"
+        placeholder="Rechercher par nom..."
+        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
+      />
+    </div>
+    <!-- Actions -->
+    <button
+      (click)="openCreateForm()"
+      class="bg-black text-white px-3 rounded-md"
+    >
+      Ajouter un client
+    </button>
+  </div>
+
+  <div>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Nom
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Email
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Mobile
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            ICE
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Adresse
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Code postal
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Ville
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Pays
+          </th>
+          <th
+            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let client of clients()">
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.name }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.email }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.mobile }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.ice }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.address }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.postalCode }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.city }}</td>
+          <td class="px-6 py-2 whitespace-nowrap">{{ client.country }}</td>
+          <td class="px-6 py-2 whitespace-nowrap text-right">
+            <button
+              (click)="openEditForm(client)"
+              class="text-indigo-600 hover:text-indigo-900 mr-2"
+            >
+              <i-lucide name="edit"></i-lucide>
+            </button>
+
+            <button
+              (click)="deleteClient(client)"
+              class="text-red-600 hover:text-red-900"
+            >
+              <i-lucide name="trash-2"></i-lucide>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="clients().length === 0">
+          <td colspan="9" class="px-6 py-2 text-center text-gray-500">
+            Aucun client trouvé.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Client Create/Edit Form Modal -->
+  <div
+    *ngIf="showClientForm()"
+    class="fixed inset-0 flex items-center justify-center z-50"
+  >
+    <div
+      class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
+    ></div>
+    <div
+      class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
+    >
+      <h3 class="text-xl font-bold mb-4">
+        {{ editingClient() ? "Modifier le client" : 'Créer un nouveau client' }}
+      </h3>
+      <form (ngSubmit)="saveClient()" #clientForm="ngForm">
+        <div class="mb-4">
+          <label for="name" class="block text-gray-700 text-sm font-bold mb-2">
+            Nom :
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            [ngModel]="newClient().name"
+            (ngModelChange)="updateNewClient('name', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+            Email :
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [ngModel]="newClient().email"
+            (ngModelChange)="updateNewClient('email', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="mobile"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Mobile :
+          </label>
+          <input
+            type="text"
+            id="mobile"
+            name="mobile"
+            [ngModel]="newClient().mobile"
+            (ngModelChange)="updateNewClient('mobile', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label for="ice" class="block text-gray-700 text-sm font-bold mb-2">
+            ICE :
+          </label>
+          <input
+            type="text"
+            id="ice"
+            name="ice"
+            [ngModel]="newClient().ice"
+            (ngModelChange)="updateNewClient('ice', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="address"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Adresse :
+          </label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            [ngModel]="newClient().address"
+            (ngModelChange)="updateNewClient('address', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="postalCode"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Code postal :
+          </label>
+          <input
+            type="text"
+            id="postalCode"
+            name="postalCode"
+            [ngModel]="newClient().postalCode"
+            (ngModelChange)="updateNewClient('postalCode', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label for="city" class="block text-gray-700 text-sm font-bold mb-2">
+            Ville :
+          </label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            [ngModel]="newClient().city"
+            (ngModelChange)="updateNewClient('city', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="country"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Pays :
+          </label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            [ngModel]="newClient().country"
+            (ngModelChange)="updateNewClient('country', $event)"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="flex justify-end">
+          <button
+            type="button"
+            (click)="cancelForm()"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            [disabled]="clientForm.invalid"
+            class="bg-green-500 text-white px-4 py-2 rounded-md disabled:bg-gray-400"
+          >
+            {{ editingClient() ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

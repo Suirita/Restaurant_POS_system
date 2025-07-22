@@ -1,8 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterOutlet,
+  RouterLinkActive,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, HandPlatter, FileText, LogOut } from 'lucide-angular';
-import { CompanySettingsComponent } from './company-settings/company-settings';
+import {
+  LucideAngularModule,
+  HandPlatter,
+  FileText,
+  LogOut,
+} from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -13,7 +22,6 @@ import { CompanySettingsComponent } from './company-settings/company-settings';
     RouterOutlet,
     RouterLinkActive,
     LucideAngularModule,
-    CompanySettingsComponent,
   ],
   templateUrl: './settings.html',
 })
