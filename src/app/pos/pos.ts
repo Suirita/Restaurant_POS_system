@@ -510,28 +510,13 @@ export class PosComponent implements OnInit {
           return;
         }
 
-        // If table is occupied by a null user, claim it.
-        if (!table.userId) {
-          this.receiptService
-            .getQuoteByTable(tableName, this.currentUser()!.token)
-            .subscribe((quote) => {
-              if (quote) {
-                quote.userId = this.currentUser()!.userId;
-                quote.responsables = [this.currentUser()!.userId];
-                this.receiptService
-                  .updateQuote(quote, this.currentUser()!.token)
-                  .subscribe(() => {
-                    this.syncTablesWithReceipts();
-                  });
-              }
-            });
-        }
-
         this.receiptService
           .getReceiptByTable(tableName, this.currentUser()!.token)
           .subscribe((receipt) => {
+            console.log('receipt', receipt);
             if (receipt) {
-              this.cart.set([...receipt.items]);
+              console.log('receipt items', receipt.items);
+              this.cart.set(receipt.items ? [...receipt.items] : []);
               this.isTableNumberComplete.set(true);
               this.orderType.set('table');
             } else {
