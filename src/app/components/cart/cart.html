@@ -1,0 +1,146 @@
+<!-- Fixed height cart container -->
+<div class="flex flex-col h-full border-b border-gray-200 rounded-t-2xl">
+  <!-- Cart Header - Fixed at top -->
+  <div class="flex justify-between items-center px-2 py-2 border-b rounded-t-2xl border-gray-200 shadow-sm">
+    <div class="flex items-center gap-2">
+      <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
+      <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
+    </div>
+    <!-- Service Selection -->
+    <app-service-selection
+      [orderType]="orderType()"
+      [tables]="tables()"
+      (takeAwaySelected)="takeAwaySelected.emit()"
+      (tableTypeSelected)="tableTypeSelected.emit()"
+    ></app-service-selection>
+  </div>
+
+  <!-- Cart Items - Scrollable area -->
+  <div
+    class="flex-grow flex-shrink px-2 py-2 overflow-y-auto min-h-0 basis-0 scrollbar-hide"
+  >
+
+    <!-- Empty Cart -->
+    <div *ngIf="cartItems().length === 0" class="text-center py-6 lg:py-12">
+      <p class="text-gray-600 font-medium mb-1">Aucun article dans le panier</p>
+      <p class="text-gray-400 text-sm">Ajouter des articles depuis le menu</p>
+    </div>
+
+    <!-- Cart Items List -->
+    <div *ngIf="cartItems().length > 0" class="space-y-1">
+      <div
+        *ngFor="let item of cartItems()"
+        class="bg-white rounded-lg p-1 border border-gray-200 shadow-sm"
+      >
+        <div class="flex items-center gap-2">
+          <!-- Item Image -->
+          <img
+            [src]="item.image"
+            [alt]="item.designation"
+            class="w-11 h-11 rounded-lg object-cover"
+            loading="lazy"
+          />
+          <div class="w-full">
+            <!-- Item Name -->
+            <span
+              class="font-medium text-md text-gray-900 leading-tight flex-1 line-clamp-1"
+            >
+              {{ item.designation }}
+            </span>
+
+            <div class="flex items-center justify-between">
+              <!-- Price -->
+              <span
+                class="font-medium text-sm text-gray-500 min-w-0 flex-shrink-0"
+              >
+                {{ (item.quantity * item.sellingPrice).toFixed(2) }} €
+              </span>
+            </div>
+          </div>
+          <!-- Edit Indicator -->
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center justify-between gap-1">
+              <!-- Decrease Button -->
+              <button
+                (click)="onDecreaseQuantity(item.id, $event)"
+                title="Diminuer la quantité"
+                class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+              >
+                <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
+              </button>
+
+              <!-- Clickable Quantity Display -->
+              <button
+                class="font-semibold min-w-10 text-sm py-0.5 text-center w-10 h-10 text-gray-900 rounded-lg flex items-center justify-center"
+                [class]="
+                isItemBeingEdited(item)
+                  ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
+                  : 'bg-white border border-gray-200 shadow-xs'
+              "
+                (click)="onSelectItem(item.id)"
+                data-edit-button
+                title="Cliquer pour modifier la quantité"
+              >
+                {{ getDisplayQuantity(item) }}
+              </button>
+
+              <!-- Increase Button -->
+              <button
+                (click)="onIncreaseQuantity(item.id, $event)"
+                [disabled]="item.quantity >= 100"
+                [class.opacity-25]="item.quantity >= 100"
+                [class.cursor-not-allowed]="item.quantity >= 100"
+                title="Augmenter la quantité"
+                class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+              >
+                <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
+              </button>
+            </div>
+            <!-- Remove Button -->
+            <button
+              class="bg-red-400 text-white w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 shadow-xs"
+              (click)="onRemoveItem(item.id, $event)"
+              title="Supprimer l'article"
+            >
+              <i-lucide [img]="TrashIcon" [size]="14"></i-lucide>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Total & Actions -->
+  <div
+    *ngIf="cartItems().length > 0"
+    class="flex-shrink-0 p-3 pt-1 border-t border-gray-200 bg-white"
+  >
+    <div class="flex justify-between items-center">
+      <span class="text-lg font-medium text-gray-700">Total :</span>
+      <span class="text-lg font-medium text-gray-900">
+        {{ total().toFixed(2) }} €
+      </span>
+    </div>
+
+    <div class="flex justify-between items-center gap-1.5">
+      <button
+        class="text-sm w-full py-2 rounded-lg font-medium border border-green-300 shadow-sm"
+        [class]="
+          canAddToCart()
+            ? ' bg-green-500 text-white'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        "
+        [disabled]="!canAddToCart()"
+        (click)="onCompleteOrder()"
+      >
+        {{ canAddToCart() ? "Enregistrer le reçu" : "Configuration requise" }}
+      </button>
+      <button
+        class="text-sm w-full bg-white py-2 rounded-lg font-medium border border-gray-200 shadow-sm"
+        (click)="onPay()"
+      >
+        Payer maintenant
+      </button>
+    </div>
+  </div>
+</div>

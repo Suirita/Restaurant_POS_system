@@ -1,0 +1,25 @@
+<div class="flex gap-2">
+  <button
+    class="flex items-center justify-center gap-2 py-1.5 px-2 rounded-lg text-xs font-medium border-gray-100"
+    [class]="orderType() === 'take away'
+              ? 'bg-black text-white shadow-md'
+              : 'bg-white text-gray-900 border shadow-sm'
+          "
+    (click)="onSelectTakeAway()"
+  >
+    <i-lucide [img]="ShoppingBagIcon" [size]="18"></i-lucide>
+    <span>À emporter</span>
+  </button>
+  <button
+    class="flex items-center justify-center gap-2 py-1.5 px-2 rounded-lg text-xs font-medium border-gray-100"
+    [class]="
+        orderType() === 'table'
+          ? 'bg-black text-white shadow-md'
+          : 'bg-white text-gray-900 border shadow-sm'
+      "
+    (click)="onSelectTableType()"
+  >
+    <i-lucide [img]="UtensilsIcon" [size]="18"></i-lucide>
+    <span>Table</span>
+  </button>
+</div>

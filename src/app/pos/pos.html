@@ -1,0 +1,136 @@
+<!-- Login Screen -->
+<app-login
+  *ngIf="currentView() === 'login'"
+  (loginSuccess)="onLoginSuccess($event)"
+></app-login>
+
+<!-- Direction Navigation -->
+<div
+  *ngIf="currentView() === 'direction-nav'"
+  class="flex items-center justify-center h-screen bg-gray-100"
+>
+  <div class="text-center">
+    <h1 class="text-3xl font-bold mb-8">Bienvenue, Direction !</h1>
+    <div class="space-x-4">
+      <button
+        (click)="navigateTo('application')"
+        class="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
+      >
+        Application
+      </button>
+      <button
+        (click)="navigateTo('settings')"
+        class="px-6 py-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors"
+      >
+        Paramètres
+      </button>
+      <button
+        (click)="navigateTo('reports')"
+        class="px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors"
+      >
+        Rapports
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main POS System (only show when logged in and view is main-app) -->
+<div
+  *ngIf="currentView() === 'main-app'"
+  class="h-screen bg-gradient-to-br bg-gray-100 relative overflow-hidden"
+>
+  <!-- All Receipts Modal -->
+  <app-all-receipts-modal
+    *ngIf="showAllReceipts()"
+    [userId]="currentUser()!.userId"
+    [token]="currentUser()!.token"
+    (close)="hideAllReceiptsModal()"
+    (pay)="pay($event)"
+    (receiptSelected)="onReceiptSelectedFromModal($event)"
+  ></app-all-receipts-modal>
+
+  <!-- Main POS Interface -->
+  <div class="h-full flex flex-col" [class.blur-xs]="showAllReceipts()">
+    <!-- Main Content -->
+    <div class="flex flex-1 min-h-0">
+      <!-- Menu Section -->
+      <div class="flex flex-col flex-1 min-h-full w-2/3">
+        <!-- Category Navigation -->
+        <app-category-nav
+          [categories]="categoriesWithImages()"
+          [selectedCategory]="selectedCategory()"
+          (categorySelected)="onCategorySelected($event)"
+        ></app-category-nav>
+
+        <!-- Menu Items Grid -->
+        <app-menu-grid
+          [meals]="meals()"
+          [cart]="cart()"
+          [loading]="loading()"
+          [canAddToCart]="canAddToCart()"
+          [orderType]="orderType()"
+          [selectedCartItemId]="selectedCartItemId()"
+          [tempQuantity]="tempQuantity()"
+          [userRole]="userRole()"
+          (mealSelected)="onMealSelected($event)"
+          (quantityIncreased)="onQuantityIncreased($event)"
+          (quantityDecreased)="onQuantityDecreased($event)"
+          (showAllReceipts)="showAllReceiptsModal()"
+          (logout)="logout()"
+          (itemSelected)="onCartItemSelected($event)"
+          (settings)="navigateTo('settings')"
+          (reports)="navigateTo('reports')"
+        ></app-menu-grid>
+      </div>
+
+      <!-- Right Sidebar (Cart Section) -->
+      <div
+        class="sm:w-[400px] md:w-[450px] lg:w-[450px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500 flex flex-col"
+      >
+        <!-- Cart Items -->
+        <div class="flex-1 min-h-0 flex flex-col">
+          <app-cart
+            class="h-full"
+            [cartItems]="cart()"
+            [selectedCartItemId]="selectedCartItemId()"
+            [tempQuantity]="tempQuantity()"
+            [total]="total()"
+            [canAddToCart]="canAddToCart()"
+            [orderType]="orderType()"
+            [tableNumber]="tableNumber()"
+            [tables]="tables()"
+            (itemSelected)="onCartItemSelected($event)"
+            (itemRemoved)="onCartItemRemoved($event)"
+            (cartCleared)="onCartCleared()"
+            (orderCompleted)="onOrderCompleted()"
+            (quantityIncreased)="onQuantityIncreased($event)"
+            (quantityDecreased)="onQuantityDecreased($event)"
+            (takeAwaySelected)="onTakeAwaySelected()"
+            (tableTypeSelected)="onTableTypeSelected()"
+            (pay)="onPay()"
+          ></app-cart>
+        </div>
+
+        <!-- Calculator -->
+        <div class="flex-shrink-0 p-3">
+          <div
+            *ngIf="tableErrorMessage()"
+            class="text-red-500 text-center text-md mb-2"
+          >
+            {{ tableErrorMessage() }}
+          </div>
+          <app-calculator
+            [displayValue]="calculatorDisplayValue()"
+            [canConfirm]="calculatorCanConfirm()"
+            [isQuantityMode]="calculatorIsQuantityMode()"
+            [disabled]="!isEditing()"
+            (numberAdded)="onCalculatorNumberAdded($event)"
+            (decimalAdded)="onCalculatorDecimalAdded()"
+            (cleared)="onCalculatorCleared()"
+            (confirmed)="onCalculatorConfirmed()"
+          ></app-calculator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

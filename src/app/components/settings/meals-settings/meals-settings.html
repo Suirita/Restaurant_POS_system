@@ -1,0 +1,338 @@
+<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
+  <h2 class="text-2xl font-bold mb-3">Paramètres des articles</h2>
+  <div class="w-full flex justify-between mb-2">
+    <!-- Search and Filter -->
+    <div class="w-2/3 flex gap-4">
+      <input
+        type="text"
+        placeholder="Rechercher par nom..."
+        [value]="searchTerm()"
+        (input)="onSearchTermChange($event)"
+        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
+      />
+      <input
+        type="text"
+        placeholder="Rechercher par label..."
+        [value]="labelSearchTerm()"
+        (input)="onLabelSearchTermChange($event)"
+        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
+      />
+      <select
+        [value]="selectedCategory()"
+        (change)="onCategoryChange($event)"
+        class="px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
+      >
+        <option value="">Toutes les catégories</option>
+        <option *ngFor="let category of categories()" [value]="category.id">
+          {{ category.label }}
+        </option>
+      </select>
+    </div>
+    <!-- Actions -->
+    <button
+      (click)="openCreateForm()"
+      class="bg-black text-white px-3 rounded-md"
+    >
+      Ajouter un article
+    </button>
+  </div>
+
+  <div>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Image
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Nom
+          </th>
+
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Prix d'achat
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Prix hors taxes
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Prix TTC
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Catégorie
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Labels
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let meal of paginatedMeals()">
+          <td class="px-6 py-1 whitespace-nowrap">
+            <img
+              [src]="meal.image || 'https://placehold.co/1280x720'"
+              (error)="onImageError($event)"
+              alt="{{ meal.designation }}"
+              class="h-10 w-10 rounded-lg object-cover"
+            />
+          </td>
+          <td class="px-6 py-1 whitespace-nowrap">{{ meal.designation }}</td>
+          <td class="px-6 py-1 whitespace-nowrap">
+            {{ meal.purchasePrice | currency:'EUR':'symbol':'1.2-2' }}
+          </td>
+          <td class="px-6 py-1 whitespace-nowrap">
+            {{ meal.sellingPrice | currency:'EUR':'symbol':'1.2-2' }}
+          </td>
+          <td class="px-6 py-1 whitespace-nowrap">
+            {{ meal.totalTTC | currency:'EUR':'symbol':'1.2-2' }}
+          </td>
+          <td class="px-6 py-1 whitespace-nowrap">{{ meal.categoryLabel }}</td>
+          <td class="px-6 py-1 whitespace-nowrap">
+            <span
+              *ngFor="let label of meal.labels"
+              class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+            >
+              {{label.value}}
+            </span>
+          </td>
+          <td class="px-6 py-1 whitespace-nowrap">
+            <button
+              (click)="openEditForm(meal)"
+              class="text-indigo-600 hover:text-indigo-900 mr-2"
+            >
+              <i-lucide [img]="edit"></i-lucide>
+            </button>
+            <button
+              (click)="deleteMeal(meal.id)"
+              class="text-red-600 hover:text-red-900"
+            >
+              <i-lucide [img]="trash2"></i-lucide>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredMeals().length === 0">
+          <td colspan="6" class="px-6 py-1 text-center text-gray-500">
+            Aucun plat trouvé.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="flex justify-center items-center mt-2">
+      <button
+        (click)="previousPage()"
+        [disabled]="currentPage() === 1"
+        class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
+      >
+        <i-lucide [img]="ChevronLeftIcon" [size]="16"></i-lucide>
+        Précédent
+      </button>
+      <button
+        *ngFor="let page of pages()"
+        (click)="goToPage(page)"
+        [class.shadow-sm]="currentPage() === page"
+        [class.border]="currentPage() === page"
+        [class.border-gray-200]="currentPage() === page"
+        class="text-gray-800 px-3 py-1 rounded-md mx-1"
+      >
+        {{ page }}
+      </button>
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()"
+        class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
+      >
+        Suivant
+        <i-lucide [img]="ChevronRightIcon" [size]="16"></i-lucide>
+      </button>
+    </div>
+  </div>
+
+  <!-- Meal Create/Edit Form Modal -->
+  <div
+    *ngIf="showMealForm()"
+    class="fixed inset-0 flex items-center justify-center z-50"
+  >
+    <div
+      class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
+    ></div>
+    <div
+      class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
+    >
+      <h3 class="text-xl font-bold mb-4">
+        {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
+      </h3>
+      <form (ngSubmit)="saveMeal()">
+        <div class="mb-4">
+          <label
+            for="designation"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Désignation :
+          </label>
+          <input
+            type="text"
+            id="designation"
+            name="designation"
+            [(ngModel)]="newMeal.designation"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="categoryId"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Catégorie :
+          </label>
+          <select
+            id="categoryId"
+            name="categoryId"
+            [(ngModel)]="newMeal.categoryId"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          >
+            <option value="">Sélectionner une catégorie</option>
+            <option
+              *ngFor="let category of categories()"
+              [value]="category.id"
+            >
+              {{ category.label }}
+            </option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label
+            for="purchasePrice"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Prix d'achat :
+          </label>
+          <input
+            type="number"
+            id="purchasePrice"
+            name="purchasePrice"
+            [(ngModel)]="newMeal.purchasePrice"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="sellingPrice"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Prix hors taxes :
+          </label>
+          <input
+            type="number"
+            id="sellingPrice"
+            name="sellingPrice"
+            [(ngModel)]="newMeal.sellingPrice"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="totalTTC"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Prix TTC :
+          </label>
+          <input
+            type="number"
+            id="totalTTC"
+            name="totalTTC"
+            [(ngModel)]="newMeal.totalTTC"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label for="image" class="block text-gray-700 text-sm font-bold mb-2">
+            URL de l'image :
+          </label>
+          <input
+            type="text"
+            id="image"
+            name="image"
+            [(ngModel)]="newMeal.image"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            for="labels"
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Labels :
+          </label>
+          <div class="flex items-center">
+            <input
+              type="text"
+              #labelInput
+              placeholder="Ajouter un label"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            <button
+              type="button"
+              (click)="addLabel(labelInput)"
+              class="bg-blue-500 text-white px-3 py-1 rounded-md ml-2 hover:bg-blue-600"
+            >
+              +
+            </button>
+          </div>
+          <div class="mt-2">
+            <span
+              *ngFor="let label of newMeal.labels; let i = index"
+              class="inline-flex items-center bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+            >
+              {{ label.value }}
+              <button
+                type="button"
+                (click)="removeLabel(i)"
+                class="ml-2 text-red-500 hover:text-red-700"
+              >
+                <i-lucide [img]="trash2"></i-lucide>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button
+            type="button"
+            (click)="cancelForm()"
+            class="bg-gray-100 text-gray-800 px-3 py-1 rounded-md mr-2 hover:bg-gray-400"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+          >
+            {{ editingMeal() ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

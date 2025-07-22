@@ -1,0 +1,142 @@
+<div class="flex flex-col h-full">
+  <div class="flex-1 px-2 py-1 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide">
+    <!-- Loading State -->
+    <div *ngIf="loading()" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+      <div
+        *ngFor="let item of getSkeletonArray(10)"
+        class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
+      >
+        <div class="p-1">
+          <div class="bg-gray-200 h-16 rounded-lg mb-1"></div>
+          <div class="bg-gray-200 h-3 rounded-sm mb-1"></div>
+          <div class="bg-gray-200 h-6 rounded-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Items Grid -->
+    <div
+      *ngIf="!loading()"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"
+    >
+      <div
+        *ngFor="let meal of meals()"
+        class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden p-1"
+        [class.opacity-50]="!canAddToCart()"
+        [class.cursor-not-allowed]="!canAddToCart()"
+      >
+        <div (click)="onMealSelect(meal)">
+          <div
+            class="relative overflow-hidden rounded-lg border border-gray-200 shadow-xs"
+          >
+            <img
+              [src]="meal.image || 'https://placehold.co/1280x720'"
+              (error)="onImageError($event)"
+              [alt]="meal.designation"
+              class="w-full h-20 rounded-lg object-cover"
+              loading="lazy"
+            />
+            <div
+              *ngIf="!canAddToCart()"
+              class="absolute inset-0 bg-gray-500 flex items-center justify-center rounded-lg"
+            >
+              <div class="text-white font-medium text-center px-2">
+                <div class="text-xs">{{ getOverlayMessage() }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-1 px-0.5">
+            <h3
+              class="text-xs font-medium leading-tight text-gray-900 line-clamp-1"
+            >
+              {{ meal.designation }}
+            </h3>
+          </div>
+        </div>
+        <div class="flex justify-between items-center px-1 pb-1">
+          <ng-container
+            *ngIf="getCartItem(meal.id) as cartItem; else addToCartButton"
+          >
+            <div class="flex items-center justify-between w-full pt-0.5">
+              <button
+                (click)="onDecreaseQuantity(meal.id, $event)"
+                title="Diminuer la quantité"
+                class="w-7 h-7 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+              >
+                <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
+              </button>
+              <button
+                class="font-semibold min-w-8 text-xs py-0.5 transition-all duration-200 text-center w-7 h-7 text-gray-900 rounded-md flex items-center justify-center"
+                [class]="
+                  isItemBeingEdited(cartItem)
+                    ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
+                    : 'bg-white border border-gray-200 shadow-sm'
+                "
+                (click)="onSelectItem(cartItem.id)"
+                data-edit-button
+                title="Cliquer pour modifier la quantité"
+              >
+                {{ getDisplayQuantity(cartItem) }}
+              </button>
+              <button
+                (click)="onIncreaseQuantity(meal.id, $event)"
+                [disabled]="cartItem.quantity >= 99.9"
+                [class.opacity-25]="cartItem.quantity >= 99.9"
+                [class.cursor-not-allowed]="cartItem.quantity >= 99.9"
+                title="Augmenter la quantité"
+                class="w-7 h-7 text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+              >
+                <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
+              </button>
+            </div>
+          </ng-container>
+          <ng-template #addToCartButton>
+            <span class="text-xs text-gray-500"> {{ meal.sellingPrice }} € </span>
+            <div class="mt-0.5">
+              <button
+                (click)="onMealSelect(meal)"
+                class="bg-black text-white w-7 h-7 rounded-lg flex items-center justify-center shadow-xs"
+              >
+                <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end gap-4 p-2 bg-gray-100">
+    <button
+      *ngIf="userRole() === 'Direction'"
+      (click)="onSettings()"
+      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="SettingsIcon" [size]="16"></i-lucide>
+      Paramètres
+    </button>
+    <button
+      *ngIf="userRole() === 'Direction'"
+      (click)="onReports()"
+      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="ReportsIcon" [size]="16"></i-lucide>
+      Rapports
+    </button>
+    <button
+      (click)="onShowAllReceipts()"
+      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="ReceiptIcon" [size]="16"></i-lucide>
+      Tous les reçus
+    </button>
+    <button
+      (click)="onLogout()"
+      class="flex justify-center items-center gap-2 bg-red-400 text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="LogOutIcon" [size]="16"></i-lucide>
+      Déconnexion
+    </button>
+  </div>
+</div>

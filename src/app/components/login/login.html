@@ -1,0 +1,95 @@
+<!-- Login Modal Overlay -->
+<div
+  class="fixed inset-0 bg-gray-100 backdrop-blur-sm flex items-center justify-center p-4"
+>
+  <!-- Login Card -->
+  <div
+    class="bg-white rounded-xl border border-gray-200 shadow-lg w-xs overflow-hidden"
+  >
+    <!-- Header -->
+    <div class="py-6 text-center">
+      <h1 class="text-xl font-semibold">PDV Restaurant</h1>
+      <p class="text-gray-500">Veuillez vous connecter pour continuer</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="px-6 pb-6 space-y-4" [class.opacity-50]="isLoading()">
+      <!-- Password Input -->
+      <div class="space-y-4">
+        <label class="text-md font-medium text-gray-900"> Mot de passe </label>
+        <div
+          class="flex items-center h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <i-lucide
+            [img]="LockIcon"
+            [size]="16"
+            class="text-gray-400 mr-2"
+          ></i-lucide>
+          <div
+            class="flex-1 text-gray-900 text-2xl font-medium"
+            [class]="showPassword() ? '' : 'pt-1.5'"
+          >
+            {{ passwordDisplay() }}
+          </div>
+          <button
+            type="button"
+            class="flex items-center hover:text-gray-900 transition-colors"
+            (click)="togglePasswordVisibility()"
+            [disabled]="!password()"
+          >
+            <i-lucide
+              [img]="showPassword() ? EyeOffIcon : EyeIcon"
+              [size]="18"
+              class="text-gray-400 hover:text-gray-600 transition-colors"
+            ></i-lucide>
+          </button>
+        </div>
+
+        <!-- Error Message -->
+        <p *ngIf="loginError()" class="text-sm text-red-500">
+          {{ loginError() }}
+        </p>
+
+        <!-- Number Pad -->
+        <div class="grid grid-cols-3 gap-2 mt-4">
+          <button
+            *ngFor="let num of ['1', '2', '3', '4', '5', '6', '7', '8', '9']"
+            (click)="onNumberClick(num)"
+            class="h-12 w-full rounded-md bg-gray-100 text-lg font-semibold flex items-center justify-center border border-gray-200 shadow-xs"
+          >
+            {{ num }}
+          </button>
+          <button
+            (click)="onClearClick()"
+            class="h-12 w-full rounded-md bg-red-100 text-lg font-semibold flex items-center justify-center text-red-600 border border-gray-200 shadow-xs"
+          >
+            C
+          </button>
+          <button
+            (click)="onNumberClick('0')"
+            class="h-12 w-full rounded-md bg-gray-100 text-lg font-semibold flex items-center justify-center border border-gray-200 shadow-xs"
+          >
+            0
+          </button>
+          <button
+            (click)="onBackspaceClick()"
+            class="h-12 w-full rounded-md bg-gray-100 text-lg font-semibold flex items-center justify-center border border-gray-200 shadow-xs"
+          >
+            <i-lucide [img]="BackspaceIcon" [size]="20"></i-lucide>
+          </button>
+        </div>
+      </div>
+
+      <!-- Login Button -->
+    </div>
+    <!-- Spinner -->
+    <div
+      *ngIf="isLoading()"
+      class="absolute inset-0 flex items-center justify-center"
+    >
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-4 border-black-500 border-t-transparent"
+      ></div>
+    </div>
+  </div>
+</div>

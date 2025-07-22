@@ -1,0 +1,41 @@
+<!-- Calculator container -->
+<div class="bg-white rounded-xl border border-gray-200 shadow-lg w-full overflow-hidden" [class.opacity-50]="disabled()">
+  <!-- Display -->
+  <div class="px-2 py-1">
+    <div class="flex items-center h-9 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm ring-offset-white">
+      <div class="flex-1 text-gray-900 text-xl font-medium">
+        {{ displayValue() }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Number Pad -->
+  <div class="grid grid-cols-3 gap-1 p-2">
+    <button *ngFor="let num of ['1', '2', '3', '4', '5', '6', '7', '8', '9']" (click)="onAddNumber(num)"
+      class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors"
+      [disabled]="disabled()">
+      {{ num }}
+    </button>
+    <button (click)="onClear()"
+      class="h-10 w-full rounded-md bg-red-100 text-base font-semibold flex items-center justify-center hover:bg-red-200 transition-colors text-red-600"
+      [disabled]="disabled()">
+      C
+    </button>
+    <button (click)="onAddNumber('0')"
+      class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors"
+      [disabled]="disabled()">
+      0
+    </button>
+
+    <button *ngIf="isQuantityMode()" (click)="onAddDecimal()" [disabled]="disabled() || displayValue().includes('.')"
+      class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors"
+      [class.opacity-50]="displayValue().includes('.')" [class.cursor-not-allowed]="displayValue().includes('.')">
+      .
+    </button>
+    <button *ngIf="!isQuantityMode()" (click)="onConfirm()" [disabled]="disabled() || !canConfirm()"
+      class="h-10 w-full rounded-md text-base font-semibold flex items-center justify-center transition-colors"
+      [class]="canConfirm() ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 cursor-not-allowed'">
+      OK
+    </button>
+  </div>
+</div>
