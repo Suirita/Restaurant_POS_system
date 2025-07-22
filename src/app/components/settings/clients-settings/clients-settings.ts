@@ -4,7 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { ClientService } from '../../../client.service';
 import { Client } from '../../../types/pos.types';
 import { UserAccount } from '../../../types/pos.types';
-import { LucideAngularModule } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Trash2,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-clients-settings',
@@ -13,6 +19,11 @@ import { LucideAngularModule } from 'lucide-angular';
   templateUrl: './clients-settings.html',
 })
 export class ClientsSettingsComponent implements OnInit {
+  readonly ChevronLeftIcon = ChevronLeft;
+  readonly ChevronRightIcon = ChevronRight;
+  readonly edit = Edit;
+  readonly trash2 = Trash2;
+
   private clientService = inject(ClientService);
   clients = signal<Client[]>([]);
   currentUser = signal<UserAccount | null>(null);
@@ -29,9 +40,11 @@ export class ClientsSettingsComponent implements OnInit {
   }
 
   loadClients() {
-    this.clientService.getClients(this.currentUser()?.token).subscribe((data) => {
-      this.clients.set(data);
-    });
+    this.clientService
+      .getClients(this.currentUser()?.token)
+      .subscribe((data) => {
+        this.clients.set(data);
+      });
   }
 
   openCreateForm() {
@@ -51,16 +64,34 @@ export class ClientsSettingsComponent implements OnInit {
   }
 
   saveClient() {
-    // Here you would call the service to save the client
-    // For now, we just close the form
-    this.showClientForm.set(false);
+    if (this.editingClient()) {
+      this.clientService
+        .updateClient(this.newClient(), this.currentUser()?.token)
+        .subscribe(() => {
+          this.loadClients();
+          this.showClientForm.set(false);
+        });
+    } else {
+      this.clientService
+        .createClient(this.newClient(), this.currentUser()?.token)
+        .subscribe(() => {
+          this.loadClients();
+          this.showClientForm.set(false);
+        });
+    }
   }
 
   deleteClient(client: Client) {
-    // Here you would call the service to delete the client
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+      this.clientService
+        .deleteClient(client.id, this.currentUser()?.token)
+        .subscribe(() => {
+          this.loadClients();
+        });
+    }
   }
 
   updateNewClient<K extends keyof Client>(key: K, value: Client[K]) {
-    this.newClient.update(client => ({ ...client, [key]: value }));
+    this.newClient.update((client) => ({ ...client, [key]: value }));
   }
 }

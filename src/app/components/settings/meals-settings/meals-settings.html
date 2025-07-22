@@ -160,7 +160,7 @@
         class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
       >
         Suivant
-        <i-lucide [img]="ChevronRightIcon" [size]="16"></i-lucide>
+        <i-lucide name="chevron-right" [size]="16"></i-lucide>
       </button>
     </div>
   </div>
@@ -211,10 +211,7 @@
             required
           >
             <option value="">Sélectionner une catégorie</option>
-            <option
-              *ngFor="let category of categories()"
-              [value]="category.id"
-            >
+            <option *ngFor="let category of categories()" [value]="category.id">
               {{ category.label }}
             </option>
           </select>
@@ -253,10 +250,7 @@
           />
         </div>
         <div class="mb-4">
-          <label
-            for="tva"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
+          <label for="tva" class="block text-gray-700 text-sm font-bold mb-2">
             TVA (%) :
           </label>
           <input
@@ -331,7 +325,7 @@
                 (click)="removeLabel(i)"
                 class="ml-2 text-red-500 hover:text-red-700"
               >
-                <i-lucide [img]="trash2"></i-lucide>
+                <i-lucide name="trash-2"></i-lucide>
               </button>
             </span>
           </div>

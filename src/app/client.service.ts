@@ -48,4 +48,67 @@ export class ClientService {
         })
       );
   }
+
+  deleteClient(id: string, token: string | undefined): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.baseURL}/Client/${id}`, { headers });
+  }
+
+  createClient(client: Client, token: string | undefined): Observable<Client> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      firstName: client.name,
+      reference: `cl-${Math.floor(100000 + Math.random() * 900000)}`,
+      phoneNumber: client.mobile,
+      email: client.email,
+      siret: client.ice,
+      accountingCode: `411${client.name}`,
+      addresses: [
+        {
+          street: client.address,
+          city: client.city,
+          postalCode: client.postalCode,
+          countryCode: client.country,
+          isDefault: true,
+        },
+      ],
+      labels: [
+        {
+          value: 'POS',
+          id: 'chndr1lvpr21k1',
+          id_html: 'POS',
+        },
+      ],
+    };
+    return this.http.post<Client>(`${this.baseURL}/Client/Create`, body, { headers });
+  }
+
+  updateClient(client: Client, token: string | undefined): Observable<Client> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      firstName: client.name,
+      reference: `cl-${Math.floor(100000 + Math.random() * 900000)}`,
+      phoneNumber: client.mobile,
+      email: client.email,
+      siret: client.ice,
+      accountingCode: `411${client.name}`,
+      addresses: [
+        {
+          street: client.address,
+          city: client.city,
+          postalCode: client.postalCode,
+          countryCode: client.country,
+          isDefault: true,
+        },
+      ],
+      labels: [
+        {
+          value: 'POS',
+          id: 'chndr1lvpr21k1',
+          id_html: 'POS',
+        },
+      ],
+    };
+    return this.http.put<Client>(`${this.baseURL}/Client/${client.id}/Update`, body, { headers });
+  }
 }

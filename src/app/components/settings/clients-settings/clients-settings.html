@@ -84,14 +84,13 @@
               (click)="openEditForm(client)"
               class="text-indigo-600 hover:text-indigo-900 mr-2"
             >
-              <i-lucide name="edit"></i-lucide>
+              <i-lucide [img]="edit"></i-lucide>
             </button>
-
             <button
               (click)="deleteClient(client)"
               class="text-red-600 hover:text-red-900"
             >
-              <i-lucide name="trash-2"></i-lucide>
+              <i-lucide [img]="trash2"></i-lucide>
             </button>
           </td>
         </tr>
