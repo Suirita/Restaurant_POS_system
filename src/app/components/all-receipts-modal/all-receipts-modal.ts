@@ -52,6 +52,7 @@ export class AllReceiptsModalComponent {
   }
 
   onReceiptClick(receipt: Receipt) {
+    console.log('onReceiptClick called in component:', receipt);
     this.receiptSelected.emit(receipt);
   }
 }

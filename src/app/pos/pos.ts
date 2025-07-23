@@ -147,7 +147,6 @@ export class PosComponent implements OnInit {
 
   ngOnInit() {
     this.loadCategoryImages();
-    // this.loadMealImages();
   }
 
   private loadCategoryImages() {
@@ -155,14 +154,6 @@ export class PosComponent implements OnInit {
       .get<{ [key: string]: string }>('assets/category-images.json')
       .subscribe((data) => {
         this.categoryImages.set(data);
-      });
-  }
-
-  private loadMealImages() {
-    this.http
-      .get<{ [key: string]: string }>('assets/meal-images.json')
-      .subscribe((data) => {
-        this.mealImages.set(data);
       });
   }
 
@@ -213,8 +204,6 @@ export class PosComponent implements OnInit {
       }
     }
   }
-
-  // ... rest of your existing methods remain exactly the same ...
 
   // Global click handler to finish editing when clicking outside calculator
   @HostListener('document:click', ['$event'])
@@ -628,15 +617,14 @@ export class PosComponent implements OnInit {
     this.receiptService
       .getAllReceipts(this.currentUser()!.token)
       .subscribe((allReceipts) => {
-        const occupiedTables = allReceipts.reduce((acc, receipt) => {
-          if (receipt.tableName) {
-            if (receipt.tableName.startsWith('T')) {
+        const occupiedTables = allReceipts
+          .filter((receipt) => receipt.status === 'in_progress')
+          .reduce((acc, receipt) => {
+            if (receipt.tableName && receipt.tableName.startsWith('T')) {
               acc[receipt.tableName] = receipt.userId;
             }
-          }
-
-          return acc;
-        }, {} as { [key: string]: string });
+            return acc;
+          }, {} as { [key: string]: string });
 
         this.tables.set(
           this.tables().map((table) => ({
@@ -689,6 +677,7 @@ export class PosComponent implements OnInit {
   }
 
   onReceiptSelectedFromModal(receipt: Receipt) {
+    console.log('onReceiptSelectedFromModal called in pos.ts:', receipt);
     this.cart.set([...receipt.items]);
     this.orderType.set(
       receipt.tableName === 'Take away' ? 'take away' : 'table'

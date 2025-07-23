@@ -317,7 +317,7 @@ export class ReceiptService {
   }
 
   getReceipts(userId: string, token: string): Observable<Receipt[]> {
-    return this.getAllReceipts(token, userId);
+    return this.getAllReceipts(token, userId, ['in_progress']);
   }
 
   public getReceiptDetails(id: string, token: string): Observable<any> {
@@ -329,7 +329,7 @@ export class ReceiptService {
     tableName: string,
     token: string
   ): Observable<Receipt | undefined> {
-    return this.getAllReceipts(token).pipe(
+    return this.getAllReceipts(token, undefined, ['in_progress']).pipe(
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
         if (receipt && receipt.id) {
@@ -380,7 +380,11 @@ export class ReceiptService {
     console.log(`Deleting receipt with order number: ${orderNumber}`);
   }
 
-  public getAllReceipts(token: string, userId?: string): Observable<Receipt[]> {
+  public getAllReceipts(
+    token: string,
+    userId?: string,
+    status?: string[]
+  ): Observable<Receipt[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body: any = {
       Page: 1,
@@ -388,6 +392,9 @@ export class ReceiptService {
     };
     if (userId) {
       body.techniciansId = [userId];
+    }
+    if (status) {
+      body.status = status;
     }
     return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
       map((response) => {
