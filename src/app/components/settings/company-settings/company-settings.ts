@@ -2,20 +2,25 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ConfigurationService } from '../../../configuration.service';
+import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-company-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   templateUrl: './company-settings.html',
 })
 export class CompanySettingsComponent implements OnInit {
+  readonly Loader = LoaderCircle;
+
   private fb = inject(FormBuilder);
   private configurationService = inject(ConfigurationService);
 
   form: FormGroup;
   logoUrl: string | ArrayBuffer | null = null;
   pdfConfiguration: any = null;
+  isLoading = false;
 
   constructor() {
     this.form = this.fb.group({
@@ -33,36 +38,47 @@ export class CompanySettingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getPdfOptions();
-    this.getLogo();
+    this.loadData();
   }
 
-  getPdfOptions() {
-    this.configurationService.getPdfOptions().subscribe((data) => {
-      let options;
-      if (typeof data === 'string') {
-        try {
-          options = JSON.parse(data);
-        } catch (e) {
-          console.error('Error parsing PDF options JSON string:', e);
-          return;
+  loadData() {
+    this.isLoading = true;
+    forkJoin({
+      pdfOptions: this.configurationService.getPdfOptions(),
+      invoiceConfig: this.configurationService.getInvoiceConfiguration(),
+    }).subscribe({
+      next: ({ pdfOptions, invoiceConfig }) => {
+        // Process PDF options
+        let options;
+        if (typeof pdfOptions === 'string') {
+          try {
+            options = JSON.parse(pdfOptions);
+          } catch (e) {
+            console.error('Error parsing PDF options JSON string:', e);
+          }
+        } else {
+          options = pdfOptions;
         }
-      } else {
-        options = data;
-      }
+        if (options && options.header) {
+          this.form.patchValue(options.header);
+        }
 
-      if (options && options.header) {
-        this.form.patchValue(options.header);
-      }
-    });
-  }
-
-  getLogo() {
-    this.configurationService.getInvoiceConfiguration().subscribe((data) => {
-      this.pdfConfiguration = data;
-      if (data && data.images && data.images.logo) {
-        this.logoUrl = data.images.logo;
-      }
+        // Process invoice config for logo
+        this.pdfConfiguration = invoiceConfig;
+        if (
+          invoiceConfig &&
+          invoiceConfig.images &&
+          invoiceConfig.images.logo
+        ) {
+          this.logoUrl = invoiceConfig.images.logo;
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading company settings:', err);
+        this.isLoading = false;
+        alert('Erreur lors du chargement des informations.');
+      },
     });
   }
 
@@ -82,6 +98,7 @@ export class CompanySettingsComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
+      this.isLoading = true;
       const payload = {
         header: this.form.value,
         images: null,
@@ -90,25 +107,27 @@ export class CompanySettingsComponent implements OnInit {
         .updatePdfOptions(JSON.stringify(payload))
         .subscribe({
           next: () => {
-            this.getPdfOptions();
             if (this.pdfConfiguration) {
               this.configurationService
                 .updateAllPdfOptions(this.pdfConfiguration)
                 .subscribe({
                   next: () => {
-                    this.getLogo();
-                    alert('Informations et logo mis à jour avec succès.');
+                    this.isLoading = false;
+                    this.loadData(); // Refresh data
                   },
                   error: (err) => {
+                    this.isLoading = false;
                     console.error('Error updating all PDF options:', err);
                     alert('Erreur lors de la mise à jour du logo.');
                   },
                 });
             } else {
-              alert("Informations de l'entreprise mises à jour avec succès.");
+              this.isLoading = false;
+              this.loadData(); // Refresh data
             }
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error updating PDF options:', err);
             alert('Erreur lors de la mise à jour des informations.');
           },
