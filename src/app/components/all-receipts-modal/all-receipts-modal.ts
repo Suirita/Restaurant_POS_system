@@ -2,7 +2,7 @@ import { Component, output, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Receipt, UserAccount } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
-import { LucideAngularModule, X } from 'lucide-angular';
+import { LucideAngularModule, X, LoaderCircle } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -12,9 +12,11 @@ import { LucideAngularModule, X } from 'lucide-angular';
 })
 export class AllReceiptsModalComponent {
   readonly XIcon = X;
+  readonly Loader = LoaderCircle;
 
   private receiptService = inject(ReceiptService);
   receipts = signal<Receipt[]>([]);
+  isLoading = signal<boolean>(false);
   userId = input.required<string>();
   token = input.required<string>();
 
@@ -27,10 +29,12 @@ export class AllReceiptsModalComponent {
   }
 
   loadReceipts() {
+    this.isLoading.set(true);
     this.receiptService
       .getReceipts(this.userId(), this.token())
       .subscribe((receipts) => {
         this.receipts.set(receipts);
+        this.isLoading.set(false);
       });
   }
 
