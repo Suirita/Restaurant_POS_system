@@ -85,8 +85,16 @@
 
       <!-- Right Sidebar (Cart Section) -->
       <div
-        class="sm:w-[400px] md:w-[450px] lg:w-[450px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500 flex flex-col"
+        class="relative sm:w-[400px] md:w-[450px] lg:w-[450px] bg-white m-2 ml-0 rounded-2xl border border-gray-200 shadow-2xl shadow-gray-500 flex flex-col"
       >
+        <!-- Loading Spinner -->
+        <div
+          *ngIf="isLoadingReceipt()"
+          class="absolute inset-0 bg-white opacity-50 flex items-center justify-center z-10 rounded-2xl"
+        >
+          <i-lucide [img]="Loader" [size]="48" class="animate-spin"></i-lucide>
+        </div>
+
         <!-- Cart Items -->
         <div class="flex-1 min-h-0 flex flex-col">
           <app-cart

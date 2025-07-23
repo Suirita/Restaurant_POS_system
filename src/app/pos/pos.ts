@@ -28,6 +28,7 @@ import { CartComponent } from '../components/cart/cart';
 
 import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
+import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -41,9 +42,11 @@ import { CalculatorComponent } from '../components/calculator/calculator';
     CartComponent,
     CalculatorComponent,
     AllReceiptsModalComponent,
+    LucideAngularModule,
   ],
 })
 export class PosComponent implements OnInit {
+  readonly Loader = LoaderCircle;
   private mealService = inject(MealService);
   private receiptService = inject(ReceiptService);
   private elementRef = inject(ElementRef);
@@ -86,6 +89,7 @@ export class PosComponent implements OnInit {
   selectedCategory = signal<string>('');
   cart = signal<CartItem[]>([]);
   loading = signal<boolean>(false);
+  isLoadingReceipt = signal<boolean>(false);
   selectedCartItemId = signal<string | null>(null);
   tempQuantity = signal<string>('');
   tableErrorMessage = signal<string | null>(null);
@@ -510,18 +514,26 @@ export class PosComponent implements OnInit {
           return;
         }
 
+        this.isLoadingReceipt.set(true);
         this.receiptService
           .getReceiptByTable(tableName, this.currentUser()!.token)
-          .subscribe((receipt) => {
-            console.log('receipt', receipt);
-            if (receipt) {
-              console.log('receipt items', receipt.items);
-              this.cart.set(receipt.items ? [...receipt.items] : []);
-              this.isTableNumberComplete.set(true);
-              this.orderType.set('table');
-            } else {
-              this.isTableNumberComplete.set(true);
-            }
+          .subscribe({
+            next: (receipt) => {
+              if (receipt) {
+                this.cart.set(receipt.items ? [...receipt.items] : []);
+                this.isTableNumberComplete.set(true);
+                this.orderType.set('table');
+              } else {
+                this.isTableNumberComplete.set(true);
+              }
+              this.isLoadingReceipt.set(false);
+            },
+            error: () => {
+              this.isLoadingReceipt.set(false);
+              this.tableErrorMessage.set(
+                'Error fetching receipt details.'
+              );
+            },
           });
       } else {
         // Table is NOT occupied
