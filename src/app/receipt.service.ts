@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Receipt } from './types/pos.types';
+import { Receipt, CartItem } from './types/pos.types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Observable, of } from 'rxjs';
@@ -320,41 +320,54 @@ export class ReceiptService {
     return this.getAllReceipts(token, userId);
   }
 
+  public getReceiptDetails(id: string, token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.baseUrl}/Quote/${id}`, { headers });
+  }
+
   getReceiptByTable(
     tableName: string,
     token: string
   ): Observable<Receipt | undefined> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.getAllReceipts(token).pipe(
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
-        if (receipt) {
-          const body = { id: receipt.id };
-          return this.http
-            .post<any>(`${this.baseUrl}/Quote`, body, {
-              headers,
-            })
-            .pipe(
-              map((response) => {
-                if (response && response.value && response.value.length > 0) {
-                  const quote = response.value[0];
-                  const lineItems = (quote.orderDetails?.lineItems || []).map((item: any) => ({
-                      id: item.productId,
-                      designation: item.product.designation,
-                      sellingPrice: item.product.sellingPrice,
+        if (receipt && receipt.id) {
+          return this.getReceiptDetails(receipt.id, token).pipe(
+            map((detailsResponse) => {
+              const quoteDetails = detailsResponse.value;
+              if (
+                quoteDetails &&
+                quoteDetails.orderDetails &&
+                quoteDetails.orderDetails.lineItems
+              ) {
+                const lineItems: CartItem[] =
+                  quoteDetails.orderDetails.lineItems.map((item: any) => {
+                    const product = item.product;
+                    return {
+                      id: product.id,
+                      designation: product.designation,
+                      sellingPrice: product.sellingPrice,
+                      purchasePrice: product.purchasePrice || 0,
+                      totalTTC: item.totalTTC,
+                      tva: product.vat || 0,
+                      categoryId: product.categoryId,
+                      categoryLabel: product.categoryLabel,
+                      image: '', // Image is not in the response, default to empty string
                       quantity: item.quantity,
-                      categoryLabel: item.product.categoryLabel,
-                      image: '',
-                    })
-                  );
-                  return {
-                    ...receipt,
-                    items: lineItems,
-                  };
-                }
-                return undefined;
-              })
-            );
+                      labels: product.labels || [],
+                    };
+                  });
+
+                return {
+                  ...receipt,
+                  items: lineItems,
+                  total: quoteDetails.totalTTC,
+                } as Receipt;
+              }
+              return receipt; // Return basic receipt if details are not available
+            })
+          );
         } else {
           return of(undefined);
         }
@@ -385,7 +398,7 @@ export class ReceiptService {
                 id: quote.id,
                 orderNumber: quote.reference,
                 tableName: quote.purpose,
-                items: [], 
+                items: [],
                 total: quote.totalTTC,
                 date: new Date(quote.creationDate),
                 paymentMethod: '',
