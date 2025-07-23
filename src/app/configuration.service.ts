@@ -56,4 +56,25 @@ export class ConfigurationService {
       { headers }
     );
   }
+
+  getInvoiceConfiguration(): Observable<any> {
+    const token = this.loginService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.baseUrl}/ConfigurationPDF/Invoice`, {
+      headers,
+    });
+  }
+
+  updateAllPdfOptions(payload: any): Observable<any> {
+    const token = this.loginService.getToken();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.put<any>(
+      `${this.baseUrl}/ConfigurationPDF/UpdateAll`,
+      payload,
+      { headers }
+    );
+  }
 }

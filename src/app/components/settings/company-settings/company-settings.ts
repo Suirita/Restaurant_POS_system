@@ -14,6 +14,8 @@ export class CompanySettingsComponent implements OnInit {
   private configurationService = inject(ConfigurationService);
 
   form: FormGroup;
+  logoUrl: string | ArrayBuffer | null = null;
+  pdfConfiguration: any = null;
 
   constructor() {
     this.form = this.fb.group({
@@ -28,6 +30,11 @@ export class CompanySettingsComponent implements OnInit {
         countryCode: [''],
       }),
     });
+  }
+
+  ngOnInit() {
+    this.getPdfOptions();
+    this.getLogo();
   }
 
   getPdfOptions() {
@@ -50,8 +57,27 @@ export class CompanySettingsComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.getPdfOptions();
+  getLogo() {
+    this.configurationService.getInvoiceConfiguration().subscribe((data) => {
+      this.pdfConfiguration = data;
+      if (data && data.images && data.images.logo) {
+        this.logoUrl = data.images.logo;
+      }
+    });
+  }
+
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.logoUrl = reader.result;
+        if (this.pdfConfiguration && this.pdfConfiguration.images) {
+          this.pdfConfiguration.images.logo = reader.result as string;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   onSubmit() {
@@ -65,6 +91,22 @@ export class CompanySettingsComponent implements OnInit {
         .subscribe({
           next: () => {
             this.getPdfOptions();
+            if (this.pdfConfiguration) {
+              this.configurationService
+                .updateAllPdfOptions(this.pdfConfiguration)
+                .subscribe({
+                  next: () => {
+                    this.getLogo();
+                    alert('Informations et logo mis à jour avec succès.');
+                  },
+                  error: (err) => {
+                    console.error('Error updating all PDF options:', err);
+                    alert('Erreur lors de la mise à jour du logo.');
+                  },
+                });
+            } else {
+              alert("Informations de l'entreprise mises à jour avec succès.");
+            }
           },
           error: (err) => {
             console.error('Error updating PDF options:', err);
