@@ -530,9 +530,7 @@ export class PosComponent implements OnInit {
             },
             error: () => {
               this.isLoadingReceipt.set(false);
-              this.tableErrorMessage.set(
-                'Error fetching receipt details.'
-              );
+              this.tableErrorMessage.set('Error fetching receipt details.');
             },
           });
       } else {
