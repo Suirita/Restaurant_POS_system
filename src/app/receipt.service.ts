@@ -376,7 +376,6 @@ export class ReceiptService {
   }
 
   deleteReceiptByOrderNumber(orderNumber: string): void {
-    // TODO: Implement backend call to delete receipt by order number
     console.log(`Deleting receipt with order number: ${orderNumber}`);
   }
 
