@@ -44,7 +44,7 @@ export class MenuGridComponent {
   reports = output<void>();
 
   getSkeletonArray(count: number): number[] {
-    return Array.from({ length: 10 }, (_, i) => i + 1);
+    return Array.from({ length: count }, (_, i) => i + 1);
   }
 
   onMealSelect(meal: Meal) {
