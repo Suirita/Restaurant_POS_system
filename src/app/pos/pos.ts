@@ -512,8 +512,10 @@ export class PosComponent implements OnInit {
                 this.cart.set(receipt.items ? [...receipt.items] : []);
                 this.isTableNumberComplete.set(true);
                 this.orderType.set('table');
+                this.currentReceipt.set(receipt);
               } else {
                 this.isTableNumberComplete.set(true);
+                this.currentReceipt.set(null);
               }
               this.isLoadingReceipt.set(false);
             },
@@ -525,6 +527,7 @@ export class PosComponent implements OnInit {
       } else {
         // Table is NOT occupied
         this.isTableNumberComplete.set(true);
+        this.currentReceipt.set(null);
       }
     }
     this.isEditing.set(false);
@@ -572,20 +575,27 @@ export class PosComponent implements OnInit {
     const tableName =
       this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
 
+    const existingReceipt = this.currentReceipt();
+
     const receipt: Receipt = {
-      id: '',
-      orderNumber: '',
+      id: existingReceipt ? existingReceipt.id : '',
+      orderNumber: existingReceipt ? existingReceipt.orderNumber : '',
       tableName: tableName,
       items: [...this.cart()],
       total: total,
-      date: new Date(),
+      date: existingReceipt ? existingReceipt.date : new Date(),
       paymentMethod: 'Cash',
       userId: this.currentUser()!.userId,
-      client: null,
+      client: existingReceipt ? existingReceipt.client : null,
       orderDetails: null,
       status: 'in_progress',
     };
-    this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
+
+    if (existingReceipt) {
+      this.receiptService.updateReceipt(receipt, this.currentUser()!.token);
+    } else {
+      this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
+    }
 
     // Reset currentReceipt after completing the order
     this.currentReceipt.set(null);

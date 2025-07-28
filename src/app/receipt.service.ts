@@ -16,15 +16,10 @@ export class ReceiptService {
 
   constructor() {}
 
-  createReceipt(
-    receipt: Receipt,
-    token: string,
-    uniqueReference: string
-  ): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = {
+  private buildQuoteBody(receipt: Receipt, reference: string): any {
+    return {
       labels: [],
-      reference: uniqueReference,
+      reference: reference,
       multiWorkShop: false,
       creationDate: receipt.date,
       dueDate: receipt.date,
@@ -293,6 +288,15 @@ export class ReceiptService {
       contacts: [],
       notGererByStock: false,
     };
+  }
+
+  createReceipt(
+    receipt: Receipt,
+    token: string,
+    uniqueReference: string
+  ): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = this.buildQuoteBody(receipt, uniqueReference);
     return this.http.post<any>(`${this.baseUrl}/Quote/Create`, body, {
       headers,
     });
@@ -314,6 +318,17 @@ export class ReceiptService {
           console.error('Error creating receipt:', error);
         },
       });
+  }
+
+  updateReceipt(receipt: Receipt, token: string): void {
+    const body = this.buildQuoteBody(receipt, receipt.orderNumber);
+    body.id = receipt.id;
+    this.updateQuote(body, token).subscribe({
+      next: () => {},
+      error: (error) => {
+        console.error('Error updating receipt:', error);
+      },
+    });
   }
 
   getReceipts(userId: string, token: string): Observable<Receipt[]> {
@@ -426,9 +441,13 @@ export class ReceiptService {
 
   updateQuote(quote: any, token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put<any>(`${this.baseUrl}/Quote/Update`, quote, {
-      headers,
-    });
+    return this.http.put<any>(
+      `${this.baseUrl}/Quote/${quote.id}/Update`,
+      quote,
+      {
+        headers,
+      }
+    );
   }
 
   getQuoteByTable(
