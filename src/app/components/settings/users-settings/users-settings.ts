@@ -36,6 +36,7 @@ export class UsersSettingsComponent implements OnInit {
   showUserForm = signal<boolean>(false);
   editingUser = signal<UserAccount | null>(null);
   imagePreview = signal<string | null>(null);
+  isInputFocused   = signal<boolean>(false);
 
   // Filtering and Search
   searchTerm = signal<string>('');
