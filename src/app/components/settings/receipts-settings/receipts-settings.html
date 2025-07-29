@@ -5,14 +5,14 @@
   <div class="mb-4 flex border-b">
     <button
       class="px-4 py-2 -mb-px border-b-2 font-medium focus:outline-none"
-      [ngClass]="{ 'border-green-500 text-green-600': selectedTab() === 0, 'border-transparent text-gray-500': selectedTab() !== 0 }"
+      [ngClass]="{ 'border-black text-green-600': selectedTab() === 0, 'border-transparent text-gray-500': selectedTab() !== 0 }"
       (click)="selectTab(0)"
     >
-    Reçus
+      Reçus
     </button>
     <button
       class="px-4 py-2 -mb-px border-b-2 font-medium focus:outline-none"
-      [ngClass]="{ 'border-green-500 text-green-600': selectedTab() === 1, 'border-transparent text-gray-500': selectedTab() !== 1 }"
+      [ngClass]="{ 'border-black text-green-600': selectedTab() === 1, 'border-transparent text-gray-500': selectedTab() !== 1 }"
       (click)="selectTab(1)"
     >
       Factures
@@ -43,7 +43,8 @@
               name="racine"
               [(ngModel)]="settings.prefix"
               (ngModelChange)="onSettingsChange(settings)"
-              (click)="openKeyboard()"
+              (focus)="openKeyboard()"
+              (blur)="closeKeyboard()"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
@@ -77,7 +78,8 @@
               name="counterValue"
               [(ngModel)]="settings.counter"
               (ngModelChange)="onSettingsChange(settings)"
-              (click)="openKeyboard()"
+              (focus)="openKeyboard()"
+              (blur)="closeKeyboard()"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
@@ -93,7 +95,8 @@
               name="counterLength"
               [(ngModel)]="settings.counterLength"
               (ngModelChange)="onSettingsChange(settings)"
-              (click)="openKeyboard()"
+              (focus)="openKeyboard()"
+              (blur)="closeKeyboard()"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
@@ -107,7 +110,7 @@
         <div class="flex justify-end">
           <button
             type="submit"
-            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            class="bg-black text-white px-4 py-2 rounded-md"
           >
             Enregistrer
           </button>

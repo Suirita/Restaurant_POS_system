@@ -108,7 +108,8 @@ export class ReceiptsSettingsComponent implements OnInit {
     const token = this.loginService.getToken();
     if (token) {
       this.configService.getCounters(token).subscribe((data: any) => {
-        const countersArray = typeof data === 'string' ? JSON.parse(data) : data;
+        const countersArray =
+          typeof data === 'string' ? JSON.parse(data) : data;
         this.counters.set(countersArray);
 
         const receiptCounter = countersArray.find(
@@ -158,5 +159,9 @@ export class ReceiptsSettingsComponent implements OnInit {
 
   openKeyboard(): void {
     this.keyboardService.openOnScreenKeyboard();
+  }
+
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
   }
 }

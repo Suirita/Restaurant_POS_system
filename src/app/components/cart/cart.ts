@@ -34,6 +34,7 @@ export class CartComponent {
   orderType = input.required<'take away' | 'table'>();
   tableNumber = input.required<string>();
   tables = input.required<Table[]>();
+  isTableOccupied = input.required<boolean>();
 
   itemSelected = output<string>();
   itemRemoved = output<string>();
@@ -44,6 +45,7 @@ export class CartComponent {
   takeAwaySelected = output<void>();
   tableTypeSelected = output<void>();
   pay = output<void>();
+  transfer = output<void>();
 
   displayHeader = computed(() => {
     if (this.orderType() === 'table' && this.tableNumber()) {
@@ -90,6 +92,10 @@ export class CartComponent {
 
   onPay() {
     this.pay.emit();
+  }
+
+  onTransfer() {
+    this.transfer.emit();
   }
 
   getDisplayQuantity(item: CartItem): number | string {

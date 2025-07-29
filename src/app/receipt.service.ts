@@ -283,7 +283,6 @@ export class ReceiptService {
         isDefault: true,
         id_html: '',
       },
-      userId: receipt.userId,
       draftId: null,
       contacts: [],
       notGererByStock: false,

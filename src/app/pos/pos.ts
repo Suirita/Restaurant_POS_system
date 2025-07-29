@@ -28,6 +28,7 @@ import { CartComponent } from '../components/cart/cart';
 
 import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
+import { TransferModalComponent } from '../components/transfer-modal/transfer-modal';
 import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
 
 @Component({
@@ -42,6 +43,7 @@ import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
     CartComponent,
     CalculatorComponent,
     AllReceiptsModalComponent,
+    TransferModalComponent,
     LucideAngularModule,
   ],
 })
@@ -82,6 +84,7 @@ export class PosComponent implements OnInit {
   showReceipt = signal<boolean>(false);
   currentReceipt = signal<Receipt | null>(null);
   showAllReceipts = signal<boolean>(false);
+  showTransferModal = signal<boolean>(false);
 
   // Signals
   meals = signal<Meal[]>([]);
@@ -93,6 +96,7 @@ export class PosComponent implements OnInit {
   selectedCartItemId = signal<string | null>(null);
   tempQuantity = signal<string>('');
   tableErrorMessage = signal<string | null>(null);
+  isTableOccupied = signal<boolean>(false);
 
   // Order counter for receipt numbers
 
@@ -503,6 +507,7 @@ export class PosComponent implements OnInit {
           return;
         }
 
+        this.isTableOccupied.set(true);
         this.isLoadingReceipt.set(true);
         this.receiptService
           .getReceiptByTable(tableName, this.currentUser()!.token)
@@ -528,6 +533,7 @@ export class PosComponent implements OnInit {
         // Table is NOT occupied
         this.isTableNumberComplete.set(true);
         this.currentReceipt.set(null);
+        this.isTableOccupied.set(false);
       }
     }
     this.isEditing.set(false);
@@ -763,5 +769,73 @@ export class PosComponent implements OnInit {
         this.tableErrorMessage.set(null);
         this.isEditing.set(true);
       });
+  }
+
+  onTransfer() {
+    this.showTransferModal.set(true);
+  }
+
+  hideTransferModal() {
+    this.showTransferModal.set(false);
+  }
+
+  onTransferConfirmed(destinationTableNumber: string) {
+    const destinationTableName = 'T' + destinationTableNumber;
+    const destinationTable = this.tables().find(
+      (t) => t.name === destinationTableName
+    );
+
+    if (!destinationTable) {
+      alert('Invalid destination table number.');
+      return;
+    }
+
+    const sourceTableName = 'T' + this.tableNumber();
+    const sourceReceipt = this.currentReceipt();
+
+    if (!sourceReceipt) {
+      alert('No receipt to transfer.');
+      return;
+    }
+
+    if (destinationTable.occupied) {
+      // Merge with existing receipt
+      this.receiptService
+        .getReceiptByTable(destinationTableName, this.currentUser()!.token)
+        .subscribe((destinationReceipt) => {
+          if (destinationReceipt) {
+            destinationReceipt.items.push(...sourceReceipt.items);
+            destinationReceipt.total += sourceReceipt.total;
+            this.receiptService.updateReceipt(
+              destinationReceipt,
+              this.currentUser()!.token
+            );
+            this.receiptService.deleteReceiptByOrderNumber(
+              sourceReceipt.orderNumber
+            );
+            this.clearCartAndReset();
+          }
+        });
+    } else {
+      // Just update the table name
+      sourceReceipt.tableName = destinationTableName;
+      sourceReceipt.userId = this.currentUser()!.userId;
+      this.receiptService.updateReceipt(sourceReceipt, this.currentUser()!.token);
+      this.clearCartAndReset();
+    }
+
+    this.hideTransferModal();
+  }
+
+  private clearCartAndReset() {
+    this.clearCart();
+    this.finishEditing(false);
+    this.orderType.set('table');
+    this.tableNumber.set('');
+    this.isTableNumberComplete.set(false);
+    this.tableErrorMessage.set(null);
+    this.isEditing.set(true);
+    this.isTableOccupied.set(false);
+    this.syncTablesWithReceipts();
   }
 }

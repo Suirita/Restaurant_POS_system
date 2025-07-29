@@ -33,6 +33,7 @@ export class MealsSettingsComponent implements OnInit {
   categories = signal<Category[]>([]);
   showMealForm = signal<boolean>(false);
   editingMeal = signal<Meal | null>(null);
+  isInputFocused = signal<boolean>(false);
 
   // Filtering and Search
   searchTerm = signal<string>('');
@@ -162,13 +163,15 @@ export class MealsSettingsComponent implements OnInit {
 
   calculateTTC(): void {
     if (this.newMeal.sellingPrice && this.newMeal.tva) {
-      this.newMeal.totalTTC = this.newMeal.sellingPrice * (1 + this.newMeal.tva / 100);
+      this.newMeal.totalTTC =
+        this.newMeal.sellingPrice * (1 + this.newMeal.tva / 100);
     }
   }
 
   calculateSellingPrice(): void {
     if (this.newMeal.totalTTC && this.newMeal.tva) {
-      this.newMeal.sellingPrice = this.newMeal.totalTTC / (1 + this.newMeal.tva / 100);
+      this.newMeal.sellingPrice =
+        this.newMeal.totalTTC / (1 + this.newMeal.tva / 100);
     }
   }
 
@@ -219,6 +222,10 @@ export class MealsSettingsComponent implements OnInit {
 
   openKeyboard(): void {
     this.keyboardService.openOnScreenKeyboard();
+  }
+
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
   }
 
   onImageError(event: Event) {

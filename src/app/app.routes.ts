@@ -24,14 +24,14 @@ export const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
     children: [
-      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      { path: '', redirectTo: 'company', pathMatch: 'full' },
+      { path: 'company', component: CompanySettingsComponent },
+      { path: 'receipts', component: ReceiptsSettingsComponent },
+      { path: 'clients', component: ClientsSettingsComponent },
       { path: 'users', component: UsersSettingsComponent },
       { path: 'categories', component: CategoriesSettingsComponent },
       { path: 'meals', component: MealsSettingsComponent },
       { path: 'rooms', component: RoomsSettingsComponent },
-      { path: 'receipts', component: ReceiptsSettingsComponent },
-      { path: 'company', component: CompanySettingsComponent },
-      { path: 'clients', component: ClientsSettingsComponent },
     ],
   },
   {
