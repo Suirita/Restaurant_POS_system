@@ -12,7 +12,6 @@ import {
   ChevronRight,
 } from 'lucide-angular';
 import { HttpClient } from '@angular/common/http';
-import { switchMap } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -34,6 +33,7 @@ export class CategoriesSettingsComponent implements OnInit {
   categoryImages = signal<{ [key: string]: string }>({});
   showCategoryForm = signal<boolean>(false);
   editingCategory = signal<Category | null>(null);
+  isInputFocused = signal<boolean>(false);
 
   newCategoryLabel: string = '';
   newCategoryImage: File | null = null;
@@ -49,9 +49,7 @@ export class CategoriesSettingsComponent implements OnInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  totalPages = computed(() =>
-    Math.ceil(this.filteredCategories().length / 10)
-  );
+  totalPages = computed(() => Math.ceil(this.filteredCategories().length / 10));
   paginatedCategories = computed(() => {
     const startIndex = (this.currentPage() - 1) * 10;
     const endIndex = startIndex + 10;
@@ -163,8 +161,9 @@ export class CategoriesSettingsComponent implements OnInit {
                   })
                   .then(() => {
                     const currentImages = this.categoryImages();
-                    currentImages[this.newCategoryLabel] =
-                      `assets/img/${this.newCategoryLabel}.jpeg`;
+                    currentImages[
+                      this.newCategoryLabel
+                    ] = `assets/img/${this.newCategoryLabel}.jpeg`;
                     return window.api.updateJson({
                       path: 'category-images.json',
                       content: currentImages,
@@ -250,6 +249,10 @@ export class CategoriesSettingsComponent implements OnInit {
 
   openKeyboard(): void {
     this.keyboardService.openOnScreenKeyboard();
+  }
+
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
   }
 
   onImageError(event: Event) {

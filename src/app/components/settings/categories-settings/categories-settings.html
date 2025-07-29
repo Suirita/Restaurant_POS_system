@@ -1,6 +1,4 @@
-<div
-  class="container bg-white rounded-lg border border-gray-200 shadow-md p-2"
->
+<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
   <h2 class="text-2xl font-bold mb-2">Paramètres des catégories</h2>
   <div class="w-full flex justify-between mb-2">
     <!-- Search and Filter -->
@@ -11,6 +9,8 @@
         [value]="searchTerm()"
         (input)="onSearchTermChange($event)"
         class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
+        (focus)="openKeyboard()"
+        (blur)="closeKeyboard()"
       />
     </div>
     <!-- Actions -->
@@ -119,13 +119,11 @@
     ></div>
     <div
       class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden relative p-8"
+      [ngClass]="{'-translate-y-48': isInputFocused()}"
     >
       <h3 class="text-xl font-bold mb-4">
-        {{
-          editingCategory()
-            ? 'Modifier la catégorie'
-            : 'Créer une nouvelle catégorie'
-        }}
+        {{ editingCategory() ? 'Modifier la catégorie' : 'Créer une nouvelle
+        catégorie' }}
       </h3>
       <form (ngSubmit)="saveCategory()">
         <div class="mb-4">
@@ -137,7 +135,8 @@
             id="label"
             name="label"
             [(ngModel)]="newCategoryLabel"
-            (click)="openKeyboard()"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           />
