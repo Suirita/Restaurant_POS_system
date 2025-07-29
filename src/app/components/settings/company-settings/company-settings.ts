@@ -1,8 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ConfigurationService } from '../../../configuration.service';
 import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
+import { KeyboardService } from '../../../keyboard.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -16,11 +17,13 @@ export class CompanySettingsComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private configurationService = inject(ConfigurationService);
+  private keyboardService = inject(KeyboardService);
 
   form: FormGroup;
   logoUrl: string | ArrayBuffer | null = null;
   pdfConfiguration: any = null;
   isLoading = false;
+  isInputFocused = signal<boolean>(false);
 
   constructor() {
     this.form = this.fb.group({
@@ -133,5 +136,12 @@ export class CompanySettingsComponent implements OnInit {
           },
         });
     }
+  }
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
+  }
+
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
   }
 }

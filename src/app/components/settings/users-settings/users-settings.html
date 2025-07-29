@@ -1,6 +1,4 @@
-<div
-  class="container bg-white rounded-lg border border-gray-200 shadow-md p-2"
->
+<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
   <h2 class="text-2xl font-bold mb-2">Paramètres des utilisateurs</h2>
   <div class="w-full flex justify-between mb-2">
     <!-- Search and Filter -->
@@ -11,6 +9,8 @@
         [value]="searchTerm()"
         (input)="onSearchTermChange($event)"
         class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
+        (focus)="openKeyboard()"
+        (blur)="closeKeyboard()"
       />
       <select
         [value]="selectedRole()"
@@ -82,13 +82,8 @@
           <td class="px-6 py-2 whitespace-nowrap">{{ user.username }}</td>
           <td class="px-6 py-2 whitespace-nowrap">{{ user.phoneNumber }}</td>
           <td class="px-6 py-2 whitespace-nowrap">
-            {{
-              user.roleName === 'Direction'
-                ? 'admin'
-                : user.roleName === 'utilisateur'
-                ? 'serveur'
-                : user.roleName
-            }}
+            {{ user.roleName === 'Direction' ? 'admin' : user.roleName ===
+            'utilisateur' ? 'serveur' : user.roleName }}
           </td>
           <td class="px-6 py-2 whitespace-nowrap text-right">
             <button
@@ -157,11 +152,8 @@
       [ngClass]="{'-translate-y-48': isInputFocused()}"
     >
       <h3 class="text-xl font-bold mb-4">
-        {{
-          editingUser()
-            ? "Modifier l'utilisateur"
-            : 'Créer un nouvel utilisateur'
-        }}
+        {{ editingUser() ? "Modifier l'utilisateur" : 'Créer un nouvel
+        utilisateur' }}
       </h3>
       <form (ngSubmit)="saveUser()" #userForm="ngForm">
         <div class="mb-4">
@@ -266,9 +258,10 @@
         <div class="mb-4">
           <label
             for="phoneNumber"
-            class="block text-gray-700 text-sm font-bold mb-2">
-             Téléphone :
-            </label>
+            class="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Téléphone :
+          </label>
           <input
             type="text"
             id="phoneNumber"
@@ -298,7 +291,7 @@
           <div class="flex items-center">
             <span class="mr-2">
               {{ newUser.isAdmin ? 'Admin' : 'Serveur' }}
-             </span>
+            </span>
             <label class="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
