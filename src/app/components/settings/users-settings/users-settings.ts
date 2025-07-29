@@ -282,6 +282,10 @@ export class UsersSettingsComponent implements OnInit {
     this.keyboardService.openOnScreenKeyboard();
   }
 
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
+  }
+
   onImageError(event: Event) {
     (event.target as HTMLImageElement).src = 'https://placehold.co/1280x720';
   }

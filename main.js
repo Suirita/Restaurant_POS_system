@@ -41,6 +41,28 @@ ipcMain.on('open-keyboard', () => {
   exec('osk');
 });
 
+ipcMain.on('close-keyboard', () => {
+  console.log('Received close-keyboard event');
+  const command = process.platform === 'win32' ? 'wmic process where name="osk.exe" call terminate' : 'pkill osk';
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error closing keyboard: ${error.message}`);
+      return;
+    }
+    if (stderr && stderr.includes('No Instance(s) Available')) {
+      console.log('On-screen keyboard was not running.');
+      return;
+    }
+    if (stdout && stdout.includes('ReturnValue = 2')) {
+      console.error('Error closing keyboard: Access is denied. Please run as administrator.');
+      return;
+    }
+    if (stdout && stdout.includes('Method execution successful')) {
+      console.log('Keyboard closed successfully.');
+    }
+  });
+});
+
 // Handle IPC calls from the renderer process
 ipcMain.handle('save-image', (event, { path: imagePath, content }) => {
   console.log(`Received save-image event for path: ${imagePath}`);

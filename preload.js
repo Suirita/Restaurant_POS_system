@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('api', {
   updateJson: (data) => ipcRenderer.invoke('update-json', data),
   deleteImage: (data) => ipcRenderer.invoke('delete-image', data),
   openKeyboard: () => ipcRenderer.send('open-keyboard'),
+  closeKeyboard: () => ipcRenderer.send('close-keyboard'),
 });
 
 window.addEventListener('DOMContentLoaded', () => {

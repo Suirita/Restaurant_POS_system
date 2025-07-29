@@ -12,4 +12,12 @@ export class KeyboardService {
       console.warn('Electron context not available.');
     }
   }
+
+  closeOnScreenKeyboard() {
+    if (window.api && window.api.closeKeyboard) {
+      window.api.closeKeyboard();
+    } else {
+      console.warn('Electron context not available.');
+    }
+  }
 }

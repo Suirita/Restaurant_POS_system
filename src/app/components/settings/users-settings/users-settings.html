@@ -227,6 +227,7 @@
             name="fullName"
             [(ngModel)]="newUser.fullName"
             (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
           />
@@ -244,7 +245,7 @@
             name="username"
             [(ngModel)]="newUser.username"
             (focus)="isInputFocused.set(true); openKeyboard()"
-            (blur)="isInputFocused.set(false)"
+            (blur)="isInputFocused.set(false); closeKeyboard()"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
             pattern="^\d{4}$"
@@ -274,7 +275,7 @@
             name="phoneNumber"
             [(ngModel)]="newUser.phoneNumber"
             (focus)="isInputFocused.set(true); openKeyboard()"
-            (blur)="isInputFocused.set(false)"
+            (blur)="isInputFocused.set(false); closeKeyboard()"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             pattern="^\d{10}$"
             #phoneNumber="ngModel"
