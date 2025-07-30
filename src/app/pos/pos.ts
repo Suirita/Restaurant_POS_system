@@ -780,13 +780,18 @@ export class PosComponent implements OnInit {
       return;
     }
 
-    const sourceTableName = 'T' + this.tableNumber();
     const sourceReceipt = this.currentReceipt();
 
     if (!sourceReceipt) {
       alert('No receipt to transfer.');
       return;
     }
+
+    const handleSuccess = () => {
+      this.clearCartAndReset();
+      this.isTransferMode.set(false);
+      this.isEditing.set(false);
+    };
 
     if (destinationTable.occupied) {
       // Merge with existing receipt
@@ -796,25 +801,26 @@ export class PosComponent implements OnInit {
           if (destinationReceipt) {
             destinationReceipt.items.push(...sourceReceipt.items);
             destinationReceipt.total += sourceReceipt.total;
-            this.receiptService.updateReceipt(
-              destinationReceipt,
-              this.currentUser()!.token
-            );
-            this.receiptService.deleteReceiptByOrderNumber(
-              sourceReceipt.orderNumber
-            );
-            this.clearCartAndReset();
+            this.receiptService
+              .updateReceipt(destinationReceipt, this.currentUser()!.token)
+              .subscribe({
+                next: () => {
+                  this.receiptService.deleteReceiptByOrderNumber(
+                    sourceReceipt.orderNumber
+                  );
+                  handleSuccess();
+                },
+              });
           }
         });
     } else {
       // Just update the table name
       sourceReceipt.tableName = destinationTableName;
       sourceReceipt.userId = this.currentUser()!.userId;
-      this.receiptService.updateReceipt(sourceReceipt, this.currentUser()!.token);
-      this.clearCartAndReset();
+      this.receiptService
+        .updateReceipt(sourceReceipt, this.currentUser()!.token)
+        .subscribe({ next: () => handleSuccess() });
     }
-
-    this.isTransferMode.set(false);
   }
 
   private clearCartAndReset() {

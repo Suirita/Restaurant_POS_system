@@ -319,15 +319,10 @@ export class ReceiptService {
       });
   }
 
-  updateReceipt(receipt: Receipt, token: string): void {
+  updateReceipt(receipt: Receipt, token: string): Observable<any> {
     const body = this.buildQuoteBody(receipt, receipt.orderNumber);
     body.id = receipt.id;
-    this.updateQuote(body, token).subscribe({
-      next: () => {},
-      error: (error) => {
-        console.error('Error updating receipt:', error);
-      },
-    });
+    return this.updateQuote(body, token);
   }
 
   getReceipts(userId: string, token: string): Observable<Receipt[]> {
