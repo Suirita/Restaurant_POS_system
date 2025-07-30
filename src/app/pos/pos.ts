@@ -28,7 +28,6 @@ import { CartComponent } from '../components/cart/cart';
 
 import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
-import { TransferModalComponent } from '../components/transfer-modal/transfer-modal';
 import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
 
 @Component({
@@ -43,7 +42,6 @@ import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
     CartComponent,
     CalculatorComponent,
     AllReceiptsModalComponent,
-    TransferModalComponent,
     LucideAngularModule,
   ],
 })
@@ -84,7 +82,7 @@ export class PosComponent implements OnInit {
   showReceipt = signal<boolean>(false);
   currentReceipt = signal<Receipt | null>(null);
   showAllReceipts = signal<boolean>(false);
-  showTransferModal = signal<boolean>(false);
+  isTransferMode = signal<boolean>(false);
 
   // Signals
   meals = signal<Meal[]>([]);
@@ -771,15 +769,7 @@ export class PosComponent implements OnInit {
       });
   }
 
-  onTransfer() {
-    this.showTransferModal.set(true);
-  }
-
-  hideTransferModal() {
-    this.showTransferModal.set(false);
-  }
-
-  onTransferConfirmed(destinationTableNumber: string) {
+  onTransfer(destinationTableNumber: string) {
     const destinationTableName = 'T' + destinationTableNumber;
     const destinationTable = this.tables().find(
       (t) => t.name === destinationTableName
@@ -824,7 +814,7 @@ export class PosComponent implements OnInit {
       this.clearCartAndReset();
     }
 
-    this.hideTransferModal();
+    this.isTransferMode.set(false);
   }
 
   private clearCartAndReset() {

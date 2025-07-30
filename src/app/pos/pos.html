@@ -49,12 +49,6 @@
     (receiptSelected)="onReceiptSelectedFromModal($event)"
   ></app-all-receipts-modal>
 
-  <app-transfer-modal
-    *ngIf="showTransferModal()"
-    (close)="hideTransferModal()"
-    (transfer)="onTransferConfirmed($event)"
-  ></app-transfer-modal>
-
   <!-- Main POS Interface -->
   <div class="h-full flex flex-col" [class.blur-xs]="showAllReceipts()">
     <!-- Main Content -->
@@ -123,7 +117,7 @@
             (takeAwaySelected)="onTakeAwaySelected()"
             (tableTypeSelected)="onTableTypeSelected()"
             (pay)="onPay()"
-            (transfer)="onTransfer()"
+            (transfer)="isTransferMode.set(!isTransferMode()); isEditing.set(true)"
           ></app-cart>
         </div>
 
@@ -139,7 +133,9 @@
             [displayValue]="calculatorDisplayValue()"
             [canConfirm]="calculatorCanConfirm()"
             [isQuantityMode]="calculatorIsQuantityMode()"
-            [disabled]="!isEditing()"
+            [isTransferMode]="isTransferMode()"
+            (transfer)="onTransfer($event)"
+            [disabled]="!isEditing() && !isTransferMode()"
             (numberAdded)="onCalculatorNumberAdded($event)"
             (decimalAdded)="onCalculatorDecimalAdded()"
             (cleared)="onCalculatorCleared()"

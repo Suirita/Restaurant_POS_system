@@ -3,8 +3,11 @@
   <!-- Display -->
   <div class="px-2 py-1">
     <div class="flex items-center h-9 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm ring-offset-white">
-      <div class="flex-1 text-gray-900 text-xl font-medium">
+      <div *ngIf="!isTransferMode()" class="flex-1 text-gray-900 text-xl font-medium">
         {{ displayValue() }}
+      </div>
+      <div *ngIf="isTransferMode()" class="flex-1 text-gray-900 text-xl font-medium">
+        {{ destinationTable() || '0' }}
       </div>
     </div>
   </div>
@@ -27,14 +30,14 @@
       0
     </button>
 
-    <button *ngIf="isQuantityMode()" (click)="onAddDecimal()" [disabled]="disabled() || displayValue().includes('.')"
+    <button *ngIf="isQuantityMode() && !isTransferMode()" (click)="onAddDecimal()" [disabled]="disabled() || displayValue().includes('.')"
       class="h-10 w-full rounded-md bg-gray-100 text-base font-semibold flex items-center justify-center hover:bg-gray-200 transition-colors"
       [class.opacity-50]="displayValue().includes('.')" [class.cursor-not-allowed]="displayValue().includes('.')">
       .
     </button>
-    <button *ngIf="!isQuantityMode()" (click)="onConfirm()" [disabled]="disabled() || !canConfirm()"
+    <button *ngIf="!isQuantityMode() || isTransferMode()" (click)="onConfirm()" [disabled]="disabled() || (!canConfirm() && !isTransferMode())"
       class="h-10 w-full rounded-md text-base font-semibold flex items-center justify-center transition-colors"
-      [class]="canConfirm() ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 cursor-not-allowed'">
+      [class]="(canConfirm() || (isTransferMode() && destinationTable().length > 0)) ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 cursor-not-allowed'">
       OK
     </button>
   </div>

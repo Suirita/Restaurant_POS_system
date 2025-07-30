@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal, computed } from '@angular/core';
 import { LucideAngularModule, Check } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
@@ -15,14 +15,24 @@ export class CalculatorComponent {
   canConfirm = input.required<boolean>();
   isQuantityMode = input.required<boolean>();
   disabled = input<boolean>(false);
+  isTransferMode = input<boolean>(false);
 
   numberAdded = output<string>();
   cleared = output<void>();
   confirmed = output<void>();
   decimalAdded = output<void>();
+  transfer = output<string>();
+
+  destinationTable = signal<string>('');
 
   onAddNumber(num: string) {
-    this.numberAdded.emit(num);
+    if (this.isTransferMode()) {
+      if (this.destinationTable().length < 3) {
+        this.destinationTable.set(this.destinationTable() + num);
+      }
+    } else {
+      this.numberAdded.emit(num);
+    }
   }
 
   onAddDecimal() {
@@ -30,10 +40,20 @@ export class CalculatorComponent {
   }
 
   onClear() {
-    this.cleared.emit();
+    if (this.isTransferMode()) {
+      this.destinationTable.set('');
+    } else {
+      this.cleared.emit();
+    }
   }
 
   onConfirm() {
-    this.confirmed.emit();
+    if (this.isTransferMode()) {
+      if (this.destinationTable()) {
+        this.transfer.emit(this.destinationTable());
+      }
+    } else {
+      this.confirmed.emit();
+    }
   }
 }
