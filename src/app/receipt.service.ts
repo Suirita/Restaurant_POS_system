@@ -17,6 +17,8 @@ export class ReceiptService {
   constructor() {}
 
   private buildQuoteBody(receipt: Receipt, reference: string): any {
+    const total = receipt.items.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0);
+
     const body = {
       labels: [],
       reference: reference,
@@ -154,11 +156,11 @@ export class ReceiptService {
           salesPrice: 0,
         },
         primeTotal: 0,
-        totalDu: receipt.total,
-        totalHT: receipt.total,
+        totalDu: total,
+        totalHT: total,
         totalPUC: 0,
         totalTax: 0,
-        generalTotalHT: receipt.total,
+        generalTotalHT: total,
         typeCalcul: 1,
         showNumbering: true,
         isNumerationAuto: true,
@@ -322,10 +324,22 @@ export class ReceiptService {
   }
 
   updateReceipt(receipt: Receipt, token: string): Observable<any> {
-    console.log('Updating receipt in service:', receipt);
-    const body = this.buildQuoteBody(receipt, receipt.orderNumber);
-    body.id = receipt.id;
-    return this.updateQuote(body, token);
+    return this.getReceiptDetails(receipt.id, token).pipe(
+      switchMap((detailsResponse) => {
+        const quoteDetails = detailsResponse.value;
+        const freshReceipt: Receipt = {
+          ...receipt,
+          ...quoteDetails,
+          items: receipt.items, // Keep the local, merged items
+          total: receipt.items.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0),
+        };
+
+        const body = this.buildQuoteBody(freshReceipt, freshReceipt.orderNumber);
+        body.id = freshReceipt.id;
+
+        return this.updateQuote(body, token);
+      })
+    );
   }
 
   getReceipts(userId: string, token: string): Observable<Receipt[]> {

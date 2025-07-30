@@ -800,12 +800,22 @@ export class PosComponent implements OnInit {
         .subscribe((destinationReceipt) => {
           if (destinationReceipt) {
             console.log('Original destination receipt:', destinationReceipt);
-            destinationReceipt.items.push(...sourceReceipt.items);
+            
+            sourceReceipt.items.forEach(sourceItem => {
+              const existingItem = destinationReceipt.items.find(destItem => destItem.id === sourceItem.id);
+              if (existingItem) {
+                existingItem.quantity += sourceItem.quantity;
+              } else {
+                destinationReceipt.items.push(sourceItem);
+              }
+            });
+
             const newTotal = destinationReceipt.items.reduce(
               (sum, item) => sum + item.sellingPrice * item.quantity,
               0
             );
             destinationReceipt.total = newTotal;
+            destinationReceipt.userId = this.currentUser()!.userId;
             console.log('Merged destination receipt:', destinationReceipt);
             this.receiptService
               .updateReceipt(destinationReceipt, this.currentUser()!.token)
