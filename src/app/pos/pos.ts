@@ -596,7 +596,7 @@ export class PosComponent implements OnInit {
     };
 
     if (existingReceipt) {
-      this.receiptService.updateReceipt(receipt, this.currentUser()!.token);
+      this.receiptService.updateReceipt(receipt, this.currentUser()!.token).subscribe();
     } else {
       this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
     }
@@ -662,22 +662,23 @@ export class PosComponent implements OnInit {
     if (!currentUser) return;
 
     this.receiptService
-      .getReceipts(currentUser.userId, currentUser.token)
+      .getAllReceipts(currentUser.token, undefined, ['in_progress'])
       .subscribe((receipts) => {
         const receipt = receipts.find((r) => r.orderNumber === orderNumber);
         if (receipt) {
-          const tables = this.tables().map((t) =>
-            t.name === receipt.tableName
-              ? { ...t, occupied: false, userId: null }
-              : t
-          );
-          this.tables.set(tables);
-          this.receiptService.deleteReceiptByOrderNumber(orderNumber, this.currentUser()!.token);
-          this.orderType.set('table');
-          this.tableNumber.set('');
-          this.isTableNumberComplete.set(false);
-          this.tableErrorMessage.set(null);
-          this.isEditing.set(true);
+          this.receiptService.updateReceipt(receipt, currentUser.token, 'billed').subscribe(() => {
+            const tables = this.tables().map((t) =>
+              t.name === receipt.tableName
+                ? { ...t, occupied: false, userId: null }
+                : t
+            );
+            this.tables.set(tables);
+            this.orderType.set('table');
+            this.tableNumber.set('');
+            this.isTableNumberComplete.set(false);
+            this.tableErrorMessage.set(null);
+            this.isEditing.set(true);
+          });
         }
       });
   }
@@ -728,10 +729,7 @@ export class PosComponent implements OnInit {
           existingReceipt.total = total;
           existingReceipt.paymentMethod = 'Paid';
 
-          // Immediately delete the receipt as it's now paid and settled
-          this.receiptService.deleteReceiptByOrderNumber(
-            existingReceipt.orderNumber, this.currentUser()!.token
-          );
+          this.receiptService.updateReceipt(existingReceipt, this.currentUser()!.token, 'billed').subscribe();
         } else {
           // Create a new receipt if none exists
           const receipt: Receipt = {
@@ -747,7 +745,7 @@ export class PosComponent implements OnInit {
             orderDetails: null,
             status: 'completed',
           };
-          this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
+          this.receiptService.saveReceipt(receipt, this.currentUser()!.token, 'billed');
         }
 
         // Free up the table if it was a table order

@@ -16,7 +16,7 @@ export class ReceiptService {
 
   constructor() {}
 
-  private buildQuoteBody(receipt: Receipt, reference: string): any {
+  private buildQuoteBody(receipt: Receipt, reference: string, status: string = 'in_progress'): any {
     const total = receipt.items.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0);
 
     const body = {
@@ -185,7 +185,7 @@ export class ReceiptService {
         textCalculAutomatique:
           'Si acceptation, devis à retourner signé avec un acompte de #Pourcentage#%, soit #MontantTTC# € TTC.',
       },
-      status: 'in_progress',
+      status: status,
       responsables: [receipt.userId],
       clientId: 'chlubdjubs1hu::Client::202308301858042935',
       client: {
@@ -296,23 +296,24 @@ export class ReceiptService {
   createReceipt(
     receipt: Receipt,
     token: string,
-    uniqueReference: string
+    uniqueReference: string,
+    status: string = 'in_progress'
   ): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = this.buildQuoteBody(receipt, uniqueReference);
+    const body = this.buildQuoteBody(receipt, uniqueReference, status);
     return this.http.post<any>(`${this.baseUrl}/Quote/Create`, body, {
       headers,
     });
   }
 
-  saveReceipt(receipt: Receipt, token: string): void {
+  saveReceipt(receipt: Receipt, token: string, status: string = 'in_progress'): void {
     this.configurationService
       .getUniqueReference(token, 4)
       .pipe(
         switchMap((response) => {
           const uniqueReference = response;
           receipt.orderNumber = uniqueReference;
-          return this.createReceipt(receipt, token, uniqueReference);
+          return this.createReceipt(receipt, token, uniqueReference, status);
         })
       )
       .subscribe({
@@ -323,7 +324,7 @@ export class ReceiptService {
       });
   }
 
-  updateReceipt(receipt: Receipt, token: string): Observable<any> {
+  updateReceipt(receipt: Receipt, token: string, status: string = 'in_progress'): Observable<any> {
     return this.getReceiptDetails(receipt.id, token).pipe(
       switchMap((detailsResponse) => {
         const quoteDetails = detailsResponse.value;
@@ -334,16 +335,12 @@ export class ReceiptService {
           total: receipt.items.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0),
         };
 
-        const body = this.buildQuoteBody(freshReceipt, freshReceipt.orderNumber);
+        const body = this.buildQuoteBody(freshReceipt, freshReceipt.orderNumber, status);
         body.id = freshReceipt.id;
 
         return this.updateQuote(body, token);
       })
     );
-  }
-
-  getReceipts(userId: string, token: string): Observable<Receipt[]> {
-    return this.getAllReceipts(token, userId, ['in_progress']);
   }
 
   public getReceiptDetails(id: string, token: string): Observable<any> {

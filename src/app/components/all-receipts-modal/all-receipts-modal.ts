@@ -31,8 +31,8 @@ export class AllReceiptsModalComponent {
   loadReceipts() {
     this.isLoading.set(true);
     this.receiptService
-      .getReceipts(this.userId(), this.token())
-      .subscribe((receipts) => {
+      .getAllReceipts(this.token(), this.userId())
+      .subscribe((receipts: Receipt[]) => {
         this.receipts.set(receipts);
         this.isLoading.set(false);
       });
