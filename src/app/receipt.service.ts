@@ -17,7 +17,7 @@ export class ReceiptService {
   constructor() {}
 
   private buildQuoteBody(receipt: Receipt, reference: string): any {
-    return {
+    const body = {
       labels: [],
       reference: reference,
       multiWorkShop: false,
@@ -287,6 +287,8 @@ export class ReceiptService {
       contacts: [],
       notGererByStock: false,
     };
+    console.log('Request body for update:', JSON.stringify(body, null, 2));
+    return body;
   }
 
   createReceipt(
@@ -320,6 +322,7 @@ export class ReceiptService {
   }
 
   updateReceipt(receipt: Receipt, token: string): Observable<any> {
+    console.log('Updating receipt in service:', receipt);
     const body = this.buildQuoteBody(receipt, receipt.orderNumber);
     body.id = receipt.id;
     return this.updateQuote(body, token);

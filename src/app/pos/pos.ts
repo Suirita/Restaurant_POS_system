@@ -799,8 +799,14 @@ export class PosComponent implements OnInit {
         .getReceiptByTable(destinationTableName, this.currentUser()!.token)
         .subscribe((destinationReceipt) => {
           if (destinationReceipt) {
+            console.log('Original destination receipt:', destinationReceipt);
             destinationReceipt.items.push(...sourceReceipt.items);
-            destinationReceipt.total += sourceReceipt.total;
+            const newTotal = destinationReceipt.items.reduce(
+              (sum, item) => sum + item.sellingPrice * item.quantity,
+              0
+            );
+            destinationReceipt.total = newTotal;
+            console.log('Merged destination receipt:', destinationReceipt);
             this.receiptService
               .updateReceipt(destinationReceipt, this.currentUser()!.token)
               .subscribe({
