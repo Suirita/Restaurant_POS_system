@@ -401,8 +401,24 @@ export class ReceiptService {
     );
   }
 
-  deleteReceiptByOrderNumber(orderNumber: string): void {
-    console.log(`Deleting receipt with order number: ${orderNumber}`);
+  deleteReceipt(id: string, token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${this.baseUrl}/Quote/${id}/Delete`, { headers });
+  }
+
+  deleteReceiptByOrderNumber(orderNumber: string, token: string): void {
+    this.getAllReceipts(token, undefined, ['in_progress']).pipe(
+      switchMap(receipts => {
+        const receipt = receipts.find(r => r.orderNumber === orderNumber);
+        if (receipt && receipt.id) {
+          return this.deleteReceipt(receipt.id, token);
+        }
+        return of(null);
+      })
+    ).subscribe({
+      next: () => console.log(`Receipt with order number ${orderNumber} deleted successfully.`),
+      error: (error) => console.error(`Error deleting receipt with order number ${orderNumber}:`, error)
+    });
   }
 
   public getAllReceipts(

@@ -672,7 +672,7 @@ export class PosComponent implements OnInit {
               : t
           );
           this.tables.set(tables);
-          this.receiptService.deleteReceiptByOrderNumber(orderNumber);
+          this.receiptService.deleteReceiptByOrderNumber(orderNumber, this.currentUser()!.token);
           this.orderType.set('table');
           this.tableNumber.set('');
           this.isTableNumberComplete.set(false);
@@ -730,7 +730,7 @@ export class PosComponent implements OnInit {
 
           // Immediately delete the receipt as it's now paid and settled
           this.receiptService.deleteReceiptByOrderNumber(
-            existingReceipt.orderNumber
+            existingReceipt.orderNumber, this.currentUser()!.token
           );
         } else {
           // Create a new receipt if none exists
@@ -822,7 +822,7 @@ export class PosComponent implements OnInit {
               .subscribe({
                 next: () => {
                   this.receiptService.deleteReceiptByOrderNumber(
-                    sourceReceipt.orderNumber
+                    sourceReceipt.orderNumber, this.currentUser()!.token
                   );
                   handleSuccess();
                 },
