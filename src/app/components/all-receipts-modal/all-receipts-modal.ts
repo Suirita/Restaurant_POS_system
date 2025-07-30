@@ -31,7 +31,7 @@ export class AllReceiptsModalComponent {
   loadReceipts() {
     this.isLoading.set(true);
     this.receiptService
-      .getAllReceipts(this.token(), this.userId())
+      .getAllReceipts(this.token(), this.userId(), ['in_progress'])
       .subscribe((receipts: Receipt[]) => {
         this.receipts.set(receipts);
         this.isLoading.set(false);
