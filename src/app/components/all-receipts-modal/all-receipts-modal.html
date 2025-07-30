@@ -40,9 +40,8 @@
         <div
           *ngFor="let receipt of receipts()"
           class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer"
-          (click)="onReceiptClick(receipt)"
         >
-          <div>
+          <div (click)="onReceiptClick(receipt)">
             <p class="text-sm text-gray-600">
               Commande :
               <span class="font-medium text-gray-900">
@@ -65,12 +64,20 @@
               Total : {{ receipt.total | currency:'EUR' }}
             </p>
           </div>
-          <button
-            (click)="onPayClick(receipt.orderNumber); $event.stopPropagation()"
-            class="mt-3 w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200"
-          >
-            Payer
-          </button>
+          <div class="flex gap-2 mt-3">
+            <button
+              (click)="onPayClick(receipt.orderNumber); $event.stopPropagation()"
+              class="w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200"
+            >
+              Payer
+            </button>
+            <button
+              (click)="onGenerateInvoiceClick(receipt); $event.stopPropagation()"
+              class="w-full py-2 rounded-lg font-medium shadow-xs bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200"
+            >
+              Générer une facture
+            </button>
+          </div>
         </div>
       </div>
       <div class="p-4 border-t border-gray-200">
@@ -84,3 +91,66 @@
     </div>
   </div>
 </div>
+
+<div
+  *ngIf="isInvoiceDialogVisible()"
+  class="fixed inset-0 flex items-center justify-center z-50"
+  (click)="onCloseInvoiceDialog()"
+>
+  <div
+    class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
+  ></div>
+  <div
+    class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden relative"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="p-4 text-center flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Générer une facture</h1>
+      <button
+        (click)="onCloseInvoiceDialog()"
+        class="bg-black text-white p-1 rounded-lg border border-gray-200 shadow-sm"
+      >
+        <i-lucide [img]="XIcon" [size]="22"></i-lucide>
+      </button>
+    </div>
+    <div class="p-4">
+      <div *ngIf="clients().length > 0" class="mb-4">
+        <label for="client-select" class="block text-sm font-medium text-gray-700"
+          >Sélectionner un client</label
+        >
+        <select
+          id="client-select"
+          class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          (change)="onClientSelectionChange($event)"
+        >
+          <option value="">Sélectionner un client</option>
+          <option *ngFor="let client of clients()" [value]="client.id">
+            {{ client.name }}
+          </option>
+          <option value="new">Créer un nouveau client</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button
+          (click)="onCloseInvoiceDialog()"
+          class="py-2 px-4 rounded-lg font-medium shadow-xs bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors duration-200"
+        >
+          Annuler
+        </button>
+        <button
+          (click)="onGenerateInvoice()"
+          class="py-2 px-4 rounded-lg font-medium shadow-xs bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200"
+        >
+          Générer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-client-form-modal
+  *ngIf="isClientFormVisible()"
+  [token]="token()"
+  (close)="closeClientForm()"
+  (clientSaved)="onClientSaved()"
+></app-client-form-modal>

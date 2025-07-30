@@ -289,7 +289,6 @@ export class ReceiptService {
       contacts: [],
       notGererByStock: false,
     };
-    console.log('Request body for update:', JSON.stringify(body, null, 2));
     return body;
   }
 
@@ -413,7 +412,6 @@ export class ReceiptService {
         return of(null);
       })
     ).subscribe({
-      next: () => console.log(`Receipt with order number ${orderNumber} deleted successfully.`),
       error: (error) => console.error(`Error deleting receipt with order number ${orderNumber}:`, error)
     });
   }
