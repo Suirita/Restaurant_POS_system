@@ -692,20 +692,34 @@ export class PosComponent implements OnInit {
   }
 
   onReceiptSelectedFromModal(receipt: Receipt) {
-    console.log('onReceiptSelectedFromModal called in pos.ts:', receipt);
-    this.cart.set([...receipt.items]);
-    this.orderType.set(
-      receipt.tableName === 'Take away' ? 'take away' : 'table'
-    );
-    if (receipt.tableName.startsWith('T')) {
-      this.tableNumber.set(receipt.tableName.replace('T', ''));
-      this.isTableNumberComplete.set(true);
-    } else {
-      this.tableNumber.set('');
-      this.isTableNumberComplete.set(false);
-    }
-    this.currentReceipt.set(receipt); // Set the current receipt
-    this.hideAllReceiptsModal();
+    this.receiptService
+      .getReceiptDetails(receipt.id, this.currentUser()!.token)
+      .subscribe((detailedReceipt) => {
+        const items = detailedReceipt.value.orderDetails.lineItems.map(
+          (item: any) => ({
+            id: item.product.id,
+            designation: item.product.designation,
+            sellingPrice: item.product.sellingPrice,
+            quantity: item.quantity,
+            image: '', // Add a default image property
+            categoryLabel: item.product.categoryLabel,
+          })
+        );
+
+        this.cart.set(items);
+        this.orderType.set(
+          receipt.tableName === 'Take away' ? 'take away' : 'table'
+        );
+        if (receipt.tableName.startsWith('T')) {
+          this.tableNumber.set(receipt.tableName.replace('T', ''));
+          this.isTableNumberComplete.set(true);
+        } else {
+          this.tableNumber.set('');
+          this.isTableNumberComplete.set(false);
+        }
+        this.currentReceipt.set(receipt); // Set the current receipt
+        this.hideAllReceiptsModal();
+      });
   }
 
   onPay() {
