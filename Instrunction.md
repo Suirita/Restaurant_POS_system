@@ -1,4 +1,4 @@
-change the invoice creation body to look like this:
+and remove the quote status editing when creating an ivoice and change the invoice creation body to look like this:
 
 ```json
 {
@@ -753,4 +753,5 @@ change the invoice creation body to look like this:
   "typeFinanciere": 0
 }
 ```
-and remove the quote status editing.
+console.log the body when creating an invoice.
+w
