@@ -414,9 +414,9 @@ products = [
 
 # Send POST for each product
 for prod in products:
-  selling_price = round(random.uniform(10, 100), 2)
-  purchase_price = round(selling_price - 5, 2)
-  total_ht = round(selling_price / 1.2, 2)
+  selling_price = round(random.uniform(10, 100))
+  purchase_price = round(selling_price - 5)
+  total_ht = round(selling_price / 2,)
   total_ttc = selling_price
 
   payload = {

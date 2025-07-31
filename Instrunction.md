@@ -1,92 +1,147 @@
-add button to each receipt to generate invoice from the receipt; when clicking the button display a select with the list of clients and the user can select the client to generate the invoice for, if the client do not exist, display option to create it, when that option is selected, display user create modale(that in user settings); after choosing the user, the ivoice get generated with this api: post:`${baseURL}/Invoice/Create`, body:
+change the invoice creation body to look like this:
 
 ```json
 {
-  "reference": "FT2025123684",
+  "reference": "FACTURE N°58964",
   "status": "in_progress",
-  "note": "<p>&#160;test&#160;</p><p><br></p><p>Pour toute question li&#233;e &#224; cette facture,</p><p>merci de nous joindre au 09 70 72 17 17 ou</p><p>par mail &#224; comptabi<font size=\"2\">lite@foliatech.fr - - - + + +&#160;</font></p>",
-  "purpose": "Situation N° 1 sur devis DV202510088 au 23-07-2025",
-  "paymentCondition": "<p><font color=\"#1d1c1d\">R&#232;glement par pr&#233;l&#232;vement trimestriel</font></p><p>Taux d'escompte : Pas d'escompte pour paiement anticip&#233;.<br></p><p>Taux de p&#233;nalit&#233; : En cas de retard d<font size=\"2\">e paiement, application<br></font></p><p><font size=\"2\">d'int&#233;r&#234;ts de 3fois le taux l&#233;gal (loi n&#176;2008-776 du 4 ao&#251;t 2008).<br></font></p><p><font size=\"2\">En cas de rejet de pr&#233;l&#232;vement des frais de 25 HT vous seront factur&#233;s<br></font></p><p><font size=\"2\">IBAN : FR76 1009 6181 3500 0695 6420 211. BIC : CMCIFRPP&#160; --- - - - + + + +</font></p>",
-  "workshopId": null,
+  "note": "<div><font size=\"2\">uptesthglihg</font></div>",
+  "purpose": "Acompte N° 1 sur devis DEVIS n°111330 au 31-07-2025",
+  "paymentCondition": "<font size=\"2\">Le client reconnait avoir reçu, lu, et accepté nos Conditions Générales de Ventes (CGV) lors\n</font><div><font size=\"2\">de la signature du devis.\n</font></div><div><font size=\"2\">Ces Conditions Générales de Ventes (CGV) sont jointes à chaque devis, et font partie\n</font></div><div><font size=\"2\">intégrante du devis.\n</font></div><div><font size=\"2\">____________________________________________________________________________________________________\n</font></div><div><font size=\"2\">IBAN : FR76 1460 7003 4370 1212 1241 158\n</font></div><div><font size=\"2\">BIC/SWIFT : CCBPFRPPMAR\n</font></div><div><font size=\"2\">BANQUE POPULAIRE MEDITERRANEE\n</font></div><div><font size=\"2\">Paiement chèque ou virement sous 30 jours date de facturation pour les professionnels, dès\n</font></div><div><font size=\"2\">la fin de la prestation pour les particuliers.\n</font></div><div><font size=\"2\">En vertu de la loi LME du 4 Aout 2008 qui modifie l'article441-6 du Code du Commerce, les\n</font></div><div><font size=\"2\">délais de paiement convenus ne peuvent EN AUCUN CAS dépasser 30 jours à compter de la\n</font></div><div><font size=\"2\">date d'émission de la facture. En cas de non respect de ces délais, des pénalités de retard\n</font></div><div><font size=\"2\">sont dues. Le taux d'intérêt est celui appliqué par la BCE à son opération de refinancement\n</font></div><div><font size=\"2\">la plus récente négociée de 10 points de pourcentage auxquels s'ajoutent une indemnité\n</font></div><div><font size=\"2\">forfaitaire pour frais de recouvrement de 40€. Pas d'escompte en cas de paiement anticipé.\n</font></div><div><font size=\"2\"><br></font></div>",
+  "workshopId": "chlubdjubs1hu::ConstructionWorkshops::202507291744338822",
   "labels": [],
-  "dueDate": "2025-07-30T16:24",
-  "creationDate": "2025-07-23T16:24",
+  "dueDate": "2025-07-31T15:33",
+  "creationDate": "2025-07-31T15:33",
   "addressIntervention": {
     "designation": "",
     "department": "",
-    "street": "Rue Casablanca",
+    "street": "jjjjjjjjjjjjjjjjjjjjj",
     "complement": "",
-    "city": "Valence",
-    "postalCode": "26000",
-    "countryCode": "France",
+    "city": "jjjjjjjjjjjjjjjjjjjjjjj",
+    "postalCode": "",
+    "countryCode": "",
     "note": "",
     "isDefault": true
   },
   "addressFacturation": {
     "designation": "",
     "department": "",
-    "street": "Rue Casablanca",
+    "street": "jjjjjjjjjjjjjjjjjjjjj",
     "complement": "",
-    "city": "Valence",
-    "postalCode": "26000",
-    "countryCode": "France",
+    "city": "jjjjjjjjjjjjjjjjjjjjjjj",
+    "postalCode": "",
+    "countryCode": "",
     "note": "",
-    "isDefault": true
+    "isDefault": false
   },
-  "clientId": "chlubdjubs1hu::Client::202308301858042935",
+  "clientId": "chlubdjubs1hu::Client::2024120213451021742",
   "client": {
     "code": null,
     "type": "particular",
     "isProspect": 0,
-    "civility": null,
+    "civility": "Mme",
     "responsableId": null,
-    "name": "aaaa aaaa",
+    "name": "Mme 0LES GALERIES LAPAYETTE test fdfd",
     "addresses": [
       {
         "designation": "",
         "department": "",
-        "street": "Rue Casablanca",
+        "street": "jjjjjjjjjjjjjjjjjjjjj",
         "complement": "",
-        "city": "Valence",
-        "postalCode": "26000",
-        "countryCode": "France",
+        "city": "jjjjjjjjjjjjjjjjjjjjjjj",
+        "postalCode": "",
+        "countryCode": "",
+        "note": "",
+        "isDefault": false
+      },
+      {
+        "designation": "",
+        "department": "",
+        "street": "hhhhhhhhhhhhhhhh",
+        "complement": "",
+        "city": "hhhhhhhhhhhhhhhhhh",
+        "postalCode": "",
+        "countryCode": "",
+        "note": "",
+        "isDefault": false
+      },
+      {
+        "designation": "",
+        "department": "",
+        "street": "azezaeza",
+        "complement": "",
+        "city": "ezaezaez",
+        "postalCode": "",
+        "countryCode": "",
+        "note": "",
+        "isDefault": false
+      },
+      {
+        "designation": "",
+        "department": "",
+        "street": "azdazdzadza",
+        "complement": "",
+        "city": "dzadaz",
+        "postalCode": "",
+        "countryCode": "",
+        "note": "",
+        "isDefault": false
+      },
+      {
+        "designation": "",
+        "department": "",
+        "street": "dazdzadazdaz",
+        "complement": "",
+        "city": "dazdazdza",
+        "postalCode": "",
+        "countryCode": "",
+        "note": "",
+        "isDefault": false
+      },
+      {
+        "designation": "rerer",
+        "department": null,
+        "street": "erer",
+        "complement": "erer",
+        "city": "erer",
+        "postalCode": null,
+        "countryCode": null,
         "note": null,
-        "isDefault": true
+        "isDefault": false
       }
     ],
     "memos": [],
-    "contactInformations": [],
+    "contactInformations": null,
     "billingAddress": {
       "designation": "",
       "department": "",
-      "street": "Rue Casablanca",
+      "street": "jjjjjjjjjjjjjjjjjjjjj",
       "complement": "",
-      "city": "Valence",
-      "postalCode": "26000",
-      "countryCode": "France",
-      "note": null,
-      "isDefault": true
+      "city": "jjjjjjjjjjjjjjjjjjjjjjj",
+      "postalCode": "",
+      "countryCode": "",
+      "note": "",
+      "isDefault": false
     },
-    "id": "chlubdjubs1hu::Client::202308301858042935",
-    "reference": "sco20230000057",
-    "firstName": "aaaa",
-    "lastName": "aaaa",
-    "phoneNumber": null,
+    "id": "chlubdjubs1hu::Client::2024120213451021742",
+    "reference": "PR-2024032",
+    "firstName": "0LES GALERIES LAPAYETTE test",
+    "lastName": "fdfd",
+    "phoneNumber": "0602030405",
     "fix": null,
     "landLine": null,
-    "email": null,
+    "email": "galeriespayette@demo.com",
     "website": null,
     "siret": null,
     "intraCommunityVAT": null,
-    "accountingCode": "411aaaaaaaa",
+    "accountingCode": "411000LESGALERIESLAPAYETTEtest",
     "note": null,
     "paymentCondition": null,
-    "remise": 5
+    "remise": 0
   },
-  "typeInvoice": 1,
-  "situation": 100,
-  "workshopName": "",
-  "workshopReference": "",
+  "typeInvoice": 2,
+  "situation": 10,
+  "workshopName": "ddddddddddd",
+  "workshopReference": "CH-1202500116",
   "orderDetails": {
     "globalDiscount": {
       "value": 0,
@@ -97,7 +152,7 @@ add button to each receipt to generate invoice from the receipt; when clicking t
     "holdbackDetails": {
       "warrantyPeriod": 12,
       "holdback": 0,
-      "warrantyExpirationDate": "2026-07-23T15:24:01.280Z"
+      "warrantyExpirationDate": "2026-07-31T14:33:20.824Z"
     },
     "pucDetails": {
       "value": 0,
@@ -128,52 +183,83 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           }
         ],
         "product": {
-          "id": "chlubdjubs1hu::Product::202507081047145359",
-          "designation": "Profiteroles",
-          "description": "",
-          "reference": "",
-          "sellingPrice": 17,
-          "purchasePrice": 0,
-          "totalHT": 17,
-          "taxValue": 0,
-          "totalTTC": 17,
-          "vat": 0,
+          "id": "chlubdjubs1hu::Product::202507241906193050",
+          "designation": "Disjoncteur T4L250 3P FF PR221-I 100A V",
+          "description": "Disjoncteur TMAX T4L 250 1000V CA fixe tripolaire avec prises avant pour vable Cu et Déclencheur électronique en AC PR221DS-I R 100",
+          "reference": "054506",
+          "sellingPrice": 4783.28,
+          "frais": 35,
+          "prixRevient": 6457.428,
+          "purchasePrice": 4783.28,
+          "totalHT": 4783.28,
+          "taxValue": 956.656,
+          "totalTTC": 5739.936,
+          "vat": 20,
           "unite": "U",
-          "coefficient": 0,
+          "coefficient": 1,
+          "coefficientNet": 1,
           "position": null,
           "isArchived": false,
           "productCategoryType": {
-            "id": "Foliatech88",
-            "label": "Repas",
-            "description": "Repas",
-            "type": 13
+            "id": "Foliatech1",
+            "label": "Fourniture",
+            "description": "Fourniture",
+            "type": 8
           },
           "category": {
-            "id": "25c13896-7a24-47a1-ab96-a1e19b816d99",
+            "id": "Foliatech47",
             "type": 1,
-            "label": "Dessert",
-            "description": "Dessert",
+            "label": "Produit fini",
+            "description": "Produit fini",
             "categoryType": -1,
             "isDefault": false,
-            "chartAccountItem": {
-              "id": "2FhdckGHLkunUFuXjV6LVw",
-              "label": "Repas",
-              "type": 5,
-              "categoryType": 0,
-              "code": "1111",
-              "typeCode": null,
-              "parentId": "Foliatech3",
-              "vatValue": 0,
-              "isDefault": false
-            },
+            "chartAccountItem": null,
+            "chartAccountItemSalses": null,
+            "chartAccountItemExpenses": null,
             "subClassification": []
           },
-          "productCTypeLabel": "Repas",
-          "categoryLabel": "Dessert",
+          "productCTypeLabel": "Fourniture",
+          "categoryLabel": "Produit fini",
           "labels": [],
-          "productSuppliers": [],
-          "defaultSupplierId": null,
-          "infosPricingLibrary": null,
+          "productSuppliers": [
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202412261509549563",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202412261509549563",
+                "reference": "",
+                "fullName": " ",
+                "firstName": "",
+                "lastName": null
+              },
+              "price": 0,
+              "isDefault": false,
+              "reference": "",
+              "barCode": "8015644556082"
+            },
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202507091650177846",
+                "reference": "SON01",
+                "fullName": "SON01 ",
+                "firstName": "SON01",
+                "lastName": null
+              },
+              "price": 4783.28,
+              "isDefault": true,
+              "reference": "",
+              "barCode": "8015644556082"
+            }
+          ],
+          "defaultSupplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+          "infosPricingLibrary": {
+            "libraryType": "Tarifeo",
+            "value": {
+              "IdTarifTarifeo": "121",
+              "CodeArticle": "054506",
+              "Designation": "Disjoncteur T4L250 3P FF PR221-I 100A V"
+            }
+          },
           "isDisabled": false,
           "storageLocations": [],
           "isManagedByStock": false,
@@ -188,27 +274,33 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           "lastStockEventDate": "0001-01-01T00:10:00+00:10",
           "tarifeoPricesUpdate": null,
           "ouvrages": [],
+          "chartAccountItemSalsesId": null,
+          "chartAccountItemExpensesId": null,
+          "chartAccountItemSalses": null,
+          "chartAccountItemExpenses": null,
+          "complementAnalytiqueSalses": null,
+          "complementAnalytiqueExpenses": null,
           "stockIconSrc": "./assets/app/imgs/stock_out.svg",
           "stockTextColor": "#C51111",
-          "id_html": "Profiteroles",
+          "id_html": "054506_Disjoncteur_T4L250_3P_FF_PR221-I_100A_V",
           "discount": {
             "type": 2,
             "value": 0
           },
-          "categoryId": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-          "totalFG": 0,
-          "prixRevient": 0,
-          "totalHtNotArrondi": 17,
-          "totalTTCNotArrondi": 17,
-          "margin": 100,
-          "articleId": "article_0",
-          "situation": 100
+          "categoryId": "Foliatech47",
+          "totalFG": 1674.148,
+          "totalHtNotArrondi": 4783.28,
+          "totalTTCNotArrondi": 5739.936,
+          "margin": -35,
+          "articleId": "1753803901129-92334",
+          "situation": 10
         },
-        "situationProduct": 100,
-        "totalHT": 17,
-        "totalTTC": 17,
+        "situationProduct": 10,
+        "totalHT": 4783.28,
+        "totalTTC": 5739.936,
+        "isValid": true,
         "comment": null,
-        "totalHTArrondi": 17
+        "totalHTArrondi": 478.328
       },
       {
         "id": null,
@@ -227,52 +319,97 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           }
         ],
         "product": {
-          "id": "chlubdjubs1hu::Product::202507081048366363",
-          "designation": "Tarte aux Fraises",
-          "description": "",
-          "reference": "",
-          "sellingPrice": 25,
-          "purchasePrice": 0,
-          "totalHT": 25,
-          "taxValue": 0,
-          "totalTTC": 25,
-          "vat": 0,
+          "id": "chlubdjubs1hu::Product::202507241849101351",
+          "designation": "Article en suppression - 2573 Dynatel Détecteur de canalisation, câble et défaut de câble",
+          "description": "Article en suppression - Détection de réseaux et de défauts - Identique au Dynatel 2550E, le détecteur 2573E, livré avec une fourche de localisation, offre la fonction de détection de défaut de câble (mise à la terre).",
+          "reference": "1198521",
+          "sellingPrice": 10314.24,
+          "frais": 35,
+          "prixRevient": 13924.223999999998,
+          "purchasePrice": 10314.24,
+          "totalHT": 10314.24,
+          "taxValue": 2062.848,
+          "totalTTC": 12377.088,
+          "vat": 20,
           "unite": "U",
-          "coefficient": 0,
+          "coefficient": 1,
+          "coefficientNet": 1,
           "position": null,
           "isArchived": false,
           "productCategoryType": {
-            "id": "Foliatech88",
-            "label": "Repas",
-            "description": "Repas",
-            "type": 13
+            "id": "Foliatech1",
+            "label": "Fourniture",
+            "description": "Fourniture",
+            "type": 8
           },
           "category": {
-            "id": "25c13896-7a24-47a1-ab96-a1e19b816d99",
+            "id": "Foliatech47",
             "type": 1,
-            "label": "Dessert",
-            "description": "Dessert",
+            "label": "Produit fini",
+            "description": "Produit fini",
             "categoryType": -1,
             "isDefault": false,
-            "chartAccountItem": {
-              "id": "2FhdckGHLkunUFuXjV6LVw",
-              "label": "Repas",
-              "type": 5,
-              "categoryType": 0,
-              "code": "1111",
-              "typeCode": null,
-              "parentId": "Foliatech3",
-              "vatValue": 0,
-              "isDefault": false
-            },
+            "chartAccountItem": null,
+            "chartAccountItemSalses": null,
+            "chartAccountItemExpenses": null,
             "subClassification": []
           },
-          "productCTypeLabel": "Repas",
-          "categoryLabel": "Dessert",
+          "productCTypeLabel": "Fourniture",
+          "categoryLabel": "Produit fini",
           "labels": [],
-          "productSuppliers": [],
-          "defaultSupplierId": null,
-          "infosPricingLibrary": null,
+          "productSuppliers": [
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202412261509549563",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202412261509549563",
+                "reference": "",
+                "fullName": " ",
+                "firstName": "",
+                "lastName": null
+              },
+              "price": 0,
+              "isDefault": false,
+              "reference": "",
+              "barCode": "0051115535482"
+            },
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202507091650177845",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202507091650177845",
+                "reference": "FRS-00017",
+                "fullName": "FRANS BONHOMME ",
+                "firstName": "FRANS BONHOMME",
+                "lastName": null
+              },
+              "price": 10314.24,
+              "isDefault": true,
+              "reference": "",
+              "barCode": "0051115535482"
+            },
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202507091650177846",
+                "reference": "SON01",
+                "fullName": "SON01 ",
+                "firstName": "SON01",
+                "lastName": null
+              },
+              "price": 10638.36,
+              "isDefault": false,
+              "reference": "",
+              "barCode": "0051115535482"
+            }
+          ],
+          "defaultSupplierId": "chlubdjubs1hu::Supplier::202507091650177845",
+          "infosPricingLibrary": {
+            "libraryType": "Tarifeo",
+            "value": {
+              "IdTarifTarifeo": "699",
+              "CodeArticle": "1198521",
+              "Designation": "Article en suppression - 2573 Dynatel Détecteur de canalisation, câble et défaut de câble"
+            }
+          },
           "isDisabled": false,
           "storageLocations": [],
           "isManagedByStock": false,
@@ -287,27 +424,33 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           "lastStockEventDate": "0001-01-01T00:10:00+00:10",
           "tarifeoPricesUpdate": null,
           "ouvrages": [],
+          "chartAccountItemSalsesId": null,
+          "chartAccountItemExpensesId": null,
+          "chartAccountItemSalses": null,
+          "chartAccountItemExpenses": null,
+          "complementAnalytiqueSalses": null,
+          "complementAnalytiqueExpenses": null,
           "stockIconSrc": "./assets/app/imgs/stock_out.svg",
           "stockTextColor": "#C51111",
-          "id_html": "Tarte aux Fraises",
+          "id_html": "1198521_Article_en_suppression_-_2573_Dynatel_Détecteur_de_canalisation__câble_et_défaut_de_câble",
           "discount": {
             "type": 2,
             "value": 0
           },
-          "categoryId": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-          "totalFG": 0,
-          "prixRevient": 0,
-          "totalHtNotArrondi": 25,
-          "totalTTCNotArrondi": 25,
-          "margin": 100,
-          "articleId": "article_1",
-          "situation": 100
+          "categoryId": "Foliatech47",
+          "totalFG": 3609.9839999999995,
+          "totalHtNotArrondi": 10314.24,
+          "totalTTCNotArrondi": 12377.088,
+          "margin": -35,
+          "articleId": "1753803901129-68748",
+          "situation": 10
         },
-        "situationProduct": 100,
-        "totalHT": 25,
-        "totalTTC": 25,
+        "situationProduct": 10,
+        "totalHT": 10314.24,
+        "totalTTC": 12377.088,
+        "isValid": true,
         "comment": null,
-        "totalHTArrondi": 25
+        "totalHTArrondi": 1031.424
       },
       {
         "id": null,
@@ -326,52 +469,83 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           }
         ],
         "product": {
-          "id": "chlubdjubs1hu::Product::202507081046468953",
-          "designation": "Éclair au Chocolat",
-          "description": "",
-          "reference": "",
-          "sellingPrice": 8,
-          "purchasePrice": 0,
-          "totalHT": 8,
-          "taxValue": 0,
-          "totalTTC": 8,
-          "vat": 0,
+          "id": "chlubdjubs1hu::Product::202507241835063994",
+          "designation": "Gale'O VDI - Cordon plat RJ45-RJ45 FTP - Longueur 0,5m - Lot de 5pcs",
+          "description": "Gale'O VDI - Cordon plat RJ45-RJ45 FTP - Longueur 0,5m - Lot de 5pcs",
+          "reference": "190441",
+          "sellingPrice": 29.51,
+          "frais": 35,
+          "prixRevient": 39.8385,
+          "purchasePrice": 29.51,
+          "totalHT": 29.51,
+          "taxValue": 5.902,
+          "totalTTC": 35.412,
+          "vat": 20,
           "unite": "U",
-          "coefficient": 0,
+          "coefficient": 1,
+          "coefficientNet": 1,
           "position": null,
           "isArchived": false,
           "productCategoryType": {
-            "id": "Foliatech88",
-            "label": "Repas",
-            "description": "Repas",
-            "type": 13
+            "id": "Foliatech1",
+            "label": "Fourniture",
+            "description": "Fourniture",
+            "type": 8
           },
           "category": {
-            "id": "25c13896-7a24-47a1-ab96-a1e19b816d99",
+            "id": "Foliatech47",
             "type": 1,
-            "label": "Dessert",
-            "description": "Dessert",
+            "label": "Produit fini",
+            "description": "Produit fini",
             "categoryType": -1,
             "isDefault": false,
-            "chartAccountItem": {
-              "id": "2FhdckGHLkunUFuXjV6LVw",
-              "label": "Repas",
-              "type": 5,
-              "categoryType": 0,
-              "code": "1111",
-              "typeCode": null,
-              "parentId": "Foliatech3",
-              "vatValue": 0,
-              "isDefault": false
-            },
+            "chartAccountItem": null,
+            "chartAccountItemSalses": null,
+            "chartAccountItemExpenses": null,
             "subClassification": []
           },
-          "productCTypeLabel": "Repas",
-          "categoryLabel": "Dessert",
+          "productCTypeLabel": "Fourniture",
+          "categoryLabel": "Produit fini",
           "labels": [],
-          "productSuppliers": [],
-          "defaultSupplierId": null,
-          "infosPricingLibrary": null,
+          "productSuppliers": [
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202412261509549563",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202412261509549563",
+                "reference": "",
+                "fullName": " ",
+                "firstName": "",
+                "lastName": null
+              },
+              "price": 0,
+              "isDefault": false,
+              "reference": "",
+              "barCode": "3471525000436"
+            },
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202507091650177846",
+                "reference": "SON01",
+                "fullName": "SON01 ",
+                "firstName": "SON01",
+                "lastName": null
+              },
+              "price": 29.51,
+              "isDefault": true,
+              "reference": "",
+              "barCode": "3471525000436"
+            }
+          ],
+          "defaultSupplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+          "infosPricingLibrary": {
+            "libraryType": "Tarifeo",
+            "value": {
+              "IdTarifTarifeo": "121",
+              "CodeArticle": "190441",
+              "Designation": "Gale'O VDI - Cordon plat RJ45-RJ45 FTP - Longueur 0,5m - Lot de 5pcs"
+            }
+          },
           "isDisabled": false,
           "storageLocations": [],
           "isManagedByStock": false,
@@ -386,27 +560,33 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           "lastStockEventDate": "0001-01-01T00:10:00+00:10",
           "tarifeoPricesUpdate": null,
           "ouvrages": [],
+          "chartAccountItemSalsesId": null,
+          "chartAccountItemExpensesId": null,
+          "chartAccountItemSalses": null,
+          "chartAccountItemExpenses": null,
+          "complementAnalytiqueSalses": null,
+          "complementAnalytiqueExpenses": null,
           "stockIconSrc": "./assets/app/imgs/stock_out.svg",
           "stockTextColor": "#C51111",
-          "id_html": "Éclair au Chocolat",
+          "id_html": "190441_Gale_O_VDI_-_Cordon_plat_RJ45-RJ45_FTP_-_Longueur_0_5m_-_Lot_de_5pcs",
           "discount": {
             "type": 2,
             "value": 0
           },
-          "categoryId": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-          "totalFG": 0,
-          "prixRevient": 0,
-          "totalHtNotArrondi": 8,
-          "totalTTCNotArrondi": 8,
-          "margin": 100,
-          "articleId": "article_2",
-          "situation": 100
+          "categoryId": "Foliatech47",
+          "totalFG": 10.3285,
+          "totalHtNotArrondi": 29.51,
+          "totalTTCNotArrondi": 35.412,
+          "margin": -35,
+          "articleId": "1753803901129-74757",
+          "situation": 10
         },
-        "situationProduct": 100,
-        "totalHT": 8,
-        "totalTTC": 8,
+        "situationProduct": 10,
+        "totalHT": 29.51,
+        "totalTTC": 35.412,
+        "isValid": true,
         "comment": null,
-        "totalHTArrondi": 8
+        "totalHTArrondi": 2.9510000000000005
       },
       {
         "id": null,
@@ -425,52 +605,83 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           }
         ],
         "product": {
-          "id": "chlubdjubs1hu::Product::202507081048141373",
-          "designation": "Clafoutis aux Cerises",
-          "description": "",
-          "reference": "",
-          "sellingPrice": 13,
-          "purchasePrice": 0,
-          "totalHT": 13,
-          "taxValue": 0,
-          "totalTTC": 13,
-          "vat": 0,
+          "id": "chlubdjubs1hu::Product::202507241834160425",
+          "designation": "Gale'O VDI - Boitier DTI Modulaire RJ45",
+          "description": "Gale'O VDI - Boitier DTI Modulaire RJ45",
+          "reference": "190344",
+          "sellingPrice": 29.6,
+          "frais": 35,
+          "prixRevient": 39.96,
+          "purchasePrice": 29.6,
+          "totalHT": 29.6,
+          "taxValue": 5.92,
+          "totalTTC": 35.52,
+          "vat": 20,
           "unite": "U",
-          "coefficient": 0,
+          "coefficient": 1,
+          "coefficientNet": 1,
           "position": null,
           "isArchived": false,
           "productCategoryType": {
-            "id": "Foliatech88",
-            "label": "Repas",
-            "description": "Repas",
-            "type": 13
+            "id": "Foliatech1",
+            "label": "Fourniture",
+            "description": "Fourniture",
+            "type": 8
           },
           "category": {
-            "id": "25c13896-7a24-47a1-ab96-a1e19b816d99",
+            "id": "Foliatech47",
             "type": 1,
-            "label": "Dessert",
-            "description": "Dessert",
+            "label": "Produit fini",
+            "description": "Produit fini",
             "categoryType": -1,
             "isDefault": false,
-            "chartAccountItem": {
-              "id": "2FhdckGHLkunUFuXjV6LVw",
-              "label": "Repas",
-              "type": 5,
-              "categoryType": 0,
-              "code": "1111",
-              "typeCode": null,
-              "parentId": "Foliatech3",
-              "vatValue": 0,
-              "isDefault": false
-            },
+            "chartAccountItem": null,
+            "chartAccountItemSalses": null,
+            "chartAccountItemExpenses": null,
             "subClassification": []
           },
-          "productCTypeLabel": "Repas",
-          "categoryLabel": "Dessert",
+          "productCTypeLabel": "Fourniture",
+          "categoryLabel": "Produit fini",
           "labels": [],
-          "productSuppliers": [],
-          "defaultSupplierId": null,
-          "infosPricingLibrary": null,
+          "productSuppliers": [
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202412261509549563",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202412261509549563",
+                "reference": "",
+                "fullName": " ",
+                "firstName": "",
+                "lastName": null
+              },
+              "price": 0,
+              "isDefault": false,
+              "reference": "",
+              "barCode": "3471521903441"
+            },
+            {
+              "supplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+              "supplier": {
+                "id": "chlubdjubs1hu::Supplier::202507091650177846",
+                "reference": "SON01",
+                "fullName": "SON01 ",
+                "firstName": "SON01",
+                "lastName": null
+              },
+              "price": 29.6,
+              "isDefault": true,
+              "reference": "",
+              "barCode": "3471521903441"
+            }
+          ],
+          "defaultSupplierId": "chlubdjubs1hu::Supplier::202507091650177846",
+          "infosPricingLibrary": {
+            "libraryType": "Tarifeo",
+            "value": {
+              "IdTarifTarifeo": "121",
+              "CodeArticle": "190344",
+              "Designation": "Gale'O VDI - Boitier DTI Modulaire RJ45"
+            }
+          },
           "isDisabled": false,
           "storageLocations": [],
           "isManagedByStock": false,
@@ -485,225 +696,33 @@ add button to each receipt to generate invoice from the receipt; when clicking t
           "lastStockEventDate": "0001-01-01T00:10:00+00:10",
           "tarifeoPricesUpdate": null,
           "ouvrages": [],
+          "chartAccountItemSalsesId": null,
+          "chartAccountItemExpensesId": null,
+          "chartAccountItemSalses": null,
+          "chartAccountItemExpenses": null,
+          "complementAnalytiqueSalses": null,
+          "complementAnalytiqueExpenses": null,
           "stockIconSrc": "./assets/app/imgs/stock_out.svg",
           "stockTextColor": "#C51111",
-          "id_html": "Clafoutis aux Cerises",
+          "id_html": "190344_Gale_O_VDI_-_Boitier_DTI_Modulaire_RJ45",
           "discount": {
             "type": 2,
             "value": 0
           },
-          "categoryId": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-          "totalFG": 0,
-          "prixRevient": 0,
-          "totalHtNotArrondi": 13,
-          "totalTTCNotArrondi": 13,
-          "margin": 100,
-          "articleId": "article_3",
-          "situation": 100
+          "categoryId": "Foliatech47",
+          "totalFG": 10.36,
+          "totalHtNotArrondi": 29.6,
+          "totalTTCNotArrondi": 35.52,
+          "margin": -35,
+          "articleId": "1753803901129-96291",
+          "situation": 10
         },
-        "situationProduct": 100,
-        "totalHT": 13,
-        "totalTTC": 13,
+        "situationProduct": 10,
+        "totalHT": 29.6,
+        "totalTTC": 35.52,
+        "isValid": true,
         "comment": null,
-        "totalHTArrondi": 13
-      },
-      {
-        "id": null,
-        "workShopId": null,
-        "workShopName": null,
-        "workShop": null,
-        "quantity": 1,
-        "initialQuantity": 0,
-        "type": 1,
-        "impose": false,
-        "numeration": "5",
-        "arrayNumerationComplete": [
-          {
-            "num": "5",
-            "color": "#FFFFFF"
-          }
-        ],
-        "product": {
-          "id": "chlubdjubs1hu::Product::202507081047030854",
-          "designation": "Mousse au Chocolat",
-          "description": "",
-          "reference": "",
-          "sellingPrice": 14,
-          "purchasePrice": 0,
-          "totalHT": 14,
-          "taxValue": 0,
-          "totalTTC": 14,
-          "vat": 0,
-          "unite": "U",
-          "coefficient": 0,
-          "position": null,
-          "isArchived": false,
-          "productCategoryType": {
-            "id": "Foliatech88",
-            "label": "Repas",
-            "description": "Repas",
-            "type": 13
-          },
-          "category": {
-            "id": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-            "type": 1,
-            "label": "Dessert",
-            "description": "Dessert",
-            "categoryType": -1,
-            "isDefault": false,
-            "chartAccountItem": {
-              "id": "2FhdckGHLkunUFuXjV6LVw",
-              "label": "Repas",
-              "type": 5,
-              "categoryType": 0,
-              "code": "1111",
-              "typeCode": null,
-              "parentId": "Foliatech3",
-              "vatValue": 0,
-              "isDefault": false
-            },
-            "subClassification": []
-          },
-          "productCTypeLabel": "Repas",
-          "categoryLabel": "Dessert",
-          "labels": [],
-          "productSuppliers": [],
-          "defaultSupplierId": null,
-          "infosPricingLibrary": null,
-          "isDisabled": false,
-          "storageLocations": [],
-          "isManagedByStock": false,
-          "outOfStockQuantity": 0,
-          "quantityInStock": 0,
-          "alertQuantity": 0,
-          "averagePrice": 0,
-          "reservedQuantity": 0,
-          "orderedQuantity": 0,
-          "isOutOfStock": true,
-          "isStockAlert": true,
-          "lastStockEventDate": "0001-01-01T00:10:00+00:10",
-          "tarifeoPricesUpdate": null,
-          "ouvrages": [],
-          "stockIconSrc": "./assets/app/imgs/stock_out.svg",
-          "stockTextColor": "#C51111",
-          "id_html": "Mousse au Chocolat",
-          "discount": {
-            "type": 2,
-            "value": 0
-          },
-          "categoryId": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-          "totalFG": 0,
-          "prixRevient": 0,
-          "totalHtNotArrondi": 14,
-          "totalTTCNotArrondi": 14,
-          "margin": 100,
-          "articleId": "article_4",
-          "situation": 100
-        },
-        "situationProduct": 100,
-        "totalHT": 14,
-        "totalTTC": 14,
-        "comment": null,
-        "totalHTArrondi": 14
-      },
-      {
-        "id": null,
-        "workShopId": null,
-        "workShopName": null,
-        "workShop": null,
-        "quantity": 1,
-        "initialQuantity": 0,
-        "type": 1,
-        "impose": false,
-        "numeration": "6",
-        "arrayNumerationComplete": [
-          {
-            "num": "6",
-            "color": "#FFFFFF"
-          }
-        ],
-        "product": {
-          "id": "chlubdjubs1hu::Product::202507081048261201",
-          "designation": "Crème Caramel",
-          "description": "",
-          "reference": "",
-          "sellingPrice": 26,
-          "purchasePrice": 0,
-          "totalHT": 26,
-          "taxValue": 0,
-          "totalTTC": 26,
-          "vat": 0,
-          "unite": "U",
-          "coefficient": 0,
-          "position": null,
-          "isArchived": false,
-          "productCategoryType": {
-            "id": "Foliatech88",
-            "label": "Repas",
-            "description": "Repas",
-            "type": 13
-          },
-          "category": {
-            "id": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-            "type": 1,
-            "label": "Dessert",
-            "description": "Dessert",
-            "categoryType": -1,
-            "isDefault": false,
-            "chartAccountItem": {
-              "id": "2FhdckGHLkunUFuXjV6LVw",
-              "label": "Repas",
-              "type": 5,
-              "categoryType": 0,
-              "code": "1111",
-              "typeCode": null,
-              "parentId": "Foliatech3",
-              "vatValue": 0,
-              "isDefault": false
-            },
-            "subClassification": []
-          },
-          "productCTypeLabel": "Repas",
-          "categoryLabel": "Dessert",
-          "labels": [],
-          "productSuppliers": [],
-          "defaultSupplierId": null,
-          "infosPricingLibrary": null,
-          "isDisabled": false,
-          "storageLocations": [],
-          "isManagedByStock": false,
-          "outOfStockQuantity": 0,
-          "quantityInStock": 0,
-          "alertQuantity": 0,
-          "averagePrice": 0,
-          "reservedQuantity": 0,
-          "orderedQuantity": 0,
-          "isOutOfStock": true,
-          "isStockAlert": true,
-          "lastStockEventDate": "0001-01-01T00:10:00+00:10",
-          "tarifeoPricesUpdate": null,
-          "ouvrages": [],
-          "stockIconSrc": "./assets/app/imgs/stock_out.svg",
-          "stockTextColor": "#C51111",
-          "id_html": "Crème Caramel",
-          "discount": {
-            "type": 2,
-            "value": 0
-          },
-          "categoryId": "25c13896-7a24-47a1-ab96-a1e19b816d99",
-          "totalFG": 0,
-          "prixRevient": 0,
-          "totalHtNotArrondi": 26,
-          "totalTTCNotArrondi": 26,
-          "margin": 100,
-          "articleId": "article_5",
-          "situation": 100
-        },
-        "situationProduct": 100,
-        "totalHT": 26,
-        "totalTTC": 26,
-        "comment": null,
-        "totalHTArrondi": 26
+        "totalHTArrondi": 2.9600000000000004
       }
     ],
     "productsPricingDetails": {
@@ -717,59 +736,21 @@ add button to each receipt to generate invoice from the receipt; when clicking t
     "showNumbering": true,
     "isNumerationAuto": true,
     "typeNumeration": 0,
-    "totalHT": 103,
-    "totalTax": 0,
-    "generalTotalHT": 103,
+    "totalHT": 1515.663,
+    "totalTax": 303.13,
+    "generalTotalHT": 1515.66,
     "totalPUC": 0,
     "ajustementCalcul": []
   },
-  "quotesIds": ["chlubdjubs1hu::Quote::202507231656397822"],
-  "responsables": ["8a82a95f-4736-4b62-90af-5ba061949e5b"],
+  "quotesIds": ["chlubdjubs1hu::Quote::202507291745031413"],
+  "responsables": [],
   "addLabelTva": "",
   "contacts": [],
   "textAcompte": {
-    "designation": "Acompte de réalisation de 100.00% sur le devis DV202510088",
-    "description": "Rappel total TTC Devis : 103.00€\nTotal avancement de facturation : 100 % "
+    "designation": "Acompte de réalisation de 10.00% sur le devis DEVIS n°111330",
+    "description": "Rappel total TTC Devis : 18187.96€\nTotal avancement de facturation : 10 % "
   },
   "typeFinanciere": 0
 }
 ```
-
-the feild that will be changed are:
-
-- `dueDate`: the creation date in the receipt
-- `creationDate`: the creation date in the receipt
-- `addressIntervention`: {
-  "street": adress in the company inforamtion,
-  "city": city in the company inforamtion,
-  "postalCode": postalCode in the company inforamtion,
-  "countryCode": country in the company inforamtion,
-  }
-- `addressFacturation`: same as `addressIntervention`
-- `clientId`: the client id.
-- `client`: {
-  "name": name of the client,
-  "addresses": [
-  {
-  "street": adress in the client inforamtion,
-  "city": city in the client inforamtion,
-  "postalCode": postalCode in the client inforamtion,
-  "countryCode": country in the client inforamtion,
-  }
-  ],
-  "billingAddress": same as `addressIntervention`,
-  "id": the client id,
-  "reference": the client reference,
-  "firstName": the client first name,
-  "lastName": the client last name,
-  "phoneNumber": the client phone number (if it exist),
-  "email": the client email (if it exist),
-  },
-- `holdbackDetails`: {
-  "warrantyExpirationDate": date of creation + 12 months,
-  }
-- `lineItems`: the items in the receipt
-- `quotesIds`: the receipt id
-- `responsables`: [the user id]
-
-the rest stays the same.
+and remove the quote status editing.

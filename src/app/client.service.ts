@@ -26,7 +26,7 @@ export class ClientService {
           techniciansId: [],
           isProspect: 0,
           isAll: false,
-          label: ['chndr1lvpr21k1'],
+          label: ['chneg3084m7i91'],
         },
         { headers }
       )
@@ -76,7 +76,7 @@ export class ClientService {
       labels: [
         {
           value: 'POS',
-          id: 'chndr1lvpr21k1',
+          id: 'chneg3084m7i91',
           id_html: 'POS',
         },
       ],
@@ -107,7 +107,7 @@ export class ClientService {
       labels: [
         {
           value: 'POS',
-          id: 'chndr1lvpr21k1',
+          id: 'chneg3084m7i91',
           id_html: 'POS',
         },
       ],
