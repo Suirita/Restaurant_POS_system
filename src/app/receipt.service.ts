@@ -75,7 +75,7 @@ export class ReceiptService {
               id: 'Foliatech88',
               label: 'Repas',
               description: 'Repas',
-              type: 13,
+              type: 5,
             },
             category: {
               id: '25c13896-7a24-47a1-ab96-a1e19b816d99',
@@ -367,7 +367,7 @@ export class ReceiptService {
                   id: 'Foliatech88',
                   label: 'Repas',
                   description: 'Repas',
-                  type: 13,
+                  type: 5,
                 },
                 category: {
                   id: item.categoryId,

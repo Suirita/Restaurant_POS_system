@@ -19,7 +19,7 @@ export class CategoryService {
       })
       .pipe(
         map((response) =>
-          response.value[4].subClassification.map((c: any) => ({
+          response.value[6].subClassification.map((c: any) => ({
             id: c.id,
             label: c.label,
           }))

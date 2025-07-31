@@ -36,7 +36,7 @@ export class MealService {
       })
       .pipe(
         map((response) =>
-          response.value[4].subClassification.map((c: any) => ({
+          response.value[6].subClassification.map((c: any) => ({
             id: c.id,
             label: c.label,
           }))
@@ -87,10 +87,6 @@ export class MealService {
       PageSize: 1000,
       OrderBy: 'reference',
       SortDirection: 1,
-      SearchQuery: '',
-      IgnorePagination: false,
-      isArchived: false,
-      showTarifeo: false,
       TypeProductId: 'Foliatech88',
     };
     return this.http
@@ -130,7 +126,7 @@ export class MealService {
         id: 'Foliatech88',
         label: 'Repas',
         description: 'Repas',
-        type: 13,
+        type: 5 ,
         id_html: 'Repas',
       },
       productCategoryTypeId: 'Foliatech88',
@@ -163,7 +159,7 @@ export class MealService {
         id: 'Foliatech88',
         label: 'Repas',
         description: 'Repas',
-        type: 13,
+        type: 5,
         id_html: 'Repas',
       },
       productCategoryTypeId: 'Foliatech88',

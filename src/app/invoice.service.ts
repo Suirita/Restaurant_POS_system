@@ -148,7 +148,7 @@ export class InvoiceService {
                   id: 'Foliatech88',
                   label: 'Repas',
                   description: 'Repas',
-                  type: 13,
+                  type: 5,
                 },
                 category: {
                   id: item.categoryId,

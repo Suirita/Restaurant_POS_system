@@ -351,7 +351,7 @@ export class PosComponent implements OnInit {
 
   private loadMeals() {
     this.loading.set(true);
-    const images = this.mealImages();
+    const images = this.mealImages(); 
     this.mealService
       .getMealsByCategory(this.selectedCategory(), this.currentUser()?.token)
       .subscribe((data) => {
@@ -814,7 +814,7 @@ export class PosComponent implements OnInit {
         .subscribe((destinationReceipt) => {
           if (destinationReceipt) {
             console.log('Original destination receipt:', destinationReceipt);
-            
+
             sourceReceipt.items.forEach(sourceItem => {
               const existingItem = destinationReceipt.items.find(destItem => destItem.id === sourceItem.id);
               if (existingItem) {
