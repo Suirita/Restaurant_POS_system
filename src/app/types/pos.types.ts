@@ -1,3 +1,15 @@
+export interface Client {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  ice: string;
+  address: string;
+  postalCode: string;
+  city: string;
+  country: string;
+}
+
 export interface Meal {
   id: string;
   designation: string;
@@ -72,16 +84,4 @@ export interface Table {
 export interface Role {
   id: string;
   name: string;
-}
-
-export interface Client {
-  id: string;
-  name: string;
-  email: string;
-  mobile: string;
-  ice: string;
-  address: string;
-  postalCode: string;
-  city: string;
-  country: string;
 }
