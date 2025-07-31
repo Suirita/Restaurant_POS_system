@@ -12,8 +12,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    // fullscreen: true,
-    kiosk: true,        // <-- alternatively, use kiosk mode (no window controls)
+    // fullscreen: true,      // <-- start in fullscreen
+    kiosk: true,              // <-- start in kiosk mode (no window controls)
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
