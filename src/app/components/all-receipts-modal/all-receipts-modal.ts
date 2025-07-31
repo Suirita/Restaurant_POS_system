@@ -94,7 +94,12 @@ export class AllReceiptsModalComponent {
       this.invoiceService
         .createInvoice(receipt, clientId, this.token())
         .subscribe(() => {
-          this.onCloseInvoiceDialog();
+          this.receiptService
+            .updateReceipt(receipt, this.token(), 'billed')
+            .subscribe(() => {
+              this.loadReceipts();
+              this.onCloseInvoiceDialog();
+            });
         });
     }
   }

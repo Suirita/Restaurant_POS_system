@@ -666,7 +666,8 @@ export class PosComponent implements OnInit {
       .subscribe((receipts) => {
         const receipt = receipts.find((r) => r.orderNumber === orderNumber);
         if (receipt) {
-          this.receiptService.updateReceipt(receipt, currentUser.token, 'billed').subscribe(() => {
+          receipt.userId = currentUser.userId;
+          this.receiptService.updateReceipt(receipt, currentUser.token, 'accepted').subscribe(() => {
             const tables = this.tables().map((t) =>
               t.name === receipt.tableName
                 ? { ...t, occupied: false, userId: null }
@@ -742,8 +743,9 @@ export class PosComponent implements OnInit {
           existingReceipt.items = [...this.cart()];
           existingReceipt.total = total;
           existingReceipt.paymentMethod = 'Paid';
+          existingReceipt.userId = this.currentUser()!.userId;
 
-          this.receiptService.updateReceipt(existingReceipt, this.currentUser()!.token, 'billed').subscribe();
+          this.receiptService.updateReceipt(existingReceipt, this.currentUser()!.token, 'accepted').subscribe();
         } else {
           // Create a new receipt if none exists
           const receipt: Receipt = {
@@ -757,9 +759,9 @@ export class PosComponent implements OnInit {
             userId: this.currentUser()!.userId,
             client: null,
             orderDetails: null,
-            status: 'completed',
+            status: 'accepted',
           };
-          this.receiptService.saveReceipt(receipt, this.currentUser()!.token, 'billed');
+          this.receiptService.saveReceipt(receipt, this.currentUser()!.token, 'accepted');
         }
 
         // Free up the table if it was a table order
