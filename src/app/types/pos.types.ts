@@ -92,4 +92,5 @@ export interface Invoice {
   clientName: string;
   date: Date;
   total: number;
+  items: CartItem[];
 }

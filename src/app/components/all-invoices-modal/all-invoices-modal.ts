@@ -1,14 +1,15 @@
 import { Component, output, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Invoice } from '../../types/pos.types';
+import { Invoice, CartItem } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
 import { LucideAngularModule, X, LoaderCircle, MessageCircle } from 'lucide-angular';
+import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
 
 @Component({
   standalone: true,
   selector: 'app-all-invoices-modal',
   templateUrl: './all-invoices-modal.html',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, InvoiceDetailsModalComponent],
 })
 export class AllInvoicesModalComponent {
   readonly XIcon = X;
@@ -19,6 +20,9 @@ export class AllInvoicesModalComponent {
   invoices = signal<Invoice[]>([]);
   isLoading = signal<boolean>(false);
   token = input.required<string>();
+
+  isInvoiceDetailsVisible = signal(false);
+  selectedInvoice = signal<Invoice | null>(null);
 
   close = output<void>();
 
@@ -47,6 +51,50 @@ export class AllInvoicesModalComponent {
 
   onClose() {
     this.close.emit();
+  }
+
+  onInvoiceClick(invoice: Invoice) {
+    if (invoice.id) {
+      this.invoiceService.getInvoiceDetails(invoice.id, this.token()).subscribe({
+        next: (detailedInvoiceResponse) => {
+          const detailedInvoice = detailedInvoiceResponse.value;
+          if (detailedInvoice && detailedInvoice.orderDetails && detailedInvoice.orderDetails.lineItems) {
+            const lineItems: CartItem[] = detailedInvoice.orderDetails.lineItems.map((item: any) => ({
+              id: item.product.id,
+              designation: item.product.designation,
+              sellingPrice: item.product.sellingPrice,
+              purchasePrice: item.product.purchasePrice || 0,
+              totalTTC: item.totalTTC,
+              tva: item.product.vat || 0,
+              categoryId: item.product.categoryId,
+              categoryLabel: item.product.categoryLabel,
+              image: '',
+              quantity: item.quantity,
+              labels: item.product.labels || [],
+            }));
+
+            this.selectedInvoice.set({
+              ...invoice,
+              items: lineItems,
+              total: detailedInvoice.totalTTC,
+            });
+            this.isInvoiceDetailsVisible.set(true);
+          } else {
+            console.error('Detailed invoice or its orderDetails/lineItems are missing:', detailedInvoiceResponse);
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching detailed invoice:', error);
+        }
+      });
+    } else {
+      console.error('Invoice ID is missing, cannot fetch details.', invoice);
+    }
+  }
+
+  onCloseInvoiceDetails() {
+    this.isInvoiceDetailsVisible.set(false);
+    this.selectedInvoice.set(null);
   }
 
   sendWhatsapp(invoice: Invoice) {

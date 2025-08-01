@@ -314,4 +314,9 @@ Total avancement de facturation : 10 % `,
       headers,
     });
   }
+
+  getInvoiceDetails(id: string, token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.baseURL}/Invoice/${id}`, { headers });
+  }
 }

@@ -43,7 +43,8 @@
       >
         <div
           *ngFor="let invoice of invoices()"
-          class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between"
+          class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer"
+          (click)="onInvoiceClick(invoice)"
         >
           <div>
             <p class="text-sm text-gray-600">
@@ -71,7 +72,7 @@
           <div class="mt-4">
             <button 
               class="w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"
-              (click)="sendWhatsapp(invoice)"
+              (click)="sendWhatsapp(invoice); $event.stopPropagation()"
             >
               <i-lucide [img]="MessageCircleIcon" [size]="16"></i-lucide>
               <span class="ml-2">Envoyer via Whatsapp</span>
@@ -90,3 +91,9 @@
     </div>
   </div>
 </div>
+
+<app-invoice-details-modal
+  *ngIf="isInvoiceDetailsVisible()"
+  [invoice]="selectedInvoice()!"
+  (close)="onCloseInvoiceDetails()"
+></app-invoice-details-modal>
