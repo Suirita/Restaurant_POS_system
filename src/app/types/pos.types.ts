@@ -93,4 +93,13 @@ export interface Invoice {
   date: Date;
   total: number;
   items: CartItem[];
+  clientAddress?: string;
+  clientPhoneNumber?: string;
+  companyPhoneNumber?: string;
+  companyEmail?: string;
+  companyWebsite?: string;
+  termsAndConditions?: string;
+  paymentInfoAccount?: string;
+  paymentInfoName?: string;
+  paymentInfoDetails?: string;
 }
