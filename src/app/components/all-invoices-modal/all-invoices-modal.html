@@ -68,6 +68,15 @@
               Total : {{ invoice.total | currency:'EUR' }}
             </p>
           </div>
+          <div class="mt-4">
+            <button 
+              class="w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"
+              (click)="sendWhatsapp(invoice)"
+            >
+              <i-lucide [img]="MessageCircleIcon" [size]="16"></i-lucide>
+              <span class="ml-2">Envoyer via Whatsapp</span>
+            </button>
+          </div>
         </div>
       </div>
       <div class="p-4 border-t border-gray-200">

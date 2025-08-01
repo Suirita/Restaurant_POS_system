@@ -2,7 +2,7 @@ import { Component, output, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Invoice } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
-import { LucideAngularModule, X, LoaderCircle } from 'lucide-angular';
+import { LucideAngularModule, X, LoaderCircle, MessageCircle } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -13,6 +13,7 @@ import { LucideAngularModule, X, LoaderCircle } from 'lucide-angular';
 export class AllInvoicesModalComponent {
   readonly XIcon = X;
   readonly Loader = LoaderCircle;
+  readonly MessageCircleIcon = MessageCircle;
 
   private invoiceService = inject(InvoiceService);
   invoices = signal<Invoice[]>([]);
@@ -46,5 +47,10 @@ export class AllInvoicesModalComponent {
 
   onClose() {
     this.close.emit();
+  }
+
+  sendWhatsapp(invoice: Invoice) {
+    // Implement your WhatsApp logic here
+    console.log('Sending invoice via WhatsApp:', invoice);
   }
 }
