@@ -156,3 +156,9 @@
   (close)="closeClientForm()"
   (clientSaved)="onClientSaved()"
 ></app-client-form-modal>
+
+<app-receipt-details-modal
+  *ngIf="isReceiptDetailsVisible()"
+  [receipt]="selectedReceipt()!"
+  (close)="onCloseReceiptDetails()"
+></app-receipt-details-modal>

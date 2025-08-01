@@ -6,12 +6,14 @@ import { ClientService } from '../../client.service';
 import { InvoiceService } from '../../invoice.service';
 import { LucideAngularModule, X, LoaderCircle } from 'lucide-angular';
 import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
+import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
+
 
 @Component({
   standalone: true,
   selector: 'app-all-receipts-modal',
   templateUrl: './all-receipts-modal.html',
-  imports: [CommonModule, LucideAngularModule, ClientFormModalComponent],
+  imports: [CommonModule, LucideAngularModule, ClientFormModalComponent, ReceiptDetailsModalComponent],
 })
 export class AllReceiptsModalComponent {
   readonly XIcon = X;
@@ -25,6 +27,8 @@ export class AllReceiptsModalComponent {
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
   isClientFormVisible = signal(false);
+  isReceiptDetailsVisible = signal(false);
+  selectedReceipt = signal<Receipt | null>(null);
   selectedReceiptForInvoice = signal<Receipt | null>(null);
   selectedClientId = signal<string | null>(null);
   userId = input.required<string>();
@@ -70,8 +74,13 @@ export class AllReceiptsModalComponent {
   }
 
   onReceiptClick(receipt: Receipt) {
-    console.log('onReceiptClick called in component:', receipt);
-    this.receiptSelected.emit(receipt);
+    this.selectedReceipt.set(receipt);
+    this.isReceiptDetailsVisible.set(true);
+  }
+
+  onCloseReceiptDetails() {
+    this.isReceiptDetailsVisible.set(false);
+    this.selectedReceipt.set(null);
   }
 
   onGenerateInvoiceClick(receipt: Receipt) {
