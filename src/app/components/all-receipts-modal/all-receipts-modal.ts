@@ -99,6 +99,7 @@ export class AllReceiptsModalComponent {
             .subscribe(() => {
               this.loadReceipts();
               this.onCloseInvoiceDialog();
+              this.onClose();
             });
         });
     }
