@@ -18,7 +18,6 @@ export class AllInvoicesModalComponent {
   invoices = signal<Invoice[]>([]);
   isLoading = signal<boolean>(false);
   token = input.required<string>();
-  clerkId = input.required<string>();
 
   close = output<void>();
 
@@ -29,7 +28,7 @@ export class AllInvoicesModalComponent {
   loadInvoices() {
     this.isLoading.set(true);
     this.invoiceService
-      .getAllInvoices(this.token(), this.clerkId())
+      .getAllInvoices(this.token())
       .subscribe((response: any) => {
         const mappedInvoices: Invoice[] = response.value.map(
           (apiInvoice: any) => ({

@@ -52,7 +52,6 @@
   <!-- All Invoices Modal -->
   <app-all-invoices-modal
     *ngIf="showAllInvoices()"
-    [clerkId]="currentUser()!.reference"
     [token]="currentUser()!.token"
     (close)="hideAllInvoicesModal()"
   ></app-all-invoices-modal>

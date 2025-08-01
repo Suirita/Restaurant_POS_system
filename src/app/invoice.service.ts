@@ -70,7 +70,7 @@ export class InvoiceService {
 </font></div><div><font size="2">forfaitaire pour frais de recouvrement de 40€. Pas d'escompte en cas de paiement anticipé.
 </font></div><div><font size="2"><br></font></div>`,
                       workshopId: null,
-                      labels: [],
+                      labels: ['chneg3084mkah1'],
                       dueDate: new Date().toISOString().slice(0, 16),
                       creationDate: new Date().toISOString().slice(0, 16),
                       addressIntervention: {
@@ -299,7 +299,7 @@ Total avancement de facturation : 10 % `,
     );
   }
 
-  getAllInvoices(token: string, clerkId: string): Observable<any> {
+  getAllInvoices(token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
       Page: 1,
@@ -308,7 +308,7 @@ Total avancement de facturation : 10 % `,
       SortDirection: 0,
       SearchQuery: '',
       techniciansId: [],
-      label: [clerkId],
+      label: ['chneg3084mkah1'],
     };
     return this.http.post<any>(`${this.baseURL}/Invoice`, body, {
       headers,
