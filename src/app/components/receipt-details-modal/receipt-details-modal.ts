@@ -23,7 +23,10 @@ export class ReceiptDetailsModalComponent implements OnInit {
 
   loadCompanyInfo() {
     this.configurationService.getPdfOptions().subscribe((options: any) => {
-      this.companyInfo.set(options.header);
+      const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
+      if (parsedOptions && parsedOptions.header) {
+        this.companyInfo.set(parsedOptions.header);
+      }
     });
     this.configurationService.getInvoiceConfiguration().subscribe((config: any) => {
       if (config && config.images && config.images.logo) {

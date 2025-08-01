@@ -74,8 +74,42 @@ export class AllReceiptsModalComponent {
   }
 
   onReceiptClick(receipt: Receipt) {
-    this.selectedReceipt.set(receipt);
-    this.isReceiptDetailsVisible.set(true);
+    if (receipt.id) {
+      this.receiptService.getReceiptDetails(receipt.id, this.token()).subscribe({
+        next: (detailedReceiptResponse) => {
+          const detailedReceipt = detailedReceiptResponse.value;
+          if (detailedReceipt && detailedReceipt.orderDetails && detailedReceipt.orderDetails.lineItems) {
+            const lineItems = detailedReceipt.orderDetails.lineItems.map((item: any) => ({
+              id: item.product.id,
+              designation: item.product.designation,
+              sellingPrice: item.product.sellingPrice,
+              purchasePrice: item.product.purchasePrice || 0,
+              totalTTC: item.totalTTC,
+              tva: item.product.vat || 0,
+              categoryId: item.product.categoryId,
+              categoryLabel: item.product.categoryLabel,
+              image: '',
+              quantity: item.quantity,
+              labels: item.product.labels || [],
+            }));
+
+            this.selectedReceipt.set({
+              ...receipt,
+              items: lineItems,
+              total: detailedReceipt.totalTTC,
+            });
+            this.isReceiptDetailsVisible.set(true);
+          } else {
+            console.error('Detailed receipt or its orderDetails/lineItems are missing:', detailedReceiptResponse);
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching detailed receipt:', error);
+        }
+      });
+    } else {
+      console.error('Receipt ID is missing, cannot fetch details.', receipt);
+    }
   }
 
   onCloseReceiptDetails() {
