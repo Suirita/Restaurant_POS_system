@@ -260,7 +260,7 @@ export class InvoiceService {
                         totalPUC: 0,
                         ajustementCalcul: [],
                       },
-                      quotesIds: [],
+                      quotesIds: [receipt.id],
                       responsables: [],
                       addLabelTva: '',
                       contacts: [],
