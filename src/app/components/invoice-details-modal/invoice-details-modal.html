@@ -19,6 +19,9 @@
             Date: {{ invoice().date | date: 'dd/MM/yy' }}
           </p>
         </div>
+        <div>
+          <img *ngIf="logoUrl()" [src]="logoUrl()" alt="Company Logo" class="h-24" />
+        </div>
       </div>
 
       <div class="grid grid-cols-2 gap-6 mb-6">
