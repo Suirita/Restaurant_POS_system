@@ -579,6 +579,9 @@ export class ReceiptService {
 
   updateQuote(quote: any, token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    if (quote.responsables && quote.responsables.length > 0) {
+      quote.responsables = quote.responsables.map((r: any) => r.id || r);
+    }
     console.log('Updating Quote with body:', JSON.stringify(quote, null, 2));
     return this.http.put<any>(
       `${this.baseUrl}/Quote/${quote.id}/Update`,
