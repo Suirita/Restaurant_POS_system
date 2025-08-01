@@ -49,8 +49,19 @@
     (receiptSelected)="onReceiptSelectedFromModal($event)"
   ></app-all-receipts-modal>
 
+  <!-- All Invoices Modal -->
+  <app-all-invoices-modal
+    *ngIf="showAllInvoices()"
+    [clerkId]="currentUser()!.reference"
+    [token]="currentUser()!.token"
+    (close)="hideAllInvoicesModal()"
+  ></app-all-invoices-modal>
+
   <!-- Main POS Interface -->
-  <div class="h-full flex flex-col" [class.blur-xs]="showAllReceipts()">
+  <div
+    class="h-full flex flex-col"
+    [class.blur-xs]="showAllReceipts() || showAllInvoices()"
+  >
     <!-- Main Content -->
     <div class="flex flex-1 min-h-0">
       <!-- Menu Section -->
@@ -76,6 +87,7 @@
           (quantityIncreased)="onQuantityIncreased($event)"
           (quantityDecreased)="onQuantityDecreased($event)"
           (showAllReceipts)="showAllReceiptsModal()"
+          (showAllInvoices)="showAllInvoicesModal()"
           (logout)="logout()"
           (itemSelected)="onCartItemSelected($event)"
           (settings)="navigateTo('settings')"

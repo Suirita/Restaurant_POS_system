@@ -9,6 +9,7 @@ import {
   LogOut,
   Settings,
   FileText,
+  ReceiptText,
 } from 'lucide-angular';
 
 @Component({
@@ -24,6 +25,7 @@ export class MenuGridComponent {
   readonly LogOutIcon = LogOut;
   readonly SettingsIcon = Settings;
   readonly ReportsIcon = FileText;
+  readonly ReceiptText = ReceiptText;
 
   meals = input.required<Meal[]>();
   cart = input.required<CartItem[]>();
@@ -38,6 +40,7 @@ export class MenuGridComponent {
   quantityIncreased = output<string>();
   quantityDecreased = output<string>();
   showAllReceipts = output<void>();
+  showAllInvoices = output<void>();
   logout = output<void>();
   itemSelected = output<string>();
   settings = output<void>();
@@ -65,6 +68,10 @@ export class MenuGridComponent {
 
   onShowAllReceipts() {
     this.showAllReceipts.emit();
+  }
+
+  onShowAllInvoices() {
+    this.showAllInvoices.emit();
   }
 
   onLogout() {

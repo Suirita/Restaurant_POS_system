@@ -1,7 +1,12 @@
 <div class="flex flex-col h-full">
-  <div class="flex-1 px-2 py-1 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide">
+  <div
+    class="flex-1 px-2 py-1 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide"
+  >
     <!-- Loading State -->
-    <div *ngIf="loading()" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+    <div
+      *ngIf="loading()"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"
+    >
       <div
         *ngFor="let item of getSkeletonArray(24)"
         class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
@@ -91,7 +96,9 @@
             </div>
           </ng-container>
           <ng-template #addToCartButton>
-            <span class="text-xs text-gray-500"> {{ meal.sellingPrice }} € </span>
+            <span class="text-xs text-gray-500">
+              {{ meal.sellingPrice }} €
+            </span>
             <div class="mt-0.5">
               <button
                 (click)="onMealSelect(meal)"
@@ -125,12 +132,21 @@
       Rapports
     </button>
     <button
+      *ngIf="userRole() === 'Direction'"
+      (click)="onShowAllInvoices()"
+      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+    >
+      <i-lucide [img]="ReceiptText" [size]="16"></i-lucide>
+      Toutes les factures
+    </button>
+    <button
       (click)="onShowAllReceipts()"
       class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
     >
       <i-lucide [img]="ReceiptIcon" [size]="16"></i-lucide>
       Tous les reçus
     </button>
+
     <button
       (click)="onLogout()"
       class="flex justify-center items-center gap-2 bg-red-400 text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"

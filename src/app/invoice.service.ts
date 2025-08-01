@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import { Receipt, Client } from './types/pos.types';
+import { Receipt, Client, Invoice } from './types/pos.types';
 import { ConfigurationService } from './configuration.service';
 import { ReceiptService } from './receipt.service';
 
@@ -297,5 +297,21 @@ Total avancement de facturation : 10 % `,
         );
       })
     );
+  }
+
+  getAllInvoices(token: string, clerkId: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      Page: 1,
+      PageSize: 10000,
+      OrderBy: 'creationDate',
+      SortDirection: 0,
+      SearchQuery: '',
+      techniciansId: [],
+      label: [clerkId],
+    };
+    return this.http.post<any>(`${this.baseURL}/Invoice`, body, {
+      headers,
+    });
   }
 }

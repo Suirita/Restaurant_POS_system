@@ -27,6 +27,7 @@ import { MenuGridComponent } from '../components/menu-grid/menu-grid';
 import { CartComponent } from '../components/cart/cart';
 
 import { AllReceiptsModalComponent } from '../components/all-receipts-modal/all-receipts-modal';
+import { AllInvoicesModalComponent } from '../components/all-invoices-modal/all-invoices-modal';
 import { CalculatorComponent } from '../components/calculator/calculator';
 import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
 
@@ -42,6 +43,7 @@ import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
     CartComponent,
     CalculatorComponent,
     AllReceiptsModalComponent,
+    AllInvoicesModalComponent,
     LucideAngularModule,
   ],
 })
@@ -82,6 +84,7 @@ export class PosComponent implements OnInit {
   showReceipt = signal<boolean>(false);
   currentReceipt = signal<Receipt | null>(null);
   showAllReceipts = signal<boolean>(false);
+  showAllInvoices = signal<boolean>(false);
   isTransferMode = signal<boolean>(false);
 
   // Signals
@@ -690,6 +693,14 @@ export class PosComponent implements OnInit {
 
   hideAllReceiptsModal() {
     this.showAllReceipts.set(false);
+  }
+
+  showAllInvoicesModal() {
+    this.showAllInvoices.set(true);
+  }
+
+  hideAllInvoicesModal() {
+    this.showAllInvoices.set(false);
   }
 
   onReceiptSelectedFromModal(receipt: Receipt) {

@@ -85,3 +85,11 @@ export interface Role {
   id: string;
   name: string;
 }
+
+export interface Invoice {
+  id: string;
+  invoiceNumber: string;
+  clientName: string;
+  date: Date;
+  total: number;
+}
