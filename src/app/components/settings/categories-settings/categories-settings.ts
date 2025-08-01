@@ -10,6 +10,7 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-angular';
 import { HttpClient } from '@angular/common/http';
 
@@ -24,6 +25,7 @@ export class CategoriesSettingsComponent implements OnInit {
   readonly trash2 = Trash2;
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
+  readonly XIcon = X;
 
   private categoryService = inject(CategoryService);
   private http = inject(HttpClient);

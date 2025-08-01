@@ -11,6 +11,7 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-angular';
 import { forkJoin, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
@@ -26,6 +27,7 @@ export class UsersSettingsComponent implements OnInit {
   readonly trash2 = Trash2;
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
+  readonly XIcon = X;
 
   private userService = inject(UserService);
   private roleService = inject(RoleService);

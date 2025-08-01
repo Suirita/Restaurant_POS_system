@@ -173,6 +173,7 @@
   <div
     *ngIf="showMealForm()"
     class="fixed inset-0 flex items-center justify-center z-50"
+    (click)="cancelForm()"
   >
     <div
       class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
@@ -180,7 +181,14 @@
     <div
       class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
       [ngClass]="{'-translate-y-48': isInputFocused()}"
+      (click)="$event.stopPropagation()"
     >
+      <button
+        (click)="cancelForm()"
+        class="absolute top-4 right-4 bg-black text-white p-1 rounded-lg border border-gray-200 shadow-sm"
+      >
+        <i-lucide [img]="XIcon" [size]="22"></i-lucide>
+      </button>
       <h3 class="text-xl font-bold mb-4">
         {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
       </h3>

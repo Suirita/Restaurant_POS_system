@@ -3,7 +3,7 @@ import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Table } from '../../../types/pos.types';
-import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
+import { LucideAngularModule, Edit, Trash2, X } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -14,6 +14,7 @@ import { LucideAngularModule, Edit, Trash2 } from 'lucide-angular';
 export class RoomsSettingsComponent implements OnInit {
   readonly edit = Edit;
   readonly trash2 = Trash2;
+  readonly XIcon = X;
 
   private keyboardService = inject(KeyboardService);
 

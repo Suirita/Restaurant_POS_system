@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Edit,
   Trash2,
+  X,
 } from 'lucide-angular';
 
 @Component({
@@ -24,6 +25,7 @@ export class MealsSettingsComponent implements OnInit {
   readonly ChevronRightIcon = ChevronRight;
   readonly edit = Edit;
   readonly trash2 = Trash2;
+  readonly XIcon = X;
 
   private mealService = inject(MealService);
   private categoryService = inject(CategoryService);

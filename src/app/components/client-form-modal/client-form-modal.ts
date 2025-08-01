@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientService } from '../../client.service';
 import { Client } from '../../types/pos.types';
+import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-client-form-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './client-form-modal.html',
 })
 export class ClientFormModalComponent implements OnInit {
@@ -15,6 +16,8 @@ export class ClientFormModalComponent implements OnInit {
   editingClient = input<Client | null>(null);
   token = input.required<string>();
   newClient = signal<Client>({} as Client);
+
+  readonly XIcon = X;
 
   close = output<void>();
   clientSaved = output<void>();
