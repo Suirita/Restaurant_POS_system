@@ -70,7 +70,13 @@ export class InvoiceService {
 </font></div><div><font size="2">forfaitaire pour frais de recouvrement de 40€. Pas d'escompte en cas de paiement anticipé.
 </font></div><div><font size="2"><br></font></div>`,
                       workshopId: null,
-                      labels: ['chneg3084mkah1'],
+                      labels: [
+                        {
+                          id: 'chneg3084mkah1',
+                          value: 'POS',
+                          id_html: 'POS',
+                        },
+                      ],
                       dueDate: new Date().toISOString().slice(0, 16),
                       creationDate: new Date().toISOString().slice(0, 16),
                       addressIntervention: {
@@ -280,7 +286,6 @@ Total avancement de facturation : 10 % `,
                       },
                       typeFinanciere: 0,
                     };
-                    console.log(body);
 
                     return this.http.post(
                       `${this.baseURL}/Invoice/Create`,
