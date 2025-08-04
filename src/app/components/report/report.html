@@ -1,9 +1,43 @@
-<div class="flex flex-col items-center justify-center h-screen">
-  <h1 class="text-3xl font-bold mb-8">Rapports</h1>
-  <a
-    routerLink="/pos"
-    class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors"
-  >
-    Retour
-  </a>
+<div class="p-4 h-dvh bg-gray-200">
+  <div class="mx-auto p-4 m-4 bg-white rounded-lg shadow border-gray-200">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">Analytics Dashboard</h1>
+      <a
+        routerLink="/pos"
+        class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg shadow"
+      >
+        Retour
+      </a>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mb-4">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Total Revenue</h2>
+        <p class="text-3xl font-bold">{{ totalRevenue() | currency:'EUR' }}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Total Invoices</h2>
+        <p class="text-3xl font-bold">{{ totalInvoices() }}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Top Selling Meal</h2>
+        <p class="text-3xl font-bold">{{ topSellingMeal() }}</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Busiest User</h2>
+        <p class="text-3xl font-bold">{{ busiestUser() }}</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white p-4 rounded-lg shadow max-h-96">
+        <h2 class="text-lg font-semibold mb-2">Sales by Category</h2>
+        <canvas id="salesByCategoryChart"></canvas>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow max-h-96">
+        <h2 class="text-lg font-semibold mb-2">Sales Over Time</h2>
+        <canvas id="salesOverTimeChart"></canvas>
+      </div>
+    </div>
+  </div>
 </div>
