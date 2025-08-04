@@ -20,7 +20,12 @@
           </p>
         </div>
         <div>
-          <img *ngIf="logoUrl()" [src]="logoUrl()" alt="Company Logo" class="h-24" />
+          <img
+            *ngIf="logoUrl()"
+            [src]="logoUrl()"
+            alt="Company Logo"
+            class="h-24"
+          />
         </div>
       </div>
 
@@ -59,13 +64,13 @@
           class="grid grid-cols-5 gap-4 py-1 border-b border-gray-200 text-sm"
         >
           <span class="col-span-2">{{ item.designation }}</span>
-          <span class="text-right"
-            >{{ item.sellingPrice | currency:'EUR' }}</span
-          >
+          <span class="text-right">
+            {{ item.sellingPrice | currency:'EUR' }}
+          </span>
           <span class="text-right">{{ item.quantity }}</span>
-          <span class="text-right"
-            >{{ item.sellingPrice * item.quantity | currency:'EUR' }}</span
-          >
+          <span class="text-right">
+            {{ item.sellingPrice * item.quantity | currency:'EUR' }}
+          </span>
         </div>
       </div>
 
