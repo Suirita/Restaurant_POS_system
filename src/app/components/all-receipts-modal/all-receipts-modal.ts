@@ -1,12 +1,42 @@
-import { Component, output, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Receipt, UserAccount, Client } from '../../types/pos.types';
-import { ReceiptService } from '../../receipt.service';
-import { ClientService } from '../../client.service';
-import { InvoiceService } from '../../invoice.service';
-import { LucideAngularModule, X, LoaderCircle } from 'lucide-angular';
-import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
-import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
+import {
+  Component,
+  output,
+  inject,
+  input,
+  signal
+} from '@angular/core';
+import {
+  CommonModule
+} from '@angular/common';
+import {
+  Receipt,
+  UserAccount,
+  Client
+} from '../../types/pos.types';
+import {
+  ReceiptService
+} from '../../receipt.service';
+import {
+  ClientService
+} from '../../client.service';
+import {
+  InvoiceService
+} from '../../invoice.service';
+import {
+  LucideAngularModule,
+  X,
+  LoaderCircle
+} from 'lucide-angular';
+import {
+  ClientFormModalComponent
+} from '../client-form-modal/client-form-modal';
+import {
+  ReceiptDetailsModalComponent
+} from '../receipt-details-modal/receipt-details-modal';
+import {
+  finalize,
+  switchMap
+} from 'rxjs';
 
 
 @Component({
@@ -22,21 +52,22 @@ export class AllReceiptsModalComponent {
   private receiptService = inject(ReceiptService);
   private clientService = inject(ClientService);
   private invoiceService = inject(InvoiceService);
-  receipts = signal<Receipt[]>([]);
-  clients = signal<Client[]>([]);
-  isLoading = signal<boolean>(false);
+  receipts = signal < Receipt[] > ([]);
+  clients = signal < Client[] > ([]);
+  isLoading = signal < boolean > (false);
   isInvoiceDialogVisible = signal(false);
   isClientFormVisible = signal(false);
   isReceiptDetailsVisible = signal(false);
-  selectedReceipt = signal<Receipt | null>(null);
-  selectedReceiptForInvoice = signal<Receipt | null>(null);
-  selectedClientId = signal<string | null>(null);
-  userId = input.required<string>();
-  token = input.required<string>();
+  isGeneratingInvoice = signal(false);
+  selectedReceipt = signal < Receipt | null > (null);
+  selectedReceiptForInvoice = signal < Receipt | null > (null);
+  selectedClientId = signal < string | null > (null);
+  userId = input.required < string > ();
+  token = input.required < string > ();
 
-  close = output<void>();
-  pay = output<string>();
-  receiptSelected = output<Receipt>();
+  close = output < void > ();
+  pay = output < string > ();
+  receiptSelected = output < Receipt > ();
 
   ngOnInit() {
     this.loadReceipts();
@@ -134,16 +165,27 @@ export class AllReceiptsModalComponent {
     const receipt = this.selectedReceiptForInvoice();
     const clientId = this.selectedClientId();
     if (receipt && clientId) {
+      this.isGeneratingInvoice.set(true);
       this.invoiceService
         .createInvoice(receipt, clientId, this.token())
-        .subscribe(() => {
-          this.receiptService
-            .updateReceipt(receipt, this.token(), 'billed')
-            .subscribe(() => {
-              this.loadReceipts();
-              this.onCloseInvoiceDialog();
-              this.onClose();
-            });
+        .pipe(
+          switchMap(() =>
+            this.receiptService.updateReceipt(receipt, this.token(), 'billed')
+          ),
+          finalize(() => {
+            this.isGeneratingInvoice.set(false);
+            this.onCloseInvoiceDialog();
+            this.onClose();
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.loadReceipts();
+          },
+          error: (error) => {
+            console.error('Error generating invoice:', error);
+            // Optionally, show an error message to the user
+          },
         });
     }
   }

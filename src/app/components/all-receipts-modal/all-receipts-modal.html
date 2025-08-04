@@ -141,8 +141,15 @@
         </button>
         <button
           (click)="onGenerateInvoice()"
-          class="py-2 px-4 rounded-lg font-medium shadow-xs bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200"
+          [disabled]="isGeneratingInvoice()"
+          class="py-2 px-4 rounded-lg font-medium shadow-xs bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 flex items-center"
         >
+          <i-lucide
+            *ngIf="isGeneratingInvoice()"
+            [img]="Loader"
+            [size]="22"
+            class="animate-spin mr-2"
+          ></i-lucide>
           Générer
         </button>
       </div>
