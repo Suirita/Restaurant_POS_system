@@ -416,7 +416,7 @@ products = [
 for prod in products:
   selling_price = round(random.uniform(10, 100))
   purchase_price = round(selling_price - 5)
-  total_ht = round(selling_price / 2,)
+  total_ht = round(selling_price / 2)
   total_ttc = selling_price
 
   payload = {
@@ -438,7 +438,7 @@ for prod in products:
           "id_html": "Repas"
       },
       "productCategoryTypeId": "Foliatech88",
-      "tauxMarge": round((selling_price - purchase_price) / selling_price * 100, 2),
+      "tauxMarge": round((selling_price - purchase_price) / selling_price * 100),
       "disableSellingPrice": False,
       "totalHT": total_ht,
       "totalTTC": total_ttc,
