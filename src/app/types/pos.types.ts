@@ -94,6 +94,7 @@ export interface Invoice {
   total: number;
   items: CartItem[];
   clientAddress?: string;
+  clientICE?: string;
   clientPhoneNumber?: string;
   companyPhoneNumber?: string;
   companyEmail?: string;
