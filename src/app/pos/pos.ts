@@ -138,6 +138,7 @@ export class PosComponent implements OnInit {
       return this.tableNumber() || '0';
     return '0';
   });
+  
   calculatorIsQuantityMode = computed(() => {
     return Boolean(this.selectedCartItemId());
   });
