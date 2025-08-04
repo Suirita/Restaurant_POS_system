@@ -3,16 +3,13 @@
     class="flex-1 px-2 py-1 overflow-y-auto bg-gray-100 min-h-0 scrollbar-hide"
   >
     <!-- Loading State -->
-    <div
-      *ngIf="loading()"
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"
-    >
+    <div *ngIf="loading()" class="grid grid-cols-6 gap-2">
       <div
         *ngFor="let item of getSkeletonArray(24)"
         class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse"
       >
         <div class="p-1">
-          <div class="bg-gray-200 h-20 rounded-lg mb-2"></div>
+          <div class="bg-gray-200 h-20 w-full rounded-lg mb-2"></div>
           <div class="bg-gray-200 h-4 rounded-sm mb-2"></div>
           <div class="bg-gray-200 h-5 rounded-sm mb-1"></div>
         </div>
@@ -20,10 +17,7 @@
     </div>
 
     <!-- Menu Items Grid -->
-    <div
-      *ngIf="!loading()"
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"
-    >
+    <div *ngIf="!loading()" class="grid grid-cols-6 gap-2">
       <div
         *ngFor="let meal of meals()"
         class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden p-1"

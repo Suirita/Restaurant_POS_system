@@ -354,7 +354,7 @@ export class PosComponent implements OnInit {
 
   private loadMeals() {
     this.loading.set(true);
-    const images = this.mealImages(); 
+    const images = this.mealImages();
     this.mealService
       .getMealsByCategory(this.selectedCategory(), this.currentUser()?.token)
       .subscribe((data) => {
@@ -599,7 +599,9 @@ export class PosComponent implements OnInit {
     };
 
     if (existingReceipt) {
-      this.receiptService.updateReceipt(receipt, this.currentUser()!.token).subscribe();
+      this.receiptService
+        .updateReceipt(receipt, this.currentUser()!.token)
+        .subscribe();
     } else {
       this.receiptService.saveReceipt(receipt, this.currentUser()!.token);
     }
@@ -670,19 +672,21 @@ export class PosComponent implements OnInit {
         const receipt = receipts.find((r) => r.orderNumber === orderNumber);
         if (receipt) {
           receipt.userId = currentUser.userId;
-          this.receiptService.updateReceipt(receipt, currentUser.token, 'accepted').subscribe(() => {
-            const tables = this.tables().map((t) =>
-              t.name === receipt.tableName
-                ? { ...t, occupied: false, userId: null }
-                : t
-            );
-            this.tables.set(tables);
-            this.orderType.set('table');
-            this.tableNumber.set('');
-            this.isTableNumberComplete.set(false);
-            this.tableErrorMessage.set(null);
-            this.isEditing.set(true);
-          });
+          this.receiptService
+            .updateReceipt(receipt, currentUser.token, 'accepted')
+            .subscribe(() => {
+              const tables = this.tables().map((t) =>
+                t.name === receipt.tableName
+                  ? { ...t, occupied: false, userId: null }
+                  : t
+              );
+              this.tables.set(tables);
+              this.orderType.set('table');
+              this.tableNumber.set('');
+              this.isTableNumberComplete.set(false);
+              this.tableErrorMessage.set(null);
+              this.isEditing.set(true);
+            });
         }
       });
   }
@@ -756,7 +760,13 @@ export class PosComponent implements OnInit {
           existingReceipt.paymentMethod = 'Paid';
           existingReceipt.userId = this.currentUser()!.userId;
 
-          this.receiptService.updateReceipt(existingReceipt, this.currentUser()!.token, 'accepted').subscribe();
+          this.receiptService
+            .updateReceipt(
+              existingReceipt,
+              this.currentUser()!.token,
+              'accepted'
+            )
+            .subscribe();
         } else {
           // Create a new receipt if none exists
           const receipt: Receipt = {
@@ -772,7 +782,11 @@ export class PosComponent implements OnInit {
             orderDetails: null,
             status: 'accepted',
           };
-          this.receiptService.saveReceipt(receipt, this.currentUser()!.token, 'accepted');
+          this.receiptService.saveReceipt(
+            receipt,
+            this.currentUser()!.token,
+            'accepted'
+          );
         }
 
         // Free up the table if it was a table order
@@ -826,8 +840,10 @@ export class PosComponent implements OnInit {
           if (destinationReceipt) {
             console.log('Original destination receipt:', destinationReceipt);
 
-            sourceReceipt.items.forEach(sourceItem => {
-              const existingItem = destinationReceipt.items.find(destItem => destItem.id === sourceItem.id);
+            sourceReceipt.items.forEach((sourceItem) => {
+              const existingItem = destinationReceipt.items.find(
+                (destItem) => destItem.id === sourceItem.id
+              );
               if (existingItem) {
                 existingItem.quantity += sourceItem.quantity;
               } else {
@@ -847,7 +863,8 @@ export class PosComponent implements OnInit {
               .subscribe({
                 next: () => {
                   this.receiptService.deleteReceiptByOrderNumber(
-                    sourceReceipt.orderNumber, this.currentUser()!.token
+                    sourceReceipt.orderNumber,
+                    this.currentUser()!.token
                   );
                   handleSuccess();
                 },
