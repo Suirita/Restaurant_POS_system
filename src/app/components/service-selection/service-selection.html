@@ -1,25 +1,29 @@
 <div class="flex gap-2">
   <button
-    class="flex items-center justify-center gap-2 py-1.5 px-2 rounded-lg text-xs font-medium border-gray-100"
-    [class]="orderType() === 'take away'
-              ? 'bg-black text-white shadow-md'
-              : 'bg-white text-gray-900 border shadow-sm'
-          "
     (click)="onSelectTakeAway()"
+    class="border font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center"
+    [class]="orderType() === 'take away'
+              ? 'bg-black text-white border-gray-800 shadow-md'
+              : 'bg-white text-gray-900 border-gray-200 shadow-sm'
+          "
   >
-    <i-lucide [img]="ShoppingBagIcon" [size]="18"></i-lucide>
+    <i-lucide
+      [img]="ShoppingBagIcon"
+      [size]="16"
+      class="w-4 h-4 me-2"
+    ></i-lucide>
     <span>À emporter</span>
   </button>
   <button
-    class="flex items-center justify-center gap-2 py-1.5 px-2 rounded-lg text-xs font-medium border-gray-100"
+    (click)="onSelectTableType()"
+    class="border font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center"
     [class]="
         orderType() === 'table'
-          ? 'bg-black text-white shadow-md'
-          : 'bg-white text-gray-900 border shadow-sm'
+              ? 'bg-black text-white border-gray-800 shadow-md'
+              : 'bg-white text-gray-900 border-gray-200 shadow-sm'
       "
-    (click)="onSelectTableType()"
   >
-    <i-lucide [img]="UtensilsIcon" [size]="18"></i-lucide>
+    <i-lucide [img]="UtensilsIcon" [size]="16" class="w-4 h-4 me-2"></i-lucide>
     <span>Table</span>
   </button>
 </div>

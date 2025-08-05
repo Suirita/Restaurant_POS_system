@@ -1,7 +1,9 @@
 <!-- Fixed height cart container -->
 <div class="flex flex-col h-full border-b border-gray-200 rounded-t-2xl">
   <!-- Cart Header - Fixed at top -->
-  <div class="flex justify-between items-center px-2 py-2 border-b rounded-t-2xl border-gray-200 shadow-sm">
+  <div
+    class="flex justify-between items-center px-2 py-2 border-b rounded-t-2xl border-gray-200 shadow-sm"
+  >
     <div class="flex items-center gap-2">
       <i-lucide [img]="displayIcon()" [size]="22"></i-lucide>
       <h3 class="text-lg font-medium">{{ displayHeader() }}</h3>
@@ -19,7 +21,6 @@
   <div
     class="flex-grow flex-shrink px-2 py-2 overflow-y-auto min-h-0 basis-0 scrollbar-hide"
   >
-
     <!-- Empty Cart -->
     <div *ngIf="cartItems().length === 0" class="text-center py-6 lg:py-12">
       <p class="text-gray-600 font-medium mb-1">Aucun article dans le panier</p>
@@ -122,31 +123,31 @@
       </span>
     </div>
 
-    <div class="flex justify-between items-center gap-1.5">
+    <div class="flex justify-around items-center gap-2">
       <button
-        class="text-sm w-full py-2 rounded-lg font-medium border border-green-300 shadow-sm"
+        class="border border-green-300 shadow font-medium rounded-lg text-sm px-5 py-2.5 w-full"
         [class]="
           canAddToCart()
-            ? ' bg-green-500 text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ? ' bg-green-400 text-white'
+            : 'bg-gray-300 text-gray-500'
         "
         [disabled]="!canAddToCart()"
         (click)="onCompleteOrder()"
       >
-        {{ canAddToCart() ? "Enregistrer le reçu" : "Configuration requise" }}
+        {{ canAddToCart() ? "Enregistrer" : "Configuration requise" }}
       </button>
       <button
         *ngIf="isTableOccupied()"
-        class="text-sm w-full bg-white py-2 rounded-lg font-medium border border-gray-200 shadow-sm"
         (click)="onTransfer()"
+        class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 w-full"
       >
         Transférer
       </button>
       <button
-        class="text-sm w-full bg-white py-2 rounded-lg font-medium border border-gray-200 shadow-sm"
         (click)="onPay()"
+        class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 w-full"
       >
-        Payer maintenant
+        Payer
       </button>
     </div>
   </div>

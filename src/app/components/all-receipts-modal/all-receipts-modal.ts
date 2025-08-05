@@ -1,73 +1,51 @@
-import {
-  Component,
-  output,
-  inject,
-  input,
-  signal
-} from '@angular/core';
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  Receipt,
-  UserAccount,
-  Client
-} from '../../types/pos.types';
-import {
-  ReceiptService
-} from '../../receipt.service';
-import {
-  ClientService
-} from '../../client.service';
-import {
-  InvoiceService
-} from '../../invoice.service';
-import {
-  LucideAngularModule,
-  X,
-  LoaderCircle
-} from 'lucide-angular';
-import {
-  ClientFormModalComponent
-} from '../client-form-modal/client-form-modal';
-import {
-  ReceiptDetailsModalComponent
-} from '../receipt-details-modal/receipt-details-modal';
-import {
-  finalize,
-  switchMap
-} from 'rxjs';
-
+import { Component, output, inject, input, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Receipt, Client } from '../../types/pos.types';
+import { ReceiptService } from '../../receipt.service';
+import { ClientService } from '../../client.service';
+import { InvoiceService } from '../../invoice.service';
+import { LucideAngularModule, X, LoaderCircle, Clock, CreditCard, FileText } from 'lucide-angular';
+import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
+import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
+import { finalize, switchMap } from 'rxjs';
 
 @Component({
   standalone: true,
   selector: 'app-all-receipts-modal',
   templateUrl: './all-receipts-modal.html',
-  imports: [CommonModule, LucideAngularModule, ClientFormModalComponent, ReceiptDetailsModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    ClientFormModalComponent,
+    ReceiptDetailsModalComponent,
+  ],
 })
 export class AllReceiptsModalComponent {
   readonly XIcon = X;
   readonly Loader = LoaderCircle;
+  readonly Clock = Clock;
+  readonly CreditCard = CreditCard;
+  readonly FileText = FileText;
 
   private receiptService = inject(ReceiptService);
   private clientService = inject(ClientService);
   private invoiceService = inject(InvoiceService);
-  receipts = signal < Receipt[] > ([]);
-  clients = signal < Client[] > ([]);
-  isLoading = signal < boolean > (false);
+  receipts = signal<Receipt[]>([]);
+  clients = signal<Client[]>([]);
+  isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
   isClientFormVisible = signal(false);
   isReceiptDetailsVisible = signal(false);
   isGeneratingInvoice = signal(false);
-  selectedReceipt = signal < Receipt | null > (null);
-  selectedReceiptForInvoice = signal < Receipt | null > (null);
-  selectedClientId = signal < string | null > (null);
-  userId = input.required < string > ();
-  token = input.required < string > ();
+  selectedReceipt = signal<Receipt | null>(null);
+  selectedReceiptForInvoice = signal<Receipt | null>(null);
+  selectedClientId = signal<string | null>(null);
+  userId = input.required<string>();
+  token = input.required<string>();
 
-  close = output < void > ();
-  pay = output < string > ();
-  receiptSelected = output < Receipt > ();
+  close = output<void>();
+  pay = output<string>();
+  receiptSelected = output<Receipt>();
 
   ngOnInit() {
     this.loadReceipts();
@@ -106,38 +84,49 @@ export class AllReceiptsModalComponent {
 
   onReceiptClick(receipt: Receipt) {
     if (receipt.id) {
-      this.receiptService.getReceiptDetails(receipt.id, this.token()).subscribe({
-        next: (detailedReceiptResponse) => {
-          const detailedReceipt = detailedReceiptResponse.value;
-          if (detailedReceipt && detailedReceipt.orderDetails && detailedReceipt.orderDetails.lineItems) {
-            const lineItems = detailedReceipt.orderDetails.lineItems.map((item: any) => ({
-              id: item.product.id,
-              designation: item.product.designation,
-              sellingPrice: item.product.sellingPrice,
-              purchasePrice: item.product.purchasePrice || 0,
-              totalTTC: item.totalTTC,
-              tva: item.product.vat || 0,
-              categoryId: item.product.categoryId,
-              categoryLabel: item.product.categoryLabel,
-              image: '',
-              quantity: item.quantity,
-              labels: item.product.labels || [],
-            }));
+      this.receiptService
+        .getReceiptDetails(receipt.id, this.token())
+        .subscribe({
+          next: (detailedReceiptResponse) => {
+            const detailedReceipt = detailedReceiptResponse.value;
+            if (
+              detailedReceipt &&
+              detailedReceipt.orderDetails &&
+              detailedReceipt.orderDetails.lineItems
+            ) {
+              const lineItems = detailedReceipt.orderDetails.lineItems.map(
+                (item: any) => ({
+                  id: item.product.id,
+                  designation: item.product.designation,
+                  sellingPrice: item.product.sellingPrice,
+                  purchasePrice: item.product.purchasePrice || 0,
+                  totalTTC: item.totalTTC,
+                  tva: item.product.vat || 0,
+                  categoryId: item.product.categoryId,
+                  categoryLabel: item.product.categoryLabel,
+                  image: '',
+                  quantity: item.quantity,
+                  labels: item.product.labels || [],
+                })
+              );
 
-            this.selectedReceipt.set({
-              ...receipt,
-              items: lineItems,
-              total: detailedReceipt.totalTTC,
-            });
-            this.isReceiptDetailsVisible.set(true);
-          } else {
-            console.error('Detailed receipt or its orderDetails/lineItems are missing:', detailedReceiptResponse);
-          }
-        },
-        error: (error) => {
-          console.error('Error fetching detailed receipt:', error);
-        }
-      });
+              this.selectedReceipt.set({
+                ...receipt,
+                items: lineItems,
+                total: detailedReceipt.totalTTC,
+              });
+              this.isReceiptDetailsVisible.set(true);
+            } else {
+              console.error(
+                'Detailed receipt or its orderDetails/lineItems are missing:',
+                detailedReceiptResponse
+              );
+            }
+          },
+          error: (error) => {
+            console.error('Error fetching detailed receipt:', error);
+          },
+        });
     } else {
       console.error('Receipt ID is missing, cannot fetch details.', receipt);
     }

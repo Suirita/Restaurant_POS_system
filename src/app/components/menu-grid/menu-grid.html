@@ -108,44 +108,47 @@
   </div>
 
   <!-- Actions -->
-  <div class="flex justify-end gap-4 p-2 bg-gray-100">
+  <div class="flex justify-end gap-3 p-2 bg-gray-100">
     <button
       *ngIf="userRole() === 'Direction'"
       (click)="onSettings()"
-      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mb-2"
     >
-      <i-lucide [img]="SettingsIcon" [size]="16"></i-lucide>
+      <i-lucide
+        [img]="SettingsIcon"
+        [size]="16"
+        class="w-4 h-4 me-2"
+      ></i-lucide>
       Paramètres
     </button>
     <button
       *ngIf="userRole() === 'Direction'"
       (click)="onReports()"
-      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mb-2"
     >
-      <i-lucide [img]="ReportsIcon" [size]="16"></i-lucide>
+      <i-lucide [img]="ReportsIcon" [size]="16" class="w-4 h-4 me-2"></i-lucide>
       Rapports
     </button>
     <button
       *ngIf="userRole() === 'Direction'"
       (click)="onShowAllInvoices()"
-      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mb-2"
     >
-      <i-lucide [img]="ReceiptText" [size]="16"></i-lucide>
+      <i-lucide [img]="ReceiptText" [size]="16" class="w-4 h-4 me-2"></i-lucide>
       Toutes les factures
     </button>
     <button
       (click)="onShowAllReceipts()"
-      class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mb-2"
     >
-      <i-lucide [img]="ReceiptIcon" [size]="16"></i-lucide>
+      <i-lucide [img]="ReceiptIcon" [size]="16" class="w-4 h-4 me-2"></i-lucide>
       Tous les reçus
     </button>
-
     <button
       (click)="onLogout()"
-      class="flex justify-center items-center gap-2 bg-red-400 text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      class="text-white bg-red-400 border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mb-2"
     >
-      <i-lucide [img]="LogOutIcon" [size]="16"></i-lucide>
+      <i-lucide [img]="LogOutIcon" [size]="16" class="w-4 h-4 me-2"></i-lucide>
       Déconnexion
     </button>
   </div>

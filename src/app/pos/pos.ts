@@ -138,7 +138,7 @@ export class PosComponent implements OnInit {
       return this.tableNumber() || '0';
     return '0';
   });
-  
+
   calculatorIsQuantityMode = computed(() => {
     return Boolean(this.selectedCartItemId());
   });
@@ -230,6 +230,7 @@ export class PosComponent implements OnInit {
     const quantityButton = target.closest('[data-edit-button]');
     if (quantityButton) {
       return; // Don't finish editing if clicking on quantity button
+
     }
 
     // Finish editing for any other click
