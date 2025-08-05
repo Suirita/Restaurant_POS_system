@@ -1,13 +1,18 @@
 import { Component, output, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Receipt, Client } from '../../types/pos.types';
+import { Receipt } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
-import { ClientService } from '../../client.service';
-import { InvoiceService } from '../../invoice.service';
-import { LucideAngularModule, X, LoaderCircle, Clock, CreditCard, FileText } from 'lucide-angular';
-import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
+import {
+  LucideAngularModule,
+  X,
+  LoaderCircle,
+  Clock,
+  CreditCard,
+  FileText,
+} from 'lucide-angular';
+import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
-import { finalize, switchMap } from 'rxjs';
+import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
 
 @Component({
   standalone: true,
@@ -16,11 +21,12 @@ import { finalize, switchMap } from 'rxjs';
   imports: [
     CommonModule,
     LucideAngularModule,
-    ClientFormModalComponent,
     ReceiptDetailsModalComponent,
+    InvoiceDialogComponent,
   ],
 })
 export class AllReceiptsModalComponent {
+  readonly Receipt = ReceiptIcon;
   readonly XIcon = X;
   readonly Loader = LoaderCircle;
   readonly Clock = Clock;
@@ -28,18 +34,12 @@ export class AllReceiptsModalComponent {
   readonly FileText = FileText;
 
   private receiptService = inject(ReceiptService);
-  private clientService = inject(ClientService);
-  private invoiceService = inject(InvoiceService);
   receipts = signal<Receipt[]>([]);
-  clients = signal<Client[]>([]);
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
-  isClientFormVisible = signal(false);
   isReceiptDetailsVisible = signal(false);
-  isGeneratingInvoice = signal(false);
   selectedReceipt = signal<Receipt | null>(null);
   selectedReceiptForInvoice = signal<Receipt | null>(null);
-  selectedClientId = signal<string | null>(null);
   userId = input.required<string>();
   token = input.required<string>();
 
@@ -58,14 +58,6 @@ export class AllReceiptsModalComponent {
       .subscribe((receipts: Receipt[]) => {
         this.receipts.set(receipts);
         this.isLoading.set(false);
-      });
-  }
-
-  loadClients() {
-    this.clientService
-      .getClients(this.token())
-      .subscribe((clients: Client[]) => {
-        this.clients.set(clients);
       });
   }
 
@@ -140,9 +132,6 @@ export class AllReceiptsModalComponent {
   onGenerateInvoiceClick(receipt: Receipt) {
     this.selectedReceiptForInvoice.set(receipt);
     this.isInvoiceDialogVisible.set(true);
-    if (this.clients().length === 0) {
-      this.loadClients();
-    }
   }
 
   onCloseInvoiceDialog() {
@@ -150,50 +139,9 @@ export class AllReceiptsModalComponent {
     this.selectedReceiptForInvoice.set(null);
   }
 
-  onGenerateInvoice() {
-    const receipt = this.selectedReceiptForInvoice();
-    const clientId = this.selectedClientId();
-    if (receipt && clientId) {
-      this.isGeneratingInvoice.set(true);
-      this.invoiceService
-        .createInvoice(receipt, clientId, this.token())
-        .pipe(
-          switchMap(() =>
-            this.receiptService.updateReceipt(receipt, this.token(), 'billed')
-          ),
-          finalize(() => {
-            this.isGeneratingInvoice.set(false);
-            this.onCloseInvoiceDialog();
-            this.onClose();
-          })
-        )
-        .subscribe({
-          next: () => {
-            this.loadReceipts();
-          },
-          error: (error) => {
-            console.error('Error generating invoice:', error);
-            // Optionally, show an error message to the user
-          },
-        });
-    }
-  }
-
-  onClientSelectionChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    if (target.value === 'new') {
-      this.isClientFormVisible.set(true);
-    } else {
-      this.selectedClientId.set(target.value);
-    }
-  }
-
-  closeClientForm() {
-    this.isClientFormVisible.set(false);
-  }
-
-  onClientSaved() {
-    this.loadClients();
-    this.closeClientForm();
+  onInvoiceGenerated() {
+    this.loadReceipts();
+    this.onCloseInvoiceDialog();
+    this.onClose();
   }
 }

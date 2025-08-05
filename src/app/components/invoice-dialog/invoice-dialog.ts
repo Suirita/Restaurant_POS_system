@@ -1,0 +1,102 @@
+import { Component, output, inject, input, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Receipt, Client } from '../../types/pos.types';
+import { ClientService } from '../../client.service';
+import { InvoiceService } from '../../invoice.service';
+import {
+  LucideAngularModule,
+  X,
+  FileText,
+  ChevronDown
+} from 'lucide-angular';
+import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
+import { finalize, switchMap } from 'rxjs';
+import { ReceiptService } from '../../receipt.service';
+
+@Component({
+  standalone: true,
+  selector: 'app-invoice-dialog',
+  templateUrl: './invoice-dialog.html',
+  imports: [CommonModule, LucideAngularModule, ClientFormModalComponent],
+})
+export class InvoiceDialogComponent {
+  private clientService = inject(ClientService);
+  private invoiceService = inject(InvoiceService);
+  private receiptService = inject(ReceiptService);
+
+  readonly XIcon = X;
+  readonly FileText = FileText;
+  readonly ChevronDown = ChevronDown;
+
+  clients = signal<Client[]>([]);
+  isClientFormVisible = signal(false);
+  isGeneratingInvoice = signal(false);
+  selectedClientId = signal<string | null>(null);
+
+  receipt = input.required<Receipt>();
+  token = input.required<string>();
+
+  close = output<void>();
+  invoiceGenerated = output<void>();
+
+  ngOnInit() {
+    this.loadClients();
+  }
+
+  loadClients() {
+    this.clientService
+      .getClients(this.token())
+      .subscribe((clients: Client[]) => {
+        this.clients.set(clients);
+      });
+  }
+
+  onClose() {
+    this.close.emit();
+  }
+
+  onGenerateInvoice() {
+    const receipt = this.receipt();
+    const clientId = this.selectedClientId();
+    if (receipt && clientId) {
+      this.isGeneratingInvoice.set(true);
+      this.invoiceService
+        .createInvoice(receipt, clientId, this.token())
+        .pipe(
+          switchMap(() =>
+            this.receiptService.updateReceipt(receipt, this.token(), 'billed')
+          ),
+          finalize(() => {
+            this.isGeneratingInvoice.set(false);
+            this.onClose();
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.invoiceGenerated.emit();
+          },
+          error: (error) => {
+            console.error('Error generating invoice:', error);
+          },
+        });
+    }
+  }
+
+  onClientSelectionChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    if (target.value === 'new') {
+      this.isClientFormVisible.set(true);
+    } else {
+      this.selectedClientId.set(target.value);
+    }
+  }
+
+  closeClientForm() {
+    this.isClientFormVisible.set(false);
+  }
+
+  onClientSaved() {
+    this.loadClients();
+    this.closeClientForm();
+  }
+}
