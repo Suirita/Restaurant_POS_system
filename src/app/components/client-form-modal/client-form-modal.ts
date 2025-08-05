@@ -1,9 +1,17 @@
-import { Component, OnInit, signal, inject, input, output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientService } from '../../client.service';
+import { KeyboardService } from '../../keyboard.service';
 import { Client } from '../../types/pos.types';
-import { LucideAngularModule, X } from 'lucide-angular';
+import { LucideAngularModule, X, Users } from 'lucide-angular';
 
 @Component({
   selector: 'app-client-form-modal',
@@ -12,12 +20,15 @@ import { LucideAngularModule, X } from 'lucide-angular';
   templateUrl: './client-form-modal.html',
 })
 export class ClientFormModalComponent implements OnInit {
+  private keyboardService = inject(KeyboardService);
   private clientService = inject(ClientService);
+
   editingClient = input<Client | null>(null);
   token = input.required<string>();
   newClient = signal<Client>({} as Client);
 
   readonly XIcon = X;
+  readonly Users = Users;
 
   close = output<void>();
   clientSaved = output<void>();
@@ -48,6 +59,14 @@ export class ClientFormModalComponent implements OnInit {
 
   updateNewClient<K extends keyof Client>(key: K, value: Client[K]) {
     this.newClient.update((client) => ({ ...client, [key]: value }));
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
+  }
+
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
   }
 
   cancelForm() {

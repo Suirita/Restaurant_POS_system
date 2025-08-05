@@ -2,169 +2,207 @@
   class="fixed inset-0 flex items-center justify-center z-50"
   (click)="cancelForm()"
 >
+  <!-- Backdrop -->
   <div
     class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
   ></div>
+
+  <!-- Client Modal -->
   <div
-    class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
+    class="bg-white rounded-xl shadow-2xl w-full max-w-xl overflow-hidden relative"
     (click)="$event.stopPropagation()"
   >
-    <button
-      (click)="cancelForm()"
-      class="absolute top-4 right-4 bg-black text-white p-1 rounded-lg border border-gray-200 shadow-sm"
+    <!-- Card Header -->
+    <div class="flex justify-between">
+      <div class="flex items-center gap-2 m-4">
+        <i-lucide [img]="Users" [size]="24"></i-lucide>
+        <h1 class="text-2xl font-bold text-gray-900">
+          {{ editingClient() ? "Modifier le client" : 'Créer un nouveau client'
+          }}
+        </h1>
+      </div>
+      <div>
+        <button
+          (click)="cancelForm()"
+          class="bg-black text-white p-1 rounded-lg border border-gray-800 shadow m-2"
+        >
+          <i-lucide [img]="XIcon" [size]="22"></i-lucide>
+        </button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form
+      (ngSubmit)="saveClient()"
+      #clientForm="ngForm"
+      class="px-4 pb-4 space-y-4"
     >
-      <i-lucide [img]="XIcon" [size]="22"></i-lucide>
-    </button>
-    <h3 class="text-xl font-bold mb-4">
-      {{ editingClient() ? "Modifier le client" : 'Créer un nouveau client' }}
-    </h3>
-    <form (ngSubmit)="saveClient()" #clientForm="ngForm">
-      <div class="flex justify-around gap-4 mb-4">
-        <div class="w-full">
-          <label
-            for="name"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Nom :
+      <!-- Row 1: Name and Email -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <!-- Name -->
+        <div class="space-y-1">
+          <label for="nom" class="block text-sm font-semibold text-gray-700">
+            Nom <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="name"
             name="name"
+            placeholder="Entrez le nom"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().name"
             (ngModelChange)="updateNewClient('name', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
             required
           />
         </div>
-        <div class="w-full">
-          <label
-            for="email"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Email :
+
+        <!-- Email -->
+        <div class="space-y-1">
+          <label for="nom" class="block text-sm font-semibold text-gray-700">
+            Email <span class="text-red-500">*</span>
           </label>
           <input
             type="email"
             id="email"
             name="email"
+            placeholder="exemple@email.com"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().email"
             (ngModelChange)="updateNewClient('email', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            required
           />
         </div>
       </div>
-      <div class="flex justify-around gap-4 mb-4">
-        <div class="w-full">
-          <label
-            for="mobile"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Mobile :
+
+      <!-- Row 2: Phone and ICE -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <!-- Phone -->
+        <div class="space-y-1">
+          <label for="mobile" class="block text-sm font-semibold text-gray-700">
+            Mobile <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="mobile"
             name="mobile"
+            placeholder="+212 6 123 456 678"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().mobile"
             (ngModelChange)="updateNewClient('mobile', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            required
           />
         </div>
-        <div class="w-full">
-          <label for="ice" class="block text-gray-700 text-sm font-bold mb-2">
-            ICE :
+
+        <!-- ICE -->
+        <div class="space-y-1">
+          <label for="ice" class="block text-sm font-semibold text-gray-700">
+            ICE <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="ice"
             name="ice"
+            placeholder="Numéro ICE"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().ice"
             (ngModelChange)="updateNewClient('ice', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            required
           />
         </div>
       </div>
-      <div class="flex justify-around gap-4 mb-4">
-        <div class="w-full">
-          <label
-            for="address"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Adresse :
-          </label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            [ngModel]="newClient().address"
-            (ngModelChange)="updateNewClient('address', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div class="w-full">
+
+      <!-- Row 3: Address -->
+      <div class="space-y-1">
+        <label for="adresse" class="block text-sm font-semibold text-gray-700">
+          Adresse
+        </label>
+        <textarea
+          id="adresse"
+          name="address"
+          rows="3"
+          [ngModel]="newClient().address"
+          (ngModelChange)="updateNewClient('address', $event)"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 placeholder-gray-400 resize-none"
+          placeholder="Entrez l'adresse complète"
+        ></textarea>
+      </div>
+
+      <!-- Row 4: Postal Code, City, and Country -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <!-- Postal Code -->
+        <div className="space-y-1">
           <label
             for="postalCode"
-            class="block text-gray-700 text-sm font-bold mb-2"
+            class="block text-sm font-semibold text-gray-700"
           >
-            Code postal :
+            Code postal
           </label>
           <input
             type="text"
             id="postalCode"
             name="postalCode"
+            placeholder="9000"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().postalCode"
             (ngModelChange)="updateNewClient('postalCode', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
           />
         </div>
-      </div>
-      <div class="flex justify-around gap-4 mb-4">
-        <div class="w-full">
-          <label
-            for="city"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Ville :
+
+        <!-- City -->
+        <div className="space-y-1">
+          <label for="city" class="block text-sm font-semibold text-gray-700">
+            Ville
           </label>
           <input
             type="text"
             id="city"
             name="city"
+            placeholder="Tanger"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().city"
             (ngModelChange)="updateNewClient('city', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
           />
         </div>
-        <div class="w-full">
+
+        <!-- Country -->
+        <div className="space-y-1">
           <label
             for="country"
-            class="block text-gray-700 text-sm font-bold mb-2"
+            class="block text-sm font-semibold text-gray-700"
           >
-            Pays :
+            Pays
           </label>
           <input
             type="text"
             id="country"
             name="country"
+            placeholder="Maroc"
+            (focus)="openKeyboard()"
+            (blur)="closeKeyboard()"
             [ngModel]="newClient().country"
             (ngModelChange)="updateNewClient('country', $event)"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
           />
         </div>
       </div>
+
       <div class="flex justify-end">
-        <button
-          type="button"
-          (click)="cancelForm()"
-          class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2"
-        >
-          Annuler
-        </button>
         <button
           type="submit"
           [disabled]="clientForm.invalid"
-          class="bg-green-500 text-white px-4 py-2 rounded-md disabled:bg-gray-400"
+          class="bg-black text-white border border-gray-800 shadow font-medium rounded-lg text-sm px-5 py-2.5"
         >
           {{ editingClient() ? 'Mettre à jour' : 'Créer' }}
         </button>

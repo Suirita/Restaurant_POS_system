@@ -9,7 +9,7 @@
   "include": [
     "src/**/*.ts",
     "src/app/types/electron.d.ts"
-  ],
+, "src/app/components/client-form-modal/test.tsx"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

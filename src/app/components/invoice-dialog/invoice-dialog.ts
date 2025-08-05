@@ -6,7 +6,7 @@ import { InvoiceService } from '../../invoice.service';
 import {
   LucideAngularModule,
   X,
-  FileText,
+  ReceiptText,
   ChevronDown
 } from 'lucide-angular';
 import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
@@ -25,7 +25,7 @@ export class InvoiceDialogComponent {
   private receiptService = inject(ReceiptService);
 
   readonly XIcon = X;
-  readonly FileText = FileText;
+  readonly ReceiptText = ReceiptText;
   readonly ChevronDown = ChevronDown;
 
   clients = signal<Client[]>([]);
