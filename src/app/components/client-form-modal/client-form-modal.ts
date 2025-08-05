@@ -26,6 +26,7 @@ export class ClientFormModalComponent implements OnInit {
   editingClient = input<Client | null>(null);
   token = input.required<string>();
   newClient = signal<Client>({} as Client);
+  isInputFocused = signal<boolean>(false);
 
   readonly XIcon = X;
   readonly Users = Users;

@@ -1,0 +1,172 @@
+<div
+  class="fixed inset-0 flex items-center justify-center z-50"
+  (click)="cancelForm()"
+>
+  <!-- Backdrop -->
+  <div
+    class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
+  ></div>
+
+  <!-- User Modal -->
+  <div
+    class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative"
+    [ngClass]="{'-translate-y-48': isInputFocused()}"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Card Header -->
+    <div class="flex justify-between">
+      <div class="flex items-center gap-2 m-4">
+        <i-lucide [img]="User " [size]="24"></i-lucide>
+        <h1 class="text-2xl font-bold text-gray-900">
+          {{ editingUser() ? "Modifier l'utilisateur" : 'Créer un nouvel
+          utilisateur' }}
+        </h1>
+      </div>
+      <div>
+        <button
+          (click)="cancelForm()"
+          class="bg-black text-white p-1 rounded-lg border border-gray-800 shadow m-2"
+        >
+          <i-lucide [img]="XIcon" [size]="22"></i-lucide>
+        </button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form
+      (ngSubmit)="saveUser()"
+      #userForm="ngForm"
+      class="px-4 pb-4 space-y-4"
+    >
+      <!-- Image -->
+      <div class="flex flex-col items-center space-y-4">
+        <label class="text-sm font-medium text-gray-700">Image de profil</label>
+        <div class="relative">
+          <!-- avatar container -->
+          <div
+            class="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer overflow-hidden"
+            (click)="fileInput.click()"
+          >
+            <!-- if we have a preview, show it; otherwise the camera icon -->
+            <img
+              *ngIf="imagePreview()"
+              [src]="imagePreview()"
+              alt="Preview"
+              class="w-full h-full object-cover"
+            />
+            <i-lucide
+              *ngIf="!imagePreview()"
+              [img]="Camera"
+              [size]="32"
+              class="text-gray-400"
+            ></i-lucide>
+          </div>
+
+          <!-- hidden file input -->
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+
+          <!-- upload icon badge -->
+          <div
+            class="absolute -bottom-1 -right-1 p-1.5 bg-blue-600 rounded-full shadow-lg"
+          >
+            <i-lucide [img]="Upload" [size]="18" class="text-white"></i-lucide>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Name -->
+      <div class="space-y-1">
+        <label for="fullName" class="block text-sm font-semibold text-gray-700">
+          Nom complet <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="fullName"
+          name="fullName"
+          placeholder="Entrez le nom complet"
+          (focus)="isInputFocused.set(true); openKeyboard()"
+          (blur)="isInputFocused.set(false); closeKeyboard()"
+          [ngModel]="newUser().fullName"
+          (ngModelChange)="updateNewUser('fullName', $event)"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="space-y-1">
+        <label for="username" class="block text-sm font-semibold text-gray-700">
+          Mot de passe <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="4 chiffres"
+          (focus)="isInputFocused.set(true); openKeyboard()"
+          (blur)="isInputFocused.set(false); closeKeyboard()"
+          [ngModel]="newUser().username"
+          (ngModelChange)="updateNewUser('username', $event)"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+          required
+          pattern="^\d{4}$"
+        />
+      </div>
+
+      <!-- Phone -->
+      <div class="space-y-1">
+        <label
+          for="phoneNumber"
+          class="block text-sm font-semibold text-gray-700"
+        >
+          Téléphone
+        </label>
+        <input
+          type="text"
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="+212 612 345 678"
+          (focus)="isInputFocused.set(true); openKeyboard()"
+          (blur)="isInputFocused.set(false); closeKeyboard()"
+          [ngModel]="newUser().phoneNumber"
+          (ngModelChange)="updateNewUser('phoneNumber', $event)"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+        />
+      </div>
+
+      <!-- Role -->
+      <div class="space-y-1">
+        <label for="role" class="block text-sm font-semibold text-gray-700">
+          Rôle <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="role"
+          name="role"
+          [ngModel]="newUser().roleName"
+          (ngModelChange)="updateNewUser('roleName', $event)"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg"
+          required
+        >
+          <option value="utilisateur">Serveur</option>
+          <option value="Direction">Admin</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          type="submit"
+          [disabled]="userForm.invalid"
+          class="bg-black text-white border border-gray-800 shadow font-medium rounded-lg text-sm px-5 py-2.5"
+        >
+          {{ editingUser() ? 'Mettre à jour' : 'Créer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
