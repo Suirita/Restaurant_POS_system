@@ -101,15 +101,8 @@ export class UsersSettingsComponent implements OnInit {
             if (user.image && user.image.fileId) {
               return this.userService.getFile(user.image.fileId).pipe(
                 map((file) => {
-                  console.log(
-                    `File response for fileId ${user.image!.fileId}:`,
-                    file
-                  );
                   // The API returns the full data URL in file.value
                   if (file && file.value && typeof file.value === 'string') {
-                    console.log(
-                      `Found data URL for fileId ${user.image!.fileId}`
-                    );
                     user.image!.content = file.value; // Assign the full data URL
                   }
                   return user;
@@ -122,10 +115,6 @@ export class UsersSettingsComponent implements OnInit {
         })
       )
       .subscribe((users) => {
-        console.log(
-          'Users loaded with images:',
-          JSON.parse(JSON.stringify(users))
-        );
         this.users.set(users);
         this.goToPage(1);
       });

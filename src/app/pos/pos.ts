@@ -230,7 +230,6 @@ export class PosComponent implements OnInit {
     const quantityButton = target.closest('[data-edit-button]');
     if (quantityButton) {
       return; // Don't finish editing if clicking on quantity button
-
     }
 
     // Finish editing for any other click
@@ -840,8 +839,6 @@ export class PosComponent implements OnInit {
         .getReceiptByTable(destinationTableName, this.currentUser()!.token)
         .subscribe((destinationReceipt) => {
           if (destinationReceipt) {
-            console.log('Original destination receipt:', destinationReceipt);
-
             sourceReceipt.items.forEach((sourceItem) => {
               const existingItem = destinationReceipt.items.find(
                 (destItem) => destItem.id === sourceItem.id
@@ -859,7 +856,6 @@ export class PosComponent implements OnInit {
             );
             destinationReceipt.total = newTotal;
             destinationReceipt.userId = this.currentUser()!.userId;
-            console.log('Merged destination receipt:', destinationReceipt);
             this.receiptService
               .updateReceipt(destinationReceipt, this.currentUser()!.token)
               .subscribe({
