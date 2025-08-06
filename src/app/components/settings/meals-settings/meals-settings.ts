@@ -68,10 +68,10 @@ export class MealsSettingsComponent implements OnInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  totalPages = computed(() => Math.ceil(this.filteredMeals().length / 8));
+  totalPages = computed(() => Math.ceil(this.filteredMeals().length / 10));
   paginatedMeals = computed(() => {
-    const startIndex = (this.currentPage() - 1) * 8;
-    const endIndex = startIndex + 8;
+    const startIndex = (this.currentPage() - 1) * 10;
+    const endIndex = startIndex + 10;
     return this.filteredMeals().slice(startIndex, endIndex);
   });
   pages = computed(() => {
@@ -86,6 +86,17 @@ export class MealsSettingsComponent implements OnInit {
     }
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  });
+
+  startEntry = computed(() => {
+    if (this.filteredMeals().length === 0) {
+      return 0;
+    }
+    return (this.currentPage() - 1) * 8 + 1;
+  });
+
+  endEntry = computed(() => {
+    return (this.currentPage() - 1) * 8 + this.paginatedMeals().length;
   });
 
   newMeal: Omit<Meal, 'id' | 'categoryLabel'> = {

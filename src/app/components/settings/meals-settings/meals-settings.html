@@ -4,7 +4,7 @@
   </div>
 
   <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-2 m-2">
-    <div class="w-full flex justify-between mb-4">
+    <div class="w-full flex justify-between mb-3">
       <!-- Search and Filter -->
       <div class="w-3/4 flex gap-3">
         <!-- Search by name -->
@@ -100,7 +100,8 @@
       </button>
     </div>
 
-    <div class="relative overflow-x-auto shadow-xs rounded-sm">
+    <!-- Table -->
+    <div class="relative overflow-x-auto shadow-xs rounded-sm mb-3">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-100">
           <tr>
@@ -124,32 +125,32 @@
                 [src]="meal.image || 'https://placehold.co/1280x720'"
                 (error)="onImageError($event)"
                 alt="{{ meal.designation }}"
-                class="h-10 w-10 rounded-lg object-cover"
+                class="h-9 w-9 rounded-lg object-cover"
               />
             </td>
             <th
               scope="row"
-              class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap"
+              class="px-6 py-1 font-medium text-gray-900 whitespace-nowrap"
             >
               {{ meal.designation }}
             </th>
-            <td class="px-6 py-2">
+            <td class="px-6 py-1">
               {{ meal.purchasePrice | currency:'EUR':'symbol':'1.2-2' }}
             </td>
-            <td class="px-6 py-2">
+            <td class="px-6 py-1">
               {{ meal.sellingPrice | currency:'EUR':'symbol':'1.2-2' }}
             </td>
-            <td class="px-6 py-2">
+            <td class="px-6 py-1">
               {{ meal.totalTTC | currency:'EUR':'symbol':'1.2-2' }}
             </td>
-            <td class="px-6 py-2">
+            <td class="px-6 py-1">
               <span
                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
               >
                 {{ meal.categoryLabel }}
               </span>
             </td>
-            <td class="px-6 py-2">
+            <td class="px-6 py-1">
               <div *ngIf="meal.labels.length > 0">
                 <span
                   *ngFor="let label of meal.labels"
@@ -189,16 +190,16 @@
     </div>
 
     <!-- Pagination -->
-    <nav class="flex flex-col items-center mt-3 space-y-2">
+    <nav class="flex flex-col items-center space-y-1">
       <span class="text-sm text-gray-700">
-        Showing
-        <span class="font-semibold text-gray-900">1</span>-<span
-          class="font-semibold text-gray-900"
-          >10</span
+        Affichage de
+        <span class="font-semibold text-gray-900">{{ startEntry() }}</span>-
+        <span class="font-semibold text-gray-900">{{ endEntry() }}</span>
+        sur
+        <span class="font-semibold text-gray-900"
+          >{{ filteredMeals().length }}</span
         >
-        of
-        <span class="font-semibold text-gray-900">100</span>
-        Entries
+        entrées
       </span>
       <div class="flex justify-center items-center">
         <ul class="inline-flex space-x-1 text-sm h-8">
