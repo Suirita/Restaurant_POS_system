@@ -7,8 +7,12 @@ import { Category, Meal } from '../../../types/pos.types';
 import { CategoryService } from '../../../category.service';
 import {
   LucideAngularModule,
+  Search,
+  Plus,
   ChevronLeft,
+  ChevronsLeft,
   ChevronRight,
+  ChevronsRight,
   Edit,
   Trash2,
   X,
@@ -21,8 +25,12 @@ import {
   templateUrl: './meals-settings.html',
 })
 export class MealsSettingsComponent implements OnInit {
-  readonly ChevronLeftIcon = ChevronLeft;
-  readonly ChevronRightIcon = ChevronRight;
+  readonly Search = Search;
+  readonly ChevronLeft = ChevronLeft;
+  readonly ChevronsLeft = ChevronsLeft;
+  readonly ChevronRight = ChevronRight;
+  readonly ChevronsRight = ChevronsRight;
+  readonly Plus = Plus;
   readonly edit = Edit;
   readonly trash2 = Trash2;
   readonly XIcon = X;
@@ -60,10 +68,10 @@ export class MealsSettingsComponent implements OnInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  totalPages = computed(() => Math.ceil(this.filteredMeals().length / 10));
+  totalPages = computed(() => Math.ceil(this.filteredMeals().length / 8));
   paginatedMeals = computed(() => {
-    const startIndex = (this.currentPage() - 1) * 10;
-    const endIndex = startIndex + 10;
+    const startIndex = (this.currentPage() - 1) * 8;
+    const endIndex = startIndex + 8;
     return this.filteredMeals().slice(startIndex, endIndex);
   });
   pages = computed(() => {

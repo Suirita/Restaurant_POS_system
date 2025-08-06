@@ -7,7 +7,7 @@ import {
   Plus,
   Minus,
   ShoppingBag,
-  Utensils,
+  Armchair,
 } from 'lucide-angular';
 import { CartItem, Table } from '../../types/pos.types';
 import { ServiceSelectionComponent } from '../service-selection/service-selection';
@@ -24,7 +24,7 @@ export class CartComponent {
   readonly PlusIcon = Plus;
   readonly MinusIcon = Minus;
   readonly ShoppingBagIcon = ShoppingBag;
-  readonly UtensilsIcon = Utensils;
+  readonly Armchair = Armchair;
 
   cartItems = input.required<CartItem[]>();
   selectedCartItemId = input<string | null>(null);
@@ -57,7 +57,7 @@ export class CartComponent {
 
   displayIcon = computed(() => {
     if (this.orderType() === 'table' && this.tableNumber()) {
-      return this.UtensilsIcon;
+      return this.Armchair;
     } else {
       return this.ShoppingCartIcon;
     }

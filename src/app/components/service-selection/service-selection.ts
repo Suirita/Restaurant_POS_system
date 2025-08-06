@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Table } from '../../types/pos.types';
-import { LucideAngularModule, Utensils, ShoppingBag } from 'lucide-angular';
+import { LucideAngularModule, Armchair, ShoppingBag } from 'lucide-angular';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { LucideAngularModule, Utensils, ShoppingBag } from 'lucide-angular';
   imports: [CommonModule, LucideAngularModule],
 })
 export class ServiceSelectionComponent {
-  readonly UtensilsIcon = Utensils;
+  readonly Armchair = Armchair;
   readonly ShoppingBagIcon = ShoppingBag;
 
   orderType = input.required<'take away' | 'table'>();

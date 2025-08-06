@@ -1,81 +1,120 @@
 <div class="flex h-screen bg-gray-100">
+  <!-- Menu -->
+  <button
+    data-drawer-target="default-sidebar"
+    data-drawer-toggle="default-sidebar"
+    aria-controls="default-sidebar"
+    type="button"
+    class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:focus:ring-gray-600"
+  >
+    <span class="sr-only">Open sidebar</span>
+    <svg
+      class="w-6 h-6"
+      aria-hidden="true"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        fill-rule="evenodd"
+        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+      ></path>
+    </svg>
+  </button>
+
   <!-- Sidebar -->
-  <div class="w-64 bg-white shadow-md p-4">
-    <h2 class="text-2xl font-bold mb-6 text-center">Paramètres</h2>
-    <nav>
-      <ul>
-        <li class="mb-2">
+  <aside
+    id="default-sidebar"
+    class="fixed top-0 left-0 z-40 w-56 h-screen transition-transform -translate-x-full sm:translate-x-0 border-r border-gray-200 shadow-lg"
+    aria-label="Sidebar"
+  >
+    <div class="h-full px-3 py-4 overflow-y-auto bg-white">
+      <a href="#" class="flex items-center ps-2.5 mb-5">
+        <span class="self-center text-2xl font-semibold whitespace-nowrap">
+          Paramètres
+        </span>
+      </a>
+      <ul class="space-y-2 font-medium">
+        <li>
           <a
             routerLink="company"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Info de l'entreprise
+            <i-lucide [img]="Building2" [size]="20"></i-lucide>
+            <span class="ms-3">Info de l'entreprise </span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a
             routerLink="receipts"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Numérotation
+            <i-lucide [img]="ReceiptText" [size]="20"></i-lucide>
+            <span class="flex-1 ms-3 whitespace-nowrap">Numérotation</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a
             routerLink="clients"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Clients
+            <i-lucide [img]="Users" [size]="20"></i-lucide>
+            <span class="flex-1 ms-3 whitespace-nowrap">Clients</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a
             routerLink="users"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Utilisateurs
+            <i-lucide [img]="User" [size]="20"></i-lucide>
+            <span class="flex-1 ms-3 whitespace-nowrap">Utilisateurs</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a
             routerLink="categories"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Catégories
+            <i-lucide [img]="Tag" [size]="20"></i-lucide>
+            <span class="flex-1 ms-3 whitespace-nowrap">Catégories</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a
             routerLink="meals"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Articles
+            <i-lucide [img]="Armchair" [size]="20"></i-lucide>
+            <span class="flex-1 ms-3 whitespace-nowrap">Articles</span>
           </a>
         </li>
-        <li class="mb-2">
+        <li>
           <a
             routerLink="rooms"
             routerLinkActive="bg-black text-white"
-            class="w-full text-left px-4 py-2 rounded-md block"
+            class="flex items-center p-2 text-gray-900 rounded-lg group"
           >
-            Salles
+            <i-lucide [img]="Armchair" [size]="20"></i-lucide>
+            <span class="flex-1 ms-3 whitespace-nowrap">Salles</span>
           </a>
         </li>
       </ul>
-    </nav>
-  </div>
+    </div>
+  </aside>
 
   <!-- Main Content Area -->
-  <div class="flex-1 p-4 overflow-auto">
+  <div class="w-full sm:ml-56">
     <router-outlet></router-outlet>
     <!-- Actions -->
-    <div class="flex justify-end gap-4 pt-3">
+    <div class="flex justify-end gap-4">
       <button
         (click)="onPos()"
         class="flex justify-center items-center gap-2 bg-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"

@@ -8,6 +8,13 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   LucideAngularModule,
+  Building2,
+  ReceiptText,
+  Users,
+  User,
+  Tag,
+  Utensils,
+  Armchair,
   HandPlatter,
   FileText,
   LogOut,
@@ -28,6 +35,13 @@ import {
 export class SettingsComponent {
   private router = inject(Router);
 
+  readonly Building2 = Building2;
+  readonly ReceiptText = ReceiptText;
+  readonly Users = Users;
+  readonly User = User;
+  readonly Tag = Tag;
+  readonly Utensils = Utensils;
+  readonly Armchair = Armchair;
   readonly HandPlatterIcon = HandPlatter;
   readonly ReportsIcon = FileText;
   readonly LogOutIcon = LogOut;

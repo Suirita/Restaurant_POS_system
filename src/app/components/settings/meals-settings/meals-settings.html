@@ -1,27 +1,85 @@
-<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
-  <h2 class="text-2xl font-bold mb-3">Paramètres des articles</h2>
-  <div class="w-full flex justify-between mb-2">
-    <!-- Search and Filter -->
-    <div class="w-2/3 flex gap-4">
-      <input
-        type="text"
-        placeholder="Rechercher par nom..."
-        [value]="searchTerm()"
-        (input)="onSearchTermChange($event)"
-        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
-        (focus)="openKeyboard()"
-        (blur)="closeKeyboard()"
-      />
-      <input
-        type="text"
-        placeholder="Rechercher par label..."
-        [value]="labelSearchTerm()"
-        (input)="onLabelSearchTermChange($event)"
-        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
-        (focus)="openKeyboard()"
-        (blur)="closeKeyboard()"
-      />
-      <select
+<div class="w-full">
+  <div class="bg-white shadow-xs border-b border-gray-200 p-4">
+    <h2 class="text-2xl font-bold text-gray-900">Paramètres des articles</h2>
+  </div>
+
+  <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-2 m-2">
+    <div class="w-full flex justify-between mb-4">
+      <!-- Search and Filter -->
+      <div class="w-3/4 flex gap-3">
+        <!-- Search by name -->
+        <form class="w-full">
+          <label
+            for="search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Rechercher par nom
+          </label>
+          <div class="relative w-full">
+            <div
+              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <i-lucide [img]="Search" [size]="16"></i-lucide>
+            </div>
+            <input
+              type="search"
+              id="search"
+              [value]="searchTerm()"
+              (input)="onSearchTermChange($event)"
+              (focus)="openKeyboard()"
+              (blur)="closeKeyboard()"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              placeholder="Rechercher par nom..."
+              required
+            />
+          </div>
+        </form>
+
+        <!-- Search by label -->
+        <form class="w-full">
+          <label
+            for="search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Rechercher par label
+          </label>
+          <div class="relative w-full">
+            <div
+              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <i-lucide [img]="Search" [size]="16"></i-lucide>
+            </div>
+            <input
+              type="search"
+              id="search"
+              [value]="labelSearchTerm()"
+              (input)="onLabelSearchTermChange($event)"
+              (focus)="openKeyboard()"
+              (blur)="closeKeyboard()"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              placeholder="Rechercher par label.."
+              required
+            />
+          </div>
+        </form>
+
+        <!-- Select category -->
+
+        <form class="w-2/3">
+          <select
+            id="categories"
+            [value]="selectedCategory()"
+            (change)="onCategoryChange($event)"
+            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2"
+          >
+            <option value="">Toutes les catégories</option>
+            <option *ngFor="let category of categories()" [value]="category.id">
+              {{ category.label }}
+            </option>
+          </select>
+        </form>
+
+        <!-- <select
         [value]="selectedCategory()"
         (change)="onCategoryChange($event)"
         class="px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
@@ -30,356 +88,390 @@
         <option *ngFor="let category of categories()" [value]="category.id">
           {{ category.label }}
         </option>
-      </select>
-    </div>
-    <!-- Actions -->
-    <button
-      (click)="openCreateForm()"
-      class="bg-black text-white px-3 rounded-md"
-    >
-      Ajouter un article
-    </button>
-  </div>
-
-  <div>
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Image
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Nom
-          </th>
-
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Prix d'achat
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Prix hors taxes
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Prix TTC
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Catégorie
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Labels
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let meal of paginatedMeals()">
-          <td class="px-6 py-1 whitespace-nowrap">
-            <img
-              [src]="meal.image || 'https://placehold.co/1280x720'"
-              (error)="onImageError($event)"
-              alt="{{ meal.designation }}"
-              class="h-10 w-10 rounded-lg object-cover"
-            />
-          </td>
-          <td class="px-6 py-1 whitespace-nowrap">{{ meal.designation }}</td>
-          <td class="px-6 py-1 whitespace-nowrap">
-            {{ meal.purchasePrice | currency:'EUR':'symbol':'1.2-2' }}
-          </td>
-          <td class="px-6 py-1 whitespace-nowrap">
-            {{ meal.sellingPrice | currency:'EUR':'symbol':'1.2-2' }}
-          </td>
-          <td class="px-6 py-1 whitespace-nowrap">
-            {{ meal.totalTTC | currency:'EUR':'symbol':'1.2-2' }}
-          </td>
-          <td class="px-6 py-1 whitespace-nowrap">{{ meal.categoryLabel }}</td>
-          <td class="px-6 py-1 whitespace-nowrap">
-            <span
-              *ngFor="let label of meal.labels"
-              class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-            >
-              {{label.value}}
-            </span>
-          </td>
-          <td class="px-6 py-1 whitespace-nowrap">
-            <button
-              (click)="openEditForm(meal)"
-              class="text-indigo-600 hover:text-indigo-900 mr-2"
-            >
-              <i-lucide [img]="edit"></i-lucide>
-            </button>
-            <button
-              (click)="deleteMeal(meal.id)"
-              class="text-red-600 hover:text-red-900"
-            >
-              <i-lucide [img]="trash2"></i-lucide>
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="filteredMeals().length === 0">
-          <td colspan="6" class="px-6 py-1 text-center text-gray-500">
-            Aucun plat trouvé.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="flex justify-center items-center mt-2">
+      </select> -->
+      </div>
+      <!-- Actions -->
       <button
-        (click)="previousPage()"
-        [disabled]="currentPage() === 1"
-        class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
+        (click)="openCreateForm()"
+        class="flex justify-center items-center gap-2 bg-black text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
       >
-        <i-lucide [img]="ChevronLeftIcon" [size]="16"></i-lucide>
-        Précédent
-      </button>
-      <button
-        *ngFor="let page of pages()"
-        (click)="goToPage(page)"
-        [class.shadow-sm]="currentPage() === page"
-        [class.border]="currentPage() === page"
-        [class.border-gray-200]="currentPage() === page"
-        class="text-gray-800 px-3 py-1 rounded-md mx-1"
-      >
-        {{ page }}
-      </button>
-      <button
-        (click)="nextPage()"
-        [disabled]="currentPage() === totalPages()"
-        class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
-      >
-        Suivant
-        <i-lucide name="chevron-right" [size]="16"></i-lucide>
+        <i-lucide [img]="Plus" [size]="16"></i-lucide>
+        Ajouter un article
       </button>
     </div>
-  </div>
 
-  <!-- Meal Create/Edit Form Modal -->
-  <div
-    *ngIf="showMealForm()"
-    class="fixed inset-0 flex items-center justify-center z-50"
-    (click)="cancelForm()"
-  >
-    <div
-      class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
-    ></div>
-    <div
-      class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
-      [ngClass]="{'-translate-y-48': isInputFocused()}"
-      (click)="$event.stopPropagation()"
-    >
-      <button
-        (click)="cancelForm()"
-        class="absolute top-4 right-4 bg-black text-white p-1 rounded-lg border border-gray-200 shadow-sm"
-      >
-        <i-lucide [img]="XIcon" [size]="22"></i-lucide>
-      </button>
-      <h3 class="text-xl font-bold mb-4">
-        {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
-      </h3>
-      <form (ngSubmit)="saveMeal()">
-        <div class="flex justify-between gap-4 mb-4">
-          <div class="w-full">
-            <label
-              for="designation"
-              class="block text-gray-700 text-sm font-bold mb-2"
+    <div class="relative overflow-x-auto shadow-xs rounded-sm">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+          <tr>
+            <th scope="col" class="px-6 py-2">Image</th>
+            <th scope="col" class="px-6 py-2">Nom</th>
+            <th scope="col" class="px-6 py-2">Prix d'achat</th>
+            <th scope="col" class="px-6 py-2">Prix hors taxes</th>
+            <th scope="col" class="px-6 py-2">Prix TTC</th>
+            <th scope="col" class="px-6 py-2">Catégorie</th>
+            <th scope="col" class="px-6 py-2">Labels</th>
+            <th scope="col" class="px-6 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            class="odd:bg-white even:bg-gray-50 border-b border-gray-200"
+            *ngFor="let meal of paginatedMeals()"
+          >
+            <td class="px-6 py-1 whitespace-nowrap">
+              <img
+                [src]="meal.image || 'https://placehold.co/1280x720'"
+                (error)="onImageError($event)"
+                alt="{{ meal.designation }}"
+                class="h-10 w-10 rounded-lg object-cover"
+              />
+            </td>
+            <th
+              scope="row"
+              class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap"
             >
-              Désignation :
-            </label>
-            <input
-              type="text"
-              id="designation"
-              name="designation"
-              [(ngModel)]="newMeal.designation"
-              (focus)="openKeyboard()"
-              (blur)="closeKeyboard()"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div class="w-full">
-            <label
-              for="categoryId"
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Catégorie :
-            </label>
-            <select
-              id="categoryId"
-              name="categoryId"
-              [(ngModel)]="newMeal.categoryId"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            >
-              <option value="">Sélectionner une catégorie</option>
-              <option
-                *ngFor="let category of categories()"
-                [value]="category.id"
+              {{ meal.designation }}
+            </th>
+            <td class="px-6 py-2">
+              {{ meal.purchasePrice | currency:'EUR':'symbol':'1.2-2' }}
+            </td>
+            <td class="px-6 py-2">
+              {{ meal.sellingPrice | currency:'EUR':'symbol':'1.2-2' }}
+            </td>
+            <td class="px-6 py-2">
+              {{ meal.totalTTC | currency:'EUR':'symbol':'1.2-2' }}
+            </td>
+            <td class="px-6 py-2">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
               >
-                {{ category.label }}
-              </option>
-            </select>
+                {{ meal.categoryLabel }}
+              </span>
+            </td>
+            <td class="px-6 py-2">
+              <div *ngIf="meal.labels.length > 0">
+                <span
+                  *ngFor="let label of meal.labels"
+                  class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+                >
+                  {{label.value}}
+                </span>
+              </div>
+              <div *ngIf="meal.labels.length === 0">
+                <span class="text-3xl text-center">-</span>
+              </div>
+            </td>
+            <td class="px-6 py-2">
+              <div class="flex space-x-2">
+                <button
+                  (click)="openEditForm(meal)"
+                  class="inline-flex items-center p-1 text-sm font-medium text-white bg-blue-400 border border-gray-200 rounded-md"
+                >
+                  <i-lucide [img]="edit" class="w-5 h-5"></i-lucide>
+                </button>
+                <button
+                  (click)="deleteMeal(meal.id)"
+                  class="inline-flex items-center p-1 text-sm font-medium text-white bg-red-400 border border-gray -200 rounded-md"
+                >
+                  <i-lucide [img]="trash2" class="w-5 h-5"></i-lucide>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredMeals().length === 0">
+            <td colspan="6" class="p-6 text-center text-gray-500">
+              Aucun plat trouvé.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="flex flex-col items-center mt-3 space-y-2">
+      <span class="text-sm text-gray-700">
+        Showing
+        <span class="font-semibold text-gray-900">1</span>-<span
+          class="font-semibold text-gray-900"
+          >10</span
+        >
+        of
+        <span class="font-semibold text-gray-900">100</span>
+        Entries
+      </span>
+      <div class="flex justify-center items-center">
+        <ul class="inline-flex space-x-1 text-sm h-8">
+          <li>
+            <button
+              (click)="goToPage(1)"
+              [disabled]="currentPage() === 1"
+              class="flex items-center justify-center px-2 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronsLeft" [size]="16"></i-lucide>
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="previousPage()"
+              [disabled]="currentPage() === 1"
+              class="flex items-center justify-center px-2 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronLeft" [size]="16"></i-lucide>
+            </button>
+          </li>
+          <li class="flex space-x-1">
+            <button
+              *ngFor="let page of pages()"
+              (click)="goToPage(page)"
+              [class.text-white]="currentPage() === page"
+              [class.bg-black]="currentPage() === page"
+              [class.border-gray-800]="currentPage() === page"
+              class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 font-medium rounded-md border border-gray-300 shadow-xs"
+            >
+              {{ page }}
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="nextPage()"
+              [disabled]="currentPage() === totalPages()"
+              class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronRight" [size]="16"></i-lucide>
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="goToPage(totalPages())"
+              [disabled]="currentPage() === totalPages()"
+              class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronsRight" [size]="16"></i-lucide>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Meal Create/Edit Form Modal -->
+    <div
+      *ngIf="showMealForm()"
+      class="fixed inset-0 flex items-center justify-center z-50"
+      (click)="cancelForm()"
+    >
+      <div
+        class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
+      ></div>
+      <div
+        class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
+        [ngClass]="{'-translate-y-48': isInputFocused()}"
+        (click)="$event.stopPropagation()"
+      >
+        <button
+          (click)="cancelForm()"
+          class="absolute top-4 right-4 bg-black text-white p-1 rounded-lg border border-gray-200 shadow-sm"
+        >
+          <i-lucide [img]="XIcon" [size]="22"></i-lucide>
+        </button>
+        <h3 class="text-xl font-bold mb-4">
+          {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
+        </h3>
+        <form (ngSubmit)="saveMeal()">
+          <div class="flex justify-between gap-4 mb-4">
+            <div class="w-full">
+              <label
+                for="designation"
+                class="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Désignation :
+              </label>
+              <input
+                type="text"
+                id="designation"
+                name="designation"
+                [(ngModel)]="newMeal.designation"
+                (focus)="openKeyboard()"
+                (blur)="closeKeyboard()"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+            <div class="w-full">
+              <label
+                for="categoryId"
+                class="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Catégorie :
+              </label>
+              <select
+                id="categoryId"
+                name="categoryId"
+                [(ngModel)]="newMeal.categoryId"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              >
+                <option value="">Sélectionner une catégorie</option>
+                <option
+                  *ngFor="let category of categories()"
+                  [value]="category.id"
+                >
+                  {{ category.label }}
+                </option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div class="flex justify-between gap-4 mb-4">
-          <div class="w-full">
+          <div class="flex justify-between gap-4 mb-4">
+            <div class="w-full">
+              <label
+                for="purchasePrice"
+                class="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Prix d'achat :
+              </label>
+              <input
+                type="number"
+                id="purchasePrice"
+                name="purchasePrice"
+                [(ngModel)]="newMeal.purchasePrice"
+                (focus)="openKeyboard()"
+                (blur)="closeKeyboard()"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+            <div class="w-full">
+              <label
+                for="sellingPrice"
+                class="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Prix hors taxes :
+              </label>
+              <input
+                type="number"
+                id="sellingPrice"
+                name="sellingPrice"
+                [(ngModel)]="newMeal.sellingPrice"
+                (ngModelChange)="calculateTTC()"
+                (focus)="openKeyboard()"
+                (blur)="closeKeyboard()"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+          </div>
+          <div class="flex justify-between gap-4 mb-4">
+            <div class="w-full">
+              <label
+                for="tva"
+                class="block text-gray-700 text-sm font-bold mb-2"
+              >
+                TVA (%) :
+              </label>
+              <input
+                type="number"
+                id="tva"
+                name="tva"
+                [(ngModel)]="newMeal.tva"
+                (ngModelChange)="calculateTTC()"
+                (focus)="isInputFocused.set(true); openKeyboard()"
+                (blur)="isInputFocused.set(false); closeKeyboard()"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+            <div class="w-full">
+              <label
+                for="totalTTC"
+                class="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Prix TTC :
+              </label>
+              <input
+                type="number"
+                id="totalTTC"
+                name="totalTTC"
+                [(ngModel)]="newMeal.totalTTC"
+                (ngModelChange)="calculateSellingPrice()"
+                (focus)="isInputFocused.set(true); openKeyboard()"
+                (blur)="isInputFocused.set(false); closeKeyboard()"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+          </div>
+          <div class="mb-4">
             <label
-              for="purchasePrice"
+              for="image"
               class="block text-gray-700 text-sm font-bold mb-2"
             >
-              Prix d'achat :
+              URL de l'image :
             </label>
-            <input
-              type="number"
-              id="purchasePrice"
-              name="purchasePrice"
-              [(ngModel)]="newMeal.purchasePrice"
-              (focus)="openKeyboard()"
-              (blur)="closeKeyboard()"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div class="w-full">
-            <label
-              for="sellingPrice"
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Prix hors taxes :
-            </label>
-            <input
-              type="number"
-              id="sellingPrice"
-              name="sellingPrice"
-              [(ngModel)]="newMeal.sellingPrice"
-              (ngModelChange)="calculateTTC()"
-              (focus)="openKeyboard()"
-              (blur)="closeKeyboard()"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-        </div>
-        <div class="flex justify-between gap-4 mb-4">
-          <div class="w-full">
-            <label for="tva" class="block text-gray-700 text-sm font-bold mb-2">
-              TVA (%) :
-            </label>
-            <input
-              type="number"
-              id="tva"
-              name="tva"
-              [(ngModel)]="newMeal.tva"
-              (ngModelChange)="calculateTTC()"
-              (focus)="isInputFocused.set(true); openKeyboard()"
-              (blur)="isInputFocused.set(false); closeKeyboard()"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div class="w-full">
-            <label
-              for="totalTTC"
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Prix TTC :
-            </label>
-            <input
-              type="number"
-              id="totalTTC"
-              name="totalTTC"
-              [(ngModel)]="newMeal.totalTTC"
-              (ngModelChange)="calculateSellingPrice()"
-              (focus)="isInputFocused.set(true); openKeyboard()"
-              (blur)="isInputFocused.set(false); closeKeyboard()"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-        </div>
-        <div class="mb-4">
-          <label for="image" class="block text-gray-700 text-sm font-bold mb-2">
-            URL de l'image :
-          </label>
-          <input
-            type="text"
-            id="image"
-            name="image"
-            [(ngModel)]="newMeal.image"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        <div class="mb-4">
-          <label
-            for="labels"
-            class="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Labels :
-          </label>
-          <div class="flex items-center">
             <input
               type="text"
-              #labelInput
-              placeholder="Ajouter un label"
+              id="image"
+              name="image"
+              [(ngModel)]="newMeal.image"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              (focus)="isInputFocused.set(true); openKeyboard()"
-              (blur)="isInputFocused.set(false); closeKeyboard()"
             />
-            <button
-              type="button"
-              (click)="addLabel(labelInput)"
-              class="bg-blue-500 text-white px-3 py-1 rounded-md ml-2 hover:bg-blue-600"
-            >
-              +
-            </button>
           </div>
-          <div class="mt-2">
-            <span
-              *ngFor="let label of newMeal.labels; let i = index"
-              class="inline-flex items-center bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+          <div class="mb-4">
+            <label
+              for="labels"
+              class="block text-gray-700 text-sm font-bold mb-2"
             >
-              {{ label.value }}
+              Labels :
+            </label>
+            <div class="flex items-center">
+              <input
+                type="text"
+                #labelInput
+                placeholder="Ajouter un label"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                (focus)="isInputFocused.set(true); openKeyboard()"
+                (blur)="isInputFocused.set(false); closeKeyboard()"
+              />
               <button
                 type="button"
-                (click)="removeLabel(i)"
-                class="ml-2 text-red-500 hover:text-red-700"
+                (click)="addLabel(labelInput)"
+                class="bg-blue-500 text-white px-3 py-1 rounded-md ml-2 hover:bg-blue-600"
               >
-                <i-lucide [img]="trash2"></i-lucide>
+                +
               </button>
-            </span>
+            </div>
+            <div class="mt-2">
+              <span
+                *ngFor="let label of newMeal.labels; let i = index"
+                class="inline-flex items-center bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+              >
+                {{ label.value }}
+                <button
+                  type="button"
+                  (click)="removeLabel(i)"
+                  class="ml-2 text-red-500 hover:text-red-700"
+                >
+                  <i-lucide [img]="trash2"></i-lucide>
+                </button>
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="flex justify-end">
-          <button
-            type="button"
-            (click)="cancelForm()"
-            class="bg-gray-100 text-gray-800 px-3 py-1 rounded-md mr-2 hover:bg-gray-400"
-          >
-            Annuler
-          </button>
-          <button
-            type="submit"
-            class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
-          >
-            {{ editingMeal() ? 'Mettre à jour' : 'Créer' }}
-          </button>
-        </div>
-      </form>
+          <div class="flex justify-end">
+            <button
+              type="button"
+              (click)="cancelForm()"
+              class="bg-gray-100 text-gray-800 px-3 py-1 rounded-md mr-2 hover:bg-gray-400"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+            >
+              {{ editingMeal() ? 'Mettre à jour' : 'Créer' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
