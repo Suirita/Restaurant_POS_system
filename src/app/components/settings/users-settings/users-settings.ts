@@ -94,10 +94,27 @@ export class UsersSettingsComponent implements OnInit {
       .getUsers()
       .pipe(
         switchMap((users) => {
+          if (users.length === 0) {
+            return of([]);
+          }
           const userObservables = users.map((user) => {
-            if (user.image) {
-              // Assuming image is base64. If not, adjust logic.
-              return of(user);
+            if (user.image && user.image.fileId) {
+              return this.userService.getFile(user.image.fileId).pipe(
+                map((file) => {
+                  console.log(
+                    `File response for fileId ${user.image!.fileId}:`,
+                    file
+                  );
+                  // The API returns the full data URL in file.value
+                  if (file && file.value && typeof file.value === 'string') {
+                    console.log(
+                      `Found data URL for fileId ${user.image!.fileId}`
+                    );
+                    user.image!.content = file.value; // Assign the full data URL
+                  }
+                  return user;
+                })
+              );
             }
             return of(user);
           });
@@ -105,6 +122,10 @@ export class UsersSettingsComponent implements OnInit {
         })
       )
       .subscribe((users) => {
+        console.log(
+          'Users loaded with images:',
+          JSON.parse(JSON.stringify(users))
+        );
         this.users.set(users);
         this.goToPage(1);
       });
@@ -146,10 +167,11 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   getImageUrl(user: UserAccount): string {
-    if (user.image) {
-      return user.image as string;
+    // user.image.content is now expected to be a full data URL.
+    if (user.image && user.image.content) {
+      return user.image.content;
     }
-    return 'https://via.placeholder.com/150'; // Default placeholder
+    return 'https://placehold.co/1280x720';
   }
 
   openCreateForm(): void {
@@ -190,6 +212,9 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = 'https://placehold.co/1280x720';
+    const element = event.target as HTMLImageElement;
+    if (element.src !== 'https://placehold.co/1280x720') {
+      element.src = 'https://placehold.co/1280x720';
+    }
   }
 }
