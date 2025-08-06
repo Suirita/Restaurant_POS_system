@@ -25,7 +25,7 @@ export class UserService {
       Page: 1,
       PageSize: 1000,
       showAllUsers: true,
-      label: ['chndr1lvpq3321'],
+      label: ['chneg3084mjkr1'],
     };
     return this.http.post<any>(this.apiUrl, body, { headers }).pipe(
       map((response) =>
@@ -36,7 +36,7 @@ export class UserService {
           phoneNumber: user.phoneNumber,
           roleName: user.roleName,
           image: user.image,
-          token: '', // Token is not returned by this endpoint
+          token: '',
         }))
       )
     );
@@ -89,7 +89,7 @@ export class UserService {
       phoneNumber: user.phoneNumber || '',
       memorySize: 0,
       roleId: roleId,
-      labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
+      labels: [{ value: 'POS', id: 'chneg3084mjkr1', id_html: 'POS' }],
       image: user.image ? { fileId: user.image.fileId } : null,
       typeUser: 'Normal',
       licenceUser: 0,
@@ -129,7 +129,7 @@ export class UserService {
       phoneNumber: user.phoneNumber || '',
       memorySize: 0,
       roleId: roleId,
-      labels: [{ value: 'POS', id: 'chndr1lvpq3321', id_html: 'POS' }],
+      labels: [{ value: 'POS', id: 'chneg3084mjkr1', id_html: 'POS' }],
       image: user.image ? { fileId: user.image.fileId } : null,
       typeUser: 'Normal',
       licenceUser: 0,
