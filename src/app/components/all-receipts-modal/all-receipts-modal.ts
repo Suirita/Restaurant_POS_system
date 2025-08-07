@@ -1,4 +1,4 @@
-import { Component, output, inject, input, signal } from '@angular/core';
+import { Component, output, inject, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Receipt } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
@@ -13,6 +13,7 @@ import {
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
+import { PaginationComponent } from '../pagination/pagination';
 
 @Component({
   standalone: true,
@@ -23,6 +24,7 @@ import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
     LucideAngularModule,
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
+    PaginationComponent,
   ],
 })
 export class AllReceiptsModalComponent {
@@ -43,6 +45,14 @@ export class AllReceiptsModalComponent {
   userId = input.required<string>();
   token = input.required<string>();
 
+  // Pagination
+  currentPage = signal<number>(1);
+  paginatedReceipts = computed(() => {
+    const startIndex = (this.currentPage() - 1) * 8;
+    const endIndex = startIndex + 8;
+    return this.receipts().slice(startIndex, endIndex);
+  });
+
   close = output<void>();
   pay = output<string>();
   receiptSelected = output<Receipt>();
@@ -59,6 +69,10 @@ export class AllReceiptsModalComponent {
         this.receipts.set(receipts);
         this.isLoading.set(false);
       });
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
   }
 
   onClose() {

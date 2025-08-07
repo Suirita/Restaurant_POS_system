@@ -7,6 +7,8 @@ import { RoleService } from '../../../role.service';
 import { UserAccount, Role } from '../../../types/pos.types';
 import {
   LucideAngularModule,
+  Search,
+  Plus,
   Edit,
   Trash2,
   ChevronLeft,
@@ -17,6 +19,7 @@ import { forkJoin, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { UserFormModalComponent } from '../../user-form-modal/user-form-modal';
 import { ReusableTable } from '../../reusable-table/reusable-table';
+import { PaginationComponent } from '../../pagination/pagination';
 
 @Component({
   standalone: true,
@@ -27,10 +30,13 @@ import { ReusableTable } from '../../reusable-table/reusable-table';
     LucideAngularModule,
     UserFormModalComponent,
     ReusableTable,
+    PaginationComponent,
   ],
   templateUrl: './users-settings.html',
 })
 export class UsersSettingsComponent implements OnInit {
+  readonly Search = Search;
+  readonly Plus = Plus;
   readonly edit = Edit;
   readonly trash2 = Trash2;
   readonly ChevronLeftIcon = ChevronLeft;
@@ -63,7 +69,6 @@ export class UsersSettingsComponent implements OnInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  totalPages = computed(() => Math.ceil(this.filteredUsers().length / 10));
   paginatedUsers = computed(() => {
     const startIndex = (this.currentPage() - 1) * 10;
     const endIndex = startIndex + 10;
@@ -77,22 +82,15 @@ export class UsersSettingsComponent implements OnInit {
             : 'https://placehold.co/1280x720',
       }));
   });
-  pages = computed(() => {
-    const total = this.totalPages();
-    const current = this.currentPage();
-    const maxVisible = 5;
-    let start = Math.max(1, current - 2);
-    let end = Math.min(total, start + maxVisible - 1);
-
-    if (end - start + 1 < maxVisible) {
-      start = Math.max(1, end - maxVisible + 1);
-    }
-
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  });
 
   tableColumns = ['Image', 'Nom complet', 'Mot de passe', 'Téléphone', 'Rôle'];
-  tableColumnKeys = ['image', 'fullName', 'username', 'phoneNumber', 'roleName'];
+  tableColumnKeys = [
+    'image',
+    'fullName',
+    'username',
+    'phoneNumber',
+    'roleName',
+  ];
 
   ngOnInit(): void {
     this.loadUsers();
@@ -129,7 +127,7 @@ export class UsersSettingsComponent implements OnInit {
       )
       .subscribe((users) => {
         this.users.set(users);
-        this.goToPage(1);
+        this.currentPage.set(1);
       });
   }
 
@@ -146,26 +144,17 @@ export class UsersSettingsComponent implements OnInit {
   onSearchTermChange(event: Event): void {
     const term = (event.target as HTMLInputElement).value;
     this.searchTerm.set(term);
-    this.goToPage(1);
+    this.currentPage.set(1);
   }
 
   onRoleChange(event: Event): void {
     const role = (event.target as HTMLSelectElement).value;
     this.selectedRole.set(role);
-    this.goToPage(1);
+    this.currentPage.set(1);
   }
 
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages()) return;
+  onPageChange(page: number): void {
     this.currentPage.set(page);
-  }
-
-  nextPage(): void {
-    this.goToPage(this.currentPage() + 1);
-  }
-
-  previousPage(): void {
-    this.goToPage(this.currentPage() - 1);
   }
 
   getImageUrl(user: UserAccount): string {

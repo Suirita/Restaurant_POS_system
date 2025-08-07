@@ -1,39 +1,71 @@
-<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
-  <h2 class="text-2xl font-bold mb-2">Paramètres des clients</h2>
-  <div class="w-full flex justify-between mb-2">
-    <!-- Search and Filter -->
-    <div class="w-2/3 flex gap-4">
-      <input
-        type="text"
-        placeholder="Rechercher par nom..."
-        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
-      />
-    </div>
-    <!-- Actions -->
-    <button
-      (click)="openCreateForm()"
-      class="bg-black text-white px-3 rounded-md"
-    >
-      Ajouter un client
-    </button>
+<div class="w-full">
+  <div class="bg-white shadow-xs border-b border-gray-200 p-4">
+    <h2 class="text-2xl font-bold text-gray-900">Paramètres des clients</h2>
   </div>
 
-  <div>
+  <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-2 m-2">
+    <div class="w-full flex justify-between mb-3">
+      <!-- Search and Filter -->
+      <div class="w-2/3 flex gap-4">
+        <!-- Search by name -->
+        <form class="w-full">
+          <label
+            for="search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Rechercher par nom
+          </label>
+          <div class="relative w-full">
+            <div
+              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <i-lucide [img]="Search" [size]="16"></i-lucide>
+            </div>
+            <input
+              id="search"
+              type="search"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              placeholder="Rechercher par nom..."
+            />
+          </div>
+        </form>
+      </div>
+
+      <!-- Actions -->
+      <button
+        (click)="openCreateForm()"
+        class="flex justify-center items-center gap-2 bg-black text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      >
+        <i-lucide [img]="Plus" [size]="16"></i-lucide>
+
+        Ajouter un client
+      </button>
+    </div>
+
+    <!-- Table -->
     <app-reusable-table
       [columns]="tableColumns"
       [columnKeys]="tableColumnKeys"
-      [data]="clients()"
+      [data]="paginatedClients()"
       [actions]="{ edit: true, delete: true }"
       (onEdit)="openEditForm($event)"
       (onDelete)="deleteClient($event)"
     ></app-reusable-table>
-  </div>
 
-  <app-client-form-modal
-    *ngIf="showClientForm()"
-    [editingClient]="editingClient()"
-    [token]="currentUser()?.token ?? ''"
-    (close)="closeClientForm()"
-    (clientSaved)="onClientSaved()"
-  ></app-client-form-modal>
+    <!-- Pagination -->
+    <app-pagination
+      [totalItems]="filteredClients().length"
+      [currentPage]="currentPage()"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-pagination>
+
+    <app-client-form-modal
+      *ngIf="showClientForm()"
+      [editingClient]="editingClient()"
+      [token]="currentUser()?.token ?? ''"
+      (close)="closeClientForm()"
+      (clientSaved)="onClientSaved()"
+    ></app-client-form-modal>
+  </div>
 </div>

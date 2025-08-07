@@ -55,7 +55,7 @@
     >
       <!-- Receipt Card -->
       <div
-        *ngFor="let receipt of receipts()"
+        *ngFor="let receipt of paginatedReceipts()"
         class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm"
       >
         <div (click)="onReceiptClick(receipt)">
@@ -107,6 +107,11 @@
         </div>
       </div>
     </div>
+    <app-pagination
+      [totalItems]="receipts().length"
+      [currentPage]="currentPage()"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
   </div>
 </div>
 

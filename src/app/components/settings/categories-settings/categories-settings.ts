@@ -6,6 +6,8 @@ import { CategoryService } from '../../../category.service';
 import { Category } from '../../../types/pos.types';
 import {
   LucideAngularModule,
+  Search,
+  Plus,
   Edit,
   Trash2,
   ChevronLeft,
@@ -14,14 +16,23 @@ import {
 } from 'lucide-angular';
 import { HttpClient } from '@angular/common/http';
 import { ReusableTable } from '../../reusable-table/reusable-table';
+import { PaginationComponent } from '../../pagination/pagination';
 
 @Component({
   standalone: true,
   selector: 'app-categories-settings',
-  imports: [CommonModule, FormsModule, LucideAngularModule, ReusableTable],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideAngularModule,
+    ReusableTable,
+    PaginationComponent,
+  ],
   templateUrl: './categories-settings.html',
 })
 export class CategoriesSettingsComponent implements OnInit {
+  readonly Search = Search;
+  readonly Plus = Plus;
   readonly edit = Edit;
   readonly trash2 = Trash2;
   readonly ChevronLeftIcon = ChevronLeft;
@@ -52,7 +63,6 @@ export class CategoriesSettingsComponent implements OnInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  totalPages = computed(() => Math.ceil(this.filteredCategories().length / 10));
   paginatedCategories = computed(() => {
     const startIndex = (this.currentPage() - 1) * 10;
     const endIndex = startIndex + 10;
@@ -63,19 +73,6 @@ export class CategoriesSettingsComponent implements OnInit {
         ...category,
         image: images[category.label] || 'https://placehold.co/1280x720',
       }));
-  });
-  pages = computed(() => {
-    const total = this.totalPages();
-    const current = this.currentPage();
-    const maxVisible = 5;
-    let start = Math.max(1, current - 2);
-    let end = Math.min(total, start + maxVisible - 1);
-
-    if (end - start + 1 < maxVisible) {
-      start = Math.max(1, end - maxVisible + 1);
-    }
-
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
 
   tableColumns = ['Image', 'Nom'];
@@ -98,27 +95,18 @@ export class CategoriesSettingsComponent implements OnInit {
     const user = JSON.parse(localStorage.getItem('user')!);
     this.categoryService.getCategories(user.token).subscribe((categories) => {
       this.categories.set(categories);
-      this.goToPage(1); // Reset to first page
+      this.currentPage.set(1); // Reset to first page
     });
   }
 
   onSearchTermChange(event: Event): void {
     const term = (event.target as HTMLInputElement).value;
     this.searchTerm.set(term);
-    this.goToPage(1);
+    this.currentPage.set(1);
   }
 
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages()) return;
+  onPageChange(page: number): void {
     this.currentPage.set(page);
-  }
-
-  nextPage(): void {
-    this.goToPage(this.currentPage() + 1);
-  }
-
-  previousPage(): void {
-    this.goToPage(this.currentPage() - 1);
   }
 
   openCreateForm(): void {

@@ -42,7 +42,7 @@
         class="grid grid-cols-3 gap-4 p-4 max-h-96 overflow-y-auto scrollbar-hide"
       >
         <div
-          *ngFor="let invoice of invoices()"
+          *ngFor="let invoice of paginatedInvoices()"
           class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer"
           (click)="onInvoiceClick(invoice)"
         >
@@ -80,6 +80,11 @@
           </div>
         </div>
       </div>
+      <app-pagination
+        [totalItems]="invoices().length"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
       <div class="p-4 border-t border-gray-200">
         <button
           (click)="onClose()"

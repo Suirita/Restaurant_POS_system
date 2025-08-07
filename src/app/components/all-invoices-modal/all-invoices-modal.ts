@@ -1,15 +1,21 @@
-import { Component, output, inject, input, signal } from '@angular/core';
+import { Component, output, inject, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Invoice, CartItem } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
 import { LucideAngularModule, X, LoaderCircle, MessageCircle } from 'lucide-angular';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
+import { PaginationComponent } from '../pagination/pagination';
 
 @Component({
   standalone: true,
   selector: 'app-all-invoices-modal',
   templateUrl: './all-invoices-modal.html',
-  imports: [CommonModule, LucideAngularModule, InvoiceDetailsModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    InvoiceDetailsModalComponent,
+    PaginationComponent,
+  ],
 })
 export class AllInvoicesModalComponent {
   readonly XIcon = X;
@@ -23,6 +29,14 @@ export class AllInvoicesModalComponent {
 
   isInvoiceDetailsVisible = signal(false);
   selectedInvoice = signal<Invoice | null>(null);
+
+  // Pagination
+  currentPage = signal<number>(1);
+  paginatedInvoices = computed(() => {
+    const startIndex = (this.currentPage() - 1) * 9;
+    const endIndex = startIndex + 9;
+    return this.invoices().slice(startIndex, endIndex);
+  });
 
   close = output<void>();
 
@@ -47,6 +61,10 @@ export class AllInvoicesModalComponent {
         this.invoices.set(mappedInvoices);
         this.isLoading.set(false);
       });
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
   }
 
   onClose() {

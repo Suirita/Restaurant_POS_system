@@ -30,7 +30,6 @@
               (blur)="closeKeyboard()"
               class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
               placeholder="Rechercher par nom..."
-              required
             />
           </div>
         </form>
@@ -58,13 +57,11 @@
               (blur)="closeKeyboard()"
               class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
               placeholder="Rechercher par label.."
-              required
             />
           </div>
         </form>
 
         <!-- Select category -->
-
         <form class="w-2/3">
           <select
             id="categories"
@@ -79,6 +76,7 @@
           </select>
         </form>
       </div>
+
       <!-- Actions -->
       <button
         (click)="openCreateForm()"
@@ -101,10 +99,11 @@
     ></app-reusable-table>
 
     <!-- Pagination -->
-    <app-pagination 
-      [totalItems]="filteredMeals().length" 
+    <app-pagination
+      [totalItems]="filteredMeals().length"
       [currentPage]="currentPage()"
-      (pageChange)="onPageChange($event)">
+      (pageChange)="onPageChange($event)"
+    >
     </app-pagination>
 
     <!-- Meal Create/Edit Form Modal -->

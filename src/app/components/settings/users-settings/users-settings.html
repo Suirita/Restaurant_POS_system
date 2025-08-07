@@ -1,38 +1,67 @@
-<div class="container bg-white rounded-lg border border-gray-200 shadow-md p-2">
-  <h2 class="text-2xl font-bold mb-2">Paramètres des utilisateurs</h2>
-  <div class="w-full flex justify-between mb-2">
-    <!-- Search and Filter -->
-    <div class="w-2/3 flex gap-4">
-      <input
-        type="text"
-        placeholder="Rechercher par nom..."
-        [value]="searchTerm()"
-        (input)="onSearchTermChange($event)"
-        class="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
-        (focus)="openKeyboard()"
-        (blur)="closeKeyboard()"
-      />
-      <select
-        [value]="selectedRole()"
-        (change)="onRoleChange($event)"
-        class="px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
-      >
-        <option value="">Tous les rôles</option>
-        <option *ngFor="let role of roles()" [value]="role.name">
-          {{ role.name === 'Direction' ? 'admin' : 'serveur' }}
-        </option>
-      </select>
-    </div>
-    <!-- Actions -->
-    <button
-      (click)="openCreateForm()"
-      class="bg-black text-white px-3 rounded-md"
-    >
-      Ajouter un utilisateur
-    </button>
+<div class="w-full">
+  <div class="bg-white shadow-xs border-b border-gray-200 p-4">
+    <h2 class="text-2xl font-bold text-gray-900">
+      Paramètres des utilisateurs
+    </h2>
   </div>
 
-  <div>
+  <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-2 m-2">
+    <div class="w-full flex justify-between mb-3">
+      <!-- Search and Filter -->
+      <div class="w-2/3 flex gap-4">
+        <!-- Search by name -->
+        <form class="w-full">
+          <label
+            for="search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Rechercher par nom
+          </label>
+          <div class="relative w-full">
+            <div
+              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <i-lucide [img]="Search" [size]="16"></i-lucide>
+            </div>
+            <input
+              id="search"
+              type="search"
+              [value]="searchTerm()"
+              (input)="onSearchTermChange($event)"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              placeholder="Rechercher par nom..."
+            />
+          </div>
+        </form>
+
+        <!-- Select Role -->
+        <form class="w-1/3">
+          <select
+            id="categories"
+            [value]="selectedRole()"
+            (change)="onRoleChange($event)"
+            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2"
+          >
+            <option value="">Tous les rôles</option>
+            <option *ngFor="let role of roles()" [value]="role.name">
+              {{ role.name === 'Direction' ? 'admin' : 'serveur' }}
+            </option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Actions -->
+      <button
+        (click)="openCreateForm()"
+        class="flex justify-center items-center gap-2 bg-black text-white py-2 px-4 rounded-lg text-sm font-medium border border-gray-200 shadow-sm"
+      >
+        <i-lucide [img]="Plus" [size]="16"></i-lucide>
+
+        Ajouter un utilisateur
+      </button>
+    </div>
+
+    <!-- Table -->
     <app-reusable-table
       [columns]="tableColumns"
       [columnKeys]="tableColumnKeys"
@@ -42,43 +71,22 @@
       (onDelete)="deleteUser($event)"
       (onImageError)="onImageError($event)"
     ></app-reusable-table>
-    <div class="flex justify-center items-center mt-2">
-      <button
-        (click)="previousPage()"
-        [disabled]="currentPage() === 1"
-        class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
-      >
-        <i-lucide [img]="ChevronLeftIcon" [size]="16"></i-lucide>
-        Précédent
-      </button>
-      <button
-        *ngFor="let page of pages()"
-        (click)="goToPage(page)"
-        [class.shadow-sm]="currentPage() === page"
-        [class.border]="currentPage() === page"
-        [class.border-gray-200]="currentPage() === page"
-        class="text-gray-800 px-3 py-1 rounded-md mx-1"
-      >
-        {{ page }}
-      </button>
-      <button
-        (click)="nextPage()"
-        [disabled]="currentPage() === totalPages()"
-        class="text-gray-800 px-3 py-1 rounded-md flex gap-1 justify-center items-center disabled:text-gray-400"
-      >
-        Suivant
-        <i-lucide [img]="ChevronRightIcon" [size]="16"></i-lucide>
-      </button>
-    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+      [totalItems]="filteredUsers().length"
+      [currentPage]="currentPage()"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-pagination>
+
+    <!-- User Create/Edit Form Modal -->
+    <app-user-form-modal
+      *ngIf="showUserForm()"
+      [editingUser]="editingUser()"
+      [token]="token()"
+      (close)="cancelForm()"
+      (userSaved)="onUserSaved()"
+    ></app-user-form-modal>
   </div>
-
-  <!-- User Create/Edit Form Modal -->
-  <app-user-form-modal
-    *ngIf="showUserForm()"
-    [editingUser]="editingUser()"
-    [token]="token()"
-    (close)="cancelForm()"
-    (userSaved)="onUserSaved()"
-  ></app-user-form-modal>
 </div>
-
