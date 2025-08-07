@@ -7,15 +7,16 @@ import { Category, Meal } from '../../../types/pos.types';
 import { CategoryService } from '../../../category.service';
 import {
   LucideAngularModule,
+  X,
   Search,
   Plus,
+  Edit,
+  Trash2,
+  Utensils,
   ChevronLeft,
   ChevronsLeft,
   ChevronRight,
   ChevronsRight,
-  Edit,
-  Trash2,
-  X,
 } from 'lucide-angular';
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
@@ -33,15 +34,16 @@ import { PaginationComponent } from '../../pagination/pagination';
   templateUrl: './meals-settings.html',
 })
 export class MealsSettingsComponent implements OnInit {
+  readonly Plus = Plus;
   readonly Search = Search;
+  readonly edit = Edit;
+  readonly trash2 = Trash2;
+  readonly XIcon = X;
+  readonly Utensils = Utensils;
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronsLeft = ChevronsLeft;
   readonly ChevronRight = ChevronRight;
   readonly ChevronsRight = ChevronsRight;
-  readonly Plus = Plus;
-  readonly edit = Edit;
-  readonly trash2 = Trash2;
-  readonly XIcon = X;
 
   private mealService = inject(MealService);
   private categoryService = inject(CategoryService);

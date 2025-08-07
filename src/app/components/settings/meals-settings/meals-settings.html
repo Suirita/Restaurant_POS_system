@@ -28,7 +28,7 @@
               (input)="onSearchTermChange($event)"
               (focus)="openKeyboard()"
               (blur)="closeKeyboard()"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par nom..."
             />
           </div>
@@ -55,7 +55,7 @@
               (input)="onLabelSearchTermChange($event)"
               (focus)="openKeyboard()"
               (blur)="closeKeyboard()"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par label.."
             />
           </div>
@@ -112,55 +112,74 @@
       class="fixed inset-0 flex items-center justify-center z-50"
       (click)="cancelForm()"
     >
+      <!-- Backdrop -->
       <div
         class="fixed inset-0 bg-gray-700 opacity-50 flex items-center justify-center"
       ></div>
+
+      <!-- Client Modal -->
       <div
-        class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden relative p-8"
-        [ngClass]="{'-translate-y-48': isInputFocused()}"
+        class="bg-white rounded-xl shadow-2xl w-full max-w-xl overflow-hidden relative"
+        [ngClass]="{'-translate-y-40': isInputFocused()}"
         (click)="$event.stopPropagation()"
       >
-        <button
-          (click)="cancelForm()"
-          class="absolute top-4 right-4 bg-black text-white p-1 rounded-lg border border-gray-200 shadow-sm"
-        >
-          <i-lucide [img]="XIcon" [size]="22"></i-lucide>
-        </button>
-        <h3 class="text-xl font-bold mb-4">
-          {{ editingMeal() ? 'Modifier le plat' : 'Créer un nouveau plat' }}
-        </h3>
-        <form (ngSubmit)="saveMeal()">
-          <div class="flex justify-between gap-4 mb-4">
-            <div class="w-full">
+        <!-- Card Header -->
+        <div class="flex justify-between">
+          <div class="flex items-center gap-2 m-4">
+            <i-lucide [img]="Utensils" [size]="24"></i-lucide>
+            <h1 class="text-2xl font-bold text-gray-900">
+              {{ editingMeal() ? "Modifier l'article" : "Créer un nouveau
+              Article" }}
+            </h1>
+          </div>
+          <div>
+            <button
+              (click)="cancelForm()"
+              class="bg-black text-white p-1 rounded-lg border border-gray-800 shadow m-2"
+            >
+              <i-lucide [img]="XIcon" [size]="22"></i-lucide>
+            </button>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form (ngSubmit)="saveMeal()" class="px-4 pb-4 space-y-4">
+          <!-- Row 1: Designation and Category -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <!-- Designation -->
+            <div class="space-y-1">
               <label
                 for="designation"
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-sm font-semibold text-gray-700"
               >
-                Désignation :
+                Désignation <span class="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 id="designation"
                 name="designation"
+                placeholder="Entrez le nom"
                 [(ngModel)]="newMeal.designation"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
-            <div class="w-full">
+
+            <!-- Category -->
+            <div class="space-y-1">
               <label
                 for="categoryId"
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-sm font-semibold text-gray-700"
               >
-                Catégorie :
+                Catégorie <span class="text-red-500">*</span>
               </label>
               <select
                 id="categoryId"
                 name="categoryId"
                 [(ngModel)]="newMeal.categoryId"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
                 required
               >
                 <option value="">Sélectionner une catégorie</option>
@@ -173,13 +192,16 @@
               </select>
             </div>
           </div>
-          <div class="flex justify-between gap-4 mb-4">
-            <div class="w-full">
+
+          <!-- Row 2: Purchase Prices and PriceHT -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <!-- Purchase Price -->
+            <div class="space-y-1">
               <label
                 for="purchasePrice"
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-sm font-semibold text-gray-700"
               >
-                Prix d'achat :
+                Prix d'achat
               </label>
               <input
                 type="number"
@@ -188,16 +210,18 @@
                 [(ngModel)]="newMeal.purchasePrice"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
-            <div class="w-full">
+
+            <!-- PriceHT -->
+            <div class="space-y-1">
               <label
                 for="sellingPrice"
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-sm font-semibold text-gray-700"
               >
-                Prix hors taxes :
+                Prix hors taxes <span class="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -207,18 +231,21 @@
                 (ngModelChange)="calculateTTC()"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
           </div>
-          <div class="flex justify-between gap-4 mb-4">
-            <div class="w-full">
+
+          <!-- Row 3: TVA and TotalTTC -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <!-- TVA -->
+            <div class="space-y-1">
               <label
                 for="tva"
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-sm font-semibold text-gray-700"
               >
-                TVA (%) :
+                TVA (%) <span class="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -228,16 +255,18 @@
                 (ngModelChange)="calculateTTC()"
                 (focus)="isInputFocused.set(true); openKeyboard()"
                 (blur)="isInputFocused.set(false); closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
-            <div class="w-full">
+
+            <!-- TotalTTC -->
+            <div class="space-y-1">
               <label
                 for="totalTTC"
-                class="block text-gray-700 text-sm font-bold mb-2"
+                class="block text-sm font-semibold text-gray-700"
               >
-                Prix TTC :
+                Prix TTC <span class="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -247,33 +276,35 @@
                 (ngModelChange)="calculateSellingPrice()"
                 (focus)="isInputFocused.set(true); openKeyboard()"
                 (blur)="isInputFocused.set(false); closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
           </div>
-          <div class="mb-4">
+
+          <!-- Row 4: Labels -->
+          <div class="space-y-1">
             <label
               for="labels"
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-sm font-semibold text-gray-700"
             >
-              Labels :
+              Labels
             </label>
             <div class="flex items-center">
               <input
                 type="text"
                 #labelInput
                 placeholder="Ajouter un label"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 (focus)="isInputFocused.set(true); openKeyboard()"
                 (blur)="isInputFocused.set(false); closeKeyboard()"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
               />
               <button
                 type="button"
                 (click)="addLabel(labelInput)"
-                class="bg-blue-500 text-white px-3 py-1 rounded-md ml-2"
+                class="bg-black text-white p-1.5 rounded-md border border-gray-800 shadow m-2"
               >
-                +
+                <i-lucide [img]="Plus" [size]="22"></i-lucide>
               </button>
             </div>
             <div class="mt-2">
@@ -294,15 +325,8 @@
           </div>
           <div class="flex justify-end">
             <button
-              type="button"
-              (click)="cancelForm()"
-              class="bg-gray-100 text-gray-800 px-3 py-1 rounded-md mr-2 hover:bg-gray-400"
-            >
-              Annuler
-            </button>
-            <button
               type="submit"
-              class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+              class="bg-black text-white border border-gray-800 shadow font-medium rounded-lg text-sm px-5 py-2.5"
             >
               {{ editingMeal() ? 'Mettre à jour' : 'Créer' }}
             </button>
