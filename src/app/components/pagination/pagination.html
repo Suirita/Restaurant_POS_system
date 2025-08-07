@@ -1,0 +1,64 @@
+<nav class="flex flex-col items-center space-y-1">
+      <span class="text-sm text-gray-700">
+        Affichage de
+        <span class="font-semibold text-gray-900">{{ startEntry() }}</span>-
+        <span class="font-semibold text-gray-900">{{ endEntry() }}</span>
+        sur
+        <span class="font-semibold text-gray-900"
+          >{{ totalItems() }}</span
+        >
+        entrées
+      </span>
+      <div class="flex justify-center items-center">
+        <ul class="inline-flex space-x-1 text-sm h-8">
+          <li>
+            <button
+              (click)="goToPage(1)"
+              [disabled]="currentPage() === 1"
+              class="flex items-center justify-center px-2 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronsLeft" [size]="16"></i-lucide>
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="previousPage()"
+              [disabled]="currentPage() === 1"
+              class="flex items-center justify-center px-2 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronLeft" [size]="16"></i-lucide>
+            </button>
+          </li>
+          <li class="flex space-x-1">
+            <button
+              *ngFor="let page of pages()"
+              (click)="goToPage(page)"
+              [class.text-white]="currentPage() === page"
+              [class.bg-black]="currentPage() === page"
+              [class.border-gray-800]="currentPage() === page"
+              class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 font-medium rounded-md border border-gray-300 shadow-xs"
+            >
+              {{ page }}
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="nextPage()"
+              [disabled]="currentPage() === totalPages()"
+              class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronRight" [size]="16"></i-lucide>
+            </button>
+          </li>
+          <li>
+            <button
+              (click)="goToPage(totalPages())"
+              [disabled]="currentPage() === totalPages()"
+              class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 shadow-xs rounded-md"
+            >
+              <i-lucide [img]="ChevronsRight" [size]="16"></i-lucide>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>

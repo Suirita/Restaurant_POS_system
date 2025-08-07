@@ -18,11 +18,18 @@ import {
   X,
 } from 'lucide-angular';
 import { ReusableTable } from '../../reusable-table/reusable-table';
+import { PaginationComponent } from '../../pagination/pagination';
 
 @Component({
   standalone: true,
   selector: 'app-meals-settings',
-  imports: [CommonModule, FormsModule, LucideAngularModule, ReusableTable],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideAngularModule,
+    ReusableTable,
+    PaginationComponent,
+  ],
   templateUrl: './meals-settings.html',
 })
 export class MealsSettingsComponent implements OnInit {
@@ -71,35 +78,10 @@ export class MealsSettingsComponent implements OnInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  totalPages = computed(() => Math.ceil(this.filteredMeals().length / 10));
   paginatedMeals = computed(() => {
     const startIndex = (this.currentPage() - 1) * 10;
     const endIndex = startIndex + 10;
     return this.filteredMeals().slice(startIndex, endIndex);
-  });
-  pages = computed(() => {
-    const total = this.totalPages();
-    const current = this.currentPage();
-    const maxVisible = 5;
-    let start = Math.max(1, current - 2);
-    let end = Math.min(total, start + maxVisible - 1);
-
-    if (end - start + 1 < maxVisible) {
-      start = Math.max(1, end - maxVisible + 1);
-    }
-
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  });
-
-  startEntry = computed(() => {
-    if (this.filteredMeals().length === 0) {
-      return 0;
-    }
-    return (this.currentPage() - 1) * 8 + 1;
-  });
-
-  endEntry = computed(() => {
-    return (this.currentPage() - 1) * 8 + this.paginatedMeals().length;
   });
 
   newMeal: Omit<Meal, 'id' | 'categoryLabel'> = {
@@ -141,39 +123,30 @@ export class MealsSettingsComponent implements OnInit {
     const user = JSON.parse(localStorage.getItem('user')!); // Ensure user is not null
     this.mealService.getMeals(user.token).subscribe((meals) => {
       this.meals.set(meals);
-      this.goToPage(1); // Reset to first page
+      this.currentPage.set(1); // Reset to first page
     });
   }
 
   onSearchTermChange(event: Event): void {
     const term = (event.target as HTMLInputElement).value;
     this.searchTerm.set(term);
-    this.goToPage(1);
+    this.currentPage.set(1);
   }
 
   onCategoryChange(event: Event): void {
     const categoryId = (event.target as HTMLSelectElement).value;
     this.selectedCategory.set(categoryId);
-    this.goToPage(1);
+    this.currentPage.set(1);
   }
 
   onLabelSearchTermChange(event: Event): void {
     const term = (event.target as HTMLInputElement).value;
     this.labelSearchTerm.set(term);
-    this.goToPage(1);
+    this.currentPage.set(1);
   }
 
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages()) return;
+  onPageChange(page: number): void {
     this.currentPage.set(page);
-  }
-
-  nextPage(): void {
-    this.goToPage(this.currentPage() + 1);
-  }
-
-  previousPage(): void {
-    this.goToPage(this.currentPage() - 1);
   }
 
   loadCategories(): void {
