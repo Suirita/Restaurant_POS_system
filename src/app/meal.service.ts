@@ -99,7 +99,7 @@ export class MealService {
             sellingPrice: meal.sellingPrice,
             purchasePrice: meal.purchasePrice,
             totalTTC: meal.totalTTC,
-            categoryId: meal.productCategoryTypeId,
+            categoryId: meal.category.id,
             categoryLabel: meal.categoryLabel,
             image: '',
             labels: meal.labels,

@@ -12,11 +12,18 @@ import {
   Trash2,
 } from 'lucide-angular';
 import { ClientFormModalComponent } from '../../client-form-modal/client-form-modal';
+import { ReusableTable } from '../../reusable-table/reusable-table';
 
 @Component({
   selector: 'app-clients-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, ClientFormModalComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideAngularModule,
+    ClientFormModalComponent,
+    ReusableTable,
+  ],
   templateUrl: './clients-settings.html',
 })
 export class ClientsSettingsComponent implements OnInit {
@@ -30,6 +37,27 @@ export class ClientsSettingsComponent implements OnInit {
   currentUser = signal<UserAccount | null>(null);
   showClientForm = signal(false);
   editingClient = signal<Client | null>(null);
+
+  tableColumns = [
+    'Nom',
+    'Email',
+    'Mobile',
+    'ICE',
+    'Adresse',
+    'Code postal',
+    'Ville',
+    'Pays',
+  ];
+  tableColumnKeys = [
+    'name',
+    'email',
+    'mobile',
+    'ice',
+    'address',
+    'postalCode',
+    'city',
+    'country',
+  ];
 
   ngOnInit() {
     const user = localStorage.getItem('user');
@@ -66,10 +94,10 @@ export class ClientsSettingsComponent implements OnInit {
     this.closeClientForm();
   }
 
-  deleteClient(client: Client) {
+  deleteClient(clientId: string) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
       this.clientService
-        .deleteClient(client.id, this.currentUser()?.token)
+        .deleteClient(clientId, this.currentUser()?.token)
         .subscribe(() => {
           this.loadClients();
         });

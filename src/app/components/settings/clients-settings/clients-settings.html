@@ -19,89 +19,14 @@
   </div>
 
   <div>
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Nom
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Email
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Mobile
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            ICE
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Adresse
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Code postal
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Ville
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Pays
-          </th>
-          <th
-            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let client of clients()">
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.name }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.email }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.mobile }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.ice }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.address }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.postalCode }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.city }}</td>
-          <td class="px-6 py-2 whitespace-nowrap">{{ client.country }}</td>
-          <td class="px-6 py-2 whitespace-nowrap text-right">
-            <button
-              (click)="openEditForm(client)"
-              class="text-indigo-600 hover:text-indigo-900 mr-2"
-            >
-              <i-lucide [img]="edit"></i-lucide>
-            </button>
-            <button
-              (click)="deleteClient(client)"
-              class="text-red-600 hover:text-red-900"
-            >
-              <i-lucide [img]="trash2"></i-lucide>
-            </button>
-          </td>
-        </tr>
-
-        <tr *ngIf="clients().length === 0">
-          <td colspan="9" class="px-6 py-2 text-center text-gray-500">
-            Aucun client trouvé.
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <app-reusable-table
+      [columns]="tableColumns"
+      [columnKeys]="tableColumnKeys"
+      [data]="clients()"
+      [actions]="{ edit: true, delete: true }"
+      (onEdit)="openEditForm($event)"
+      (onDelete)="deleteClient($event)"
+    ></app-reusable-table>
   </div>
 
   <app-client-form-modal
