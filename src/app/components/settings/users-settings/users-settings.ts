@@ -84,6 +84,7 @@ export class UsersSettingsComponent implements OnInit {
   });
 
   tableColumns = ['Image', 'Nom complet', 'Mot de passe', 'Téléphone', 'Rôle'];
+  tableColumnKeys = ['image', 'fullName', 'username', 'phoneNumber', 'roleName'];
 
   ngOnInit(): void {
     this.loadUsers();
