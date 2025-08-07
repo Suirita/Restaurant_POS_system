@@ -24,7 +24,9 @@
             <input
               id="search"
               type="search"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              (focus)="openKeyboard()"
+              (blur)="closeKeyboard()"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par nom..."
             />
           </div>

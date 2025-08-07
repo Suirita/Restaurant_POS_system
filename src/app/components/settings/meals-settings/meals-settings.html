@@ -28,7 +28,7 @@
               (input)="onSearchTermChange($event)"
               (focus)="openKeyboard()"
               (blur)="closeKeyboard()"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par nom..."
             />
           </div>
@@ -55,7 +55,7 @@
               (input)="onLabelSearchTermChange($event)"
               (focus)="openKeyboard()"
               (blur)="closeKeyboard()"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par label.."
             />
           </div>
@@ -67,7 +67,7 @@
             id="categories"
             [value]="selectedCategory()"
             (change)="onCategoryChange($event)"
-            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2"
+            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
           >
             <option value="">Toutes les catégories</option>
             <option *ngFor="let category of categories()" [value]="category.id">
@@ -145,7 +145,7 @@
                 [(ngModel)]="newMeal.designation"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
@@ -160,7 +160,7 @@
                 id="categoryId"
                 name="categoryId"
                 [(ngModel)]="newMeal.categoryId"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 required
               >
                 <option value="">Sélectionner une catégorie</option>
@@ -188,7 +188,7 @@
                 [(ngModel)]="newMeal.purchasePrice"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
@@ -207,7 +207,7 @@
                 (ngModelChange)="calculateTTC()"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
@@ -228,7 +228,7 @@
                 (ngModelChange)="calculateTTC()"
                 (focus)="isInputFocused.set(true); openKeyboard()"
                 (blur)="isInputFocused.set(false); closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
@@ -247,7 +247,7 @@
                 (ngModelChange)="calculateSellingPrice()"
                 (focus)="isInputFocused.set(true); openKeyboard()"
                 (blur)="isInputFocused.set(false); closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 required
               />
             </div>
@@ -264,7 +264,7 @@
                 type="text"
                 #labelInput
                 placeholder="Ajouter un label"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
                 (focus)="isInputFocused.set(true); openKeyboard()"
                 (blur)="isInputFocused.set(false); closeKeyboard()"
               />

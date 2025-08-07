@@ -28,7 +28,7 @@
               type="search"
               [value]="searchTerm()"
               (input)="onSearchTermChange($event)"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par nom..."
             />
           </div>
@@ -40,7 +40,7 @@
             id="categories"
             [value]="selectedRole()"
             (change)="onRoleChange($event)"
-            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2"
+            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
           >
             <option value="">Tous les rôles</option>
             <option *ngFor="let role of roles()" [value]="role.name">

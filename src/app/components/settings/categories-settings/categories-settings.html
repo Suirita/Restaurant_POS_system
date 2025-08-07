@@ -11,7 +11,7 @@
         <form class="w-full">
           <label
             for="search"
-            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only"
           >
             Rechercher par nom
           </label>
@@ -28,7 +28,7 @@
               (input)="onSearchTermChange($event)"
               (focus)="openKeyboard()"
               (blur)="closeKeyboard()"
-              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               placeholder="Rechercher par nom..."
             />
           </div>
@@ -93,8 +93,9 @@
             <label
               for="label"
               class="block text-gray-700 text-sm font-bold mb-2"
-              >Libellé de la catégorie :</label
             >
+              Libellé de la catégorie :
+            </label>
             <input
               type="text"
               id="label"
@@ -102,7 +103,7 @@
               [(ngModel)]="newCategoryLabel"
               (focus)="openKeyboard()"
               (blur)="closeKeyboard()"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
               required
             />
           </div>
@@ -110,8 +111,9 @@
             <label
               for="image"
               class="block text-gray-700 text-sm font-bold mb-2"
-              >Image de la catégorie :</label
             >
+              Image de la catégorie :
+            </label>
             <input
               type="file"
               id="image"

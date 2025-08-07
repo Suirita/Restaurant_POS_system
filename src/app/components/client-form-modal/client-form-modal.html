@@ -54,7 +54,7 @@
             (blur)="closeKeyboard()"
             [ngModel]="newClient().name"
             (ngModelChange)="updateNewClient('name', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
             required
           />
         </div>
@@ -73,7 +73,7 @@
             (blur)="closeKeyboard()"
             [ngModel]="newClient().email"
             (ngModelChange)="updateNewClient('email', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
             required
           />
         </div>
@@ -95,7 +95,7 @@
             (blur)="closeKeyboard()"
             [ngModel]="newClient().mobile"
             (ngModelChange)="updateNewClient('mobile', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
             required
           />
         </div>
@@ -114,7 +114,7 @@
             (blur)="closeKeyboard()"
             [ngModel]="newClient().ice"
             (ngModelChange)="updateNewClient('ice', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
             required
           />
         </div>
@@ -133,7 +133,7 @@
           (blur)="isInputFocused.set(false); closeKeyboard()"
           [ngModel]="newClient().address"
           (ngModelChange)="updateNewClient('address', $event)"
-          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 placeholder-gray-400 resize-none"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 resize-none focus:outline-none focus:shadow-sm"
           placeholder="Entrez l'adresse complète"
         ></textarea>
       </div>
@@ -157,7 +157,7 @@
             (blur)="isInputFocused.set(false); closeKeyboard()"
             [ngModel]="newClient().postalCode"
             (ngModelChange)="updateNewClient('postalCode', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
           />
         </div>
 
@@ -175,7 +175,7 @@
             (blur)="isInputFocused.set(false); closeKeyboard()"
             [ngModel]="newClient().city"
             (ngModelChange)="updateNewClient('city', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
           />
         </div>
 
@@ -196,7 +196,7 @@
             (blur)="isInputFocused.set(false); closeKeyboard()"
             [ngModel]="newClient().country"
             (ngModelChange)="updateNewClient('country', $event)"
-            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
           />
         </div>
       </div>

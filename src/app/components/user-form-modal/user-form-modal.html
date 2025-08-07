@@ -94,7 +94,7 @@
           (blur)="isInputFocused.set(false); closeKeyboard()"
           [ngModel]="newUser().fullName"
           (ngModelChange)="updateNewUser('fullName', $event)"
-          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
           required
         />
       </div>
@@ -113,7 +113,7 @@
           (blur)="isInputFocused.set(false); closeKeyboard()"
           [ngModel]="newUser().username"
           (ngModelChange)="updateNewUser('username', $event)"
-          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
           required
           pattern="^\d{4}$"
         />
@@ -136,7 +136,7 @@
           (blur)="isInputFocused.set(false); closeKeyboard()"
           [ngModel]="newUser().phoneNumber"
           (ngModelChange)="updateNewUser('phoneNumber', $event)"
-          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
         />
       </div>
 
@@ -150,7 +150,7 @@
           name="role"
           [ngModel]="newUser().roleName"
           (ngModelChange)="updateNewUser('roleName', $event)"
-          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
           required
         >
           <option value="utilisateur">Serveur</option>

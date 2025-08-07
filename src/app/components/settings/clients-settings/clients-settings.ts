@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-angular';
 import { ClientFormModalComponent } from '../../client-form-modal/client-form-modal';
+import { KeyboardService } from '../../../keyboard.service';
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
 
@@ -39,6 +40,7 @@ export class ClientsSettingsComponent implements OnInit {
   readonly ChevronRightIcon = ChevronRight;
 
   private clientService = inject(ClientService);
+  private keyboardService = inject(KeyboardService);
   clients = signal<Client[]>([]);
   currentUser = signal<UserAccount | null>(null);
   showClientForm = signal(false);
@@ -135,5 +137,13 @@ export class ClientsSettingsComponent implements OnInit {
           this.loadClients();
         });
     }
+  }
+
+  openKeyboard(): void {
+    this.keyboardService.openOnScreenKeyboard();
+  }
+
+  closeKeyboard(): void {
+    this.keyboardService.closeOnScreenKeyboard();
   }
 }
