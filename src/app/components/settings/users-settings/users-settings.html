@@ -74,6 +74,7 @@
 
     <!-- Pagination -->
     <app-pagination
+      *ngIf="filteredUsers().length > 10"
       [totalItems]="filteredUsers().length"
       [currentPage]="currentPage()"
       (pageChange)="onPageChange($event)"

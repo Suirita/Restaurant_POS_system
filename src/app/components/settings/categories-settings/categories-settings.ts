@@ -6,6 +6,7 @@ import { CategoryService } from '../../../category.service';
 import { Category } from '../../../types/pos.types';
 import {
   LucideAngularModule,
+  Tag,
   Search,
   Plus,
   Edit,
@@ -32,6 +33,7 @@ import { PaginationComponent } from '../../pagination/pagination';
 })
 export class CategoriesSettingsComponent implements OnInit {
   readonly Search = Search;
+  readonly Tag = Tag;
   readonly Plus = Plus;
   readonly edit = Edit;
   readonly trash2 = Trash2;

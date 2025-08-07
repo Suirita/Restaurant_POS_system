@@ -100,6 +100,7 @@
 
     <!-- Pagination -->
     <app-pagination
+      *ngIf="filteredMeals().length > 10"
       [totalItems]="filteredMeals().length"
       [currentPage]="currentPage()"
       (pageChange)="onPageChange($event)"
@@ -109,8 +110,8 @@
     <!-- Meal Create/Edit Form Modal -->
     <div
       *ngIf="showMealForm()"
-      class="fixed inset-0 flex items-center justify-center z-50"
       (click)="cancelForm()"
+      class="fixed inset-0 flex items-center justify-center z-50"
     >
       <!-- Backdrop -->
       <div
@@ -119,9 +120,9 @@
 
       <!-- Client Modal -->
       <div
-        class="bg-white rounded-xl shadow-2xl w-full max-w-xl overflow-hidden relative"
-        [ngClass]="{'-translate-y-40': isInputFocused()}"
         (click)="$event.stopPropagation()"
+        [ngClass]="{'-translate-y-40': isInputFocused()}"
+        class="bg-white rounded-xl shadow-2xl w-full max-w-xl overflow-hidden relative"
       >
         <!-- Card Header -->
         <div class="flex justify-between">

@@ -70,28 +70,18 @@
             </p>
           </div>
           <div class="mt-4">
-            <button 
+            <button
               class="w-full py-2 rounded-lg font-medium shadow-xs bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 flex items-center justify-center"
               (click)="sendWhatsapp(invoice); $event.stopPropagation()"
             >
-              <i-lucide [img]="MessageCircleIcon" [size]="16"></i-lucide>
-              <span class="ml-2">Envoyer via Whatsapp</span>
+              <div class="flex items-center justify-center">
+                <i-lucide [img]="MessageCircle" [size]="24"></i-lucide>
+                <i-lucide [img]="Phone" [size]="10" class="relative right-2"></i-lucide>
+              </div>
+              <span>Envoyer via Whatsapp</span>
             </button>
           </div>
         </div>
-      </div>
-      <app-pagination
-        [totalItems]="invoices().length"
-        [currentPage]="currentPage()"
-        (pageChange)="onPageChange($event)"
-      ></app-pagination>
-      <div class="p-4 border-t border-gray-200">
-        <button
-          (click)="onClose()"
-          class="w-full py-2 rounded-lg font-medium shadow-xs bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors duration-200"
-        >
-          Fermer
-        </button>
       </div>
     </div>
   </div>

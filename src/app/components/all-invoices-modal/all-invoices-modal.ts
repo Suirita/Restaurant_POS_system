@@ -2,9 +2,8 @@ import { Component, output, inject, input, signal, computed } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { Invoice, CartItem } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
-import { LucideAngularModule, X, LoaderCircle, MessageCircle } from 'lucide-angular';
+import { LucideAngularModule, X, LoaderCircle, MessageCircle, Phone } from 'lucide-angular';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
-import { PaginationComponent } from '../pagination/pagination';
 
 @Component({
   standalone: true,
@@ -14,13 +13,13 @@ import { PaginationComponent } from '../pagination/pagination';
     CommonModule,
     LucideAngularModule,
     InvoiceDetailsModalComponent,
-    PaginationComponent,
   ],
 })
 export class AllInvoicesModalComponent {
   readonly XIcon = X;
   readonly Loader = LoaderCircle;
-  readonly MessageCircleIcon = MessageCircle;
+  readonly MessageCircle = MessageCircle;
+  readonly Phone = Phone;
 
   private invoiceService = inject(InvoiceService);
   invoices = signal<Invoice[]>([]);
