@@ -16,6 +16,7 @@ import {
 import { forkJoin, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { UserFormModalComponent } from '../../user-form-modal/user-form-modal';
+import { ReusableTable } from '../../reusable-table/reusable-table';
 
 @Component({
   standalone: true,
@@ -25,6 +26,7 @@ import { UserFormModalComponent } from '../../user-form-modal/user-form-modal';
     FormsModule,
     LucideAngularModule,
     UserFormModalComponent,
+    ReusableTable,
   ],
   templateUrl: './users-settings.html',
 })
@@ -80,6 +82,8 @@ export class UsersSettingsComponent implements OnInit {
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
+
+  tableColumns = ['Image', 'Nom complet', 'Mot de passe', 'Téléphone', 'Rôle'];
 
   ngOnInit(): void {
     this.loadUsers();
@@ -179,9 +183,9 @@ export class UsersSettingsComponent implements OnInit {
     this.loadUsers();
   }
 
-  deleteUser(user: UserAccount): void {
+  deleteUser(userId: string): void {
     if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.deleteUser(user.userId).subscribe(() => {
+      this.userService.deleteUser(userId).subscribe(() => {
         this.loadUsers();
       });
     }

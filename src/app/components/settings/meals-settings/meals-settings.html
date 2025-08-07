@@ -90,93 +90,15 @@
     </div>
 
     <!-- Table -->
-    <div class="relative overflow-x-auto mb-3">
-      <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead class="text-sm text-gray-900 uppercase">
-          <tr>
-            <th scope="col" class="px-6 py-2">Image</th>
-            <th scope="col" class="px-6 py-2">Nom</th>
-            <th scope="col" class="px-6 py-2">Prix d'achat</th>
-            <th scope="col" class="px-6 py-2">Prix HT</th>
-            <th scope="col" class="px-6 py-2">Prix TTC</th>
-            <th scope="col" class="px-6 py-2">Catégorie</th>
-            <th scope="col" class="px-6 py-2">Labels</th>
-            <th scope="col" class="px-6 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-300">
-          <tr
-            class="bg-white border-t border-gray-200"
-            *ngFor="let meal of paginatedMeals()"
-          >
-            <td class="px-6 py-1 whitespace-nowrap">
-              <img
-                [src]="meal.image || 'https://placehold.co/1280x720'"
-                (error)="onImageError($event)"
-                alt="{{ meal.designation }}"
-                class="h-9 w-9 rounded-lg object-cover"
-              />
-            </td>
-            <th
-              scope="row"
-              class="px-6 py-1 w-64 font-medium text-gray-900 whitespace-nowrap"
-            >
-              {{ meal.designation }}
-            </th>
-            <td class="px-6 py-1">
-              {{ meal.purchasePrice | currency:'EUR':'symbol':'1.2-2' }}
-            </td>
-            <td class="px-6 py-1">
-              {{ meal.sellingPrice | currency:'EUR':'symbol':'1.2-2' }}
-            </td>
-            <td class="px-6 py-1">
-              {{ meal.totalTTC | currency:'EUR':'symbol':'1.2-2' }}
-            </td>
-            <td class="px-6 py-1">
-              <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-              >
-                {{ meal.categoryLabel }}
-              </span>
-            </td>
-            <td class="px-6 py-1">
-              <div *ngIf="meal.labels.length > 0">
-                <span
-                  *ngFor="let label of meal.labels"
-                  class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-                >
-                  {{label.value}}
-                </span>
-              </div>
-              <div *ngIf="meal.labels.length === 0">
-                <span class="text-3xl text-center">-</span>
-              </div>
-            </td>
-            <td class="px-6 py-2">
-              <div class="flex space-x-2">
-                <button
-                  (click)="openEditForm(meal)"
-                  class="inline-flex items-center p-1 text-sm font-medium text-white bg-blue-400 border border-gray-200 rounded-md"
-                >
-                  <i-lucide [img]="edit" class="w-5 h-5"></i-lucide>
-                </button>
-                <button
-                  (click)="deleteMeal(meal.id)"
-                  class="inline-flex items-center p-1 text-sm font-medium text-white bg-red-400 border border-gray -200 rounded-md"
-                >
-                  <i-lucide [img]="trash2" class="w-5 h-5"></i-lucide>
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="filteredMeals().length === 0">
-            <td colspan="6" class="p-6 text-center text-gray-500">
-              Aucun plat trouvé.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-reusable-table
+      [columns]="tableColumns"
+      [columnKeys]="tableColumnKeys"
+      [data]="paginatedMeals()"
+      [actions]="{ edit: true, delete: true }"
+      (onEdit)="openEditForm($event)"
+      (onDelete)="deleteMeal($event)"
+      (onImageError)="onImageError($event)"
+    ></app-reusable-table>
 
     <!-- Pagination -->
     <nav class="flex flex-col items-center space-y-1">

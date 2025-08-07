@@ -17,11 +17,12 @@ import {
   Trash2,
   X,
 } from 'lucide-angular';
+import { ReusableTable } from '../../reusable-table/reusable-table';
 
 @Component({
   standalone: true,
   selector: 'app-meals-settings',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, ReusableTable],
   templateUrl: './meals-settings.html',
 })
 export class MealsSettingsComponent implements OnInit {
@@ -112,13 +113,32 @@ export class MealsSettingsComponent implements OnInit {
     labels: [],
   };
 
+  tableColumns = [
+    'Image',
+    'Nom',
+    'Prix d\'achat',
+    'Prix HT',
+    'Prix TTC',
+    'Catégorie',
+    'Labels',
+  ];
+  tableColumnKeys = [
+    'image',
+    'designation',
+    'purchasePrice',
+    'sellingPrice',
+    'totalTTC',
+    'categoryLabel',
+    'labels',
+  ];
+
   ngOnInit(): void {
     this.loadMeals();
     this.loadCategories();
   }
 
   loadMeals(): void {
-    const user = JSON.parse(localStorage.getItem('user')!);
+    const user = JSON.parse(localStorage.getItem('user')!); // Ensure user is not null
     this.mealService.getMeals(user.token).subscribe((meals) => {
       this.meals.set(meals);
       this.goToPage(1); // Reset to first page
@@ -157,7 +177,7 @@ export class MealsSettingsComponent implements OnInit {
   }
 
   loadCategories(): void {
-    const user = JSON.parse(localStorage.getItem('user')!);
+    const user = JSON.parse(localStorage.getItem('user')!); // Ensure user is not null
     this.categoryService.getCategories(user.token).subscribe((categories) => {
       this.categories.set(categories);
     });

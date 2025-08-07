@@ -13,11 +13,12 @@ import {
   X,
 } from 'lucide-angular';
 import { HttpClient } from '@angular/common/http';
+import { ReusableTable } from '../../reusable-table/reusable-table';
 
 @Component({
   standalone: true,
   selector: 'app-categories-settings',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, ReusableTable],
   templateUrl: './categories-settings.html',
 })
 export class CategoriesSettingsComponent implements OnInit {
@@ -70,6 +71,9 @@ export class CategoriesSettingsComponent implements OnInit {
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
+
+  tableColumns = ['Image', 'Nom'];
+  tableColumnKeys = ['image', 'label'];
 
   ngOnInit(): void {
     this.loadCategories();
