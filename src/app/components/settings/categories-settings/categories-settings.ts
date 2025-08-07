@@ -56,7 +56,13 @@ export class CategoriesSettingsComponent implements OnInit {
   paginatedCategories = computed(() => {
     const startIndex = (this.currentPage() - 1) * 10;
     const endIndex = startIndex + 10;
-    return this.filteredCategories().slice(startIndex, endIndex);
+    const images = this.categoryImages();
+    return this.filteredCategories()
+      .slice(startIndex, endIndex)
+      .map((category) => ({
+        ...category,
+        image: images[category.label] || 'https://placehold.co/1280x720',
+      }));
   });
   pages = computed(() => {
     const total = this.totalPages();

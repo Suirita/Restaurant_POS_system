@@ -67,7 +67,15 @@ export class UsersSettingsComponent implements OnInit {
   paginatedUsers = computed(() => {
     const startIndex = (this.currentPage() - 1) * 10;
     const endIndex = startIndex + 10;
-    return this.filteredUsers().slice(startIndex, endIndex);
+    return this.filteredUsers()
+      .slice(startIndex, endIndex)
+      .map((user) => ({
+        ...user,
+        image:
+          user.image && user.image.content
+            ? user.image.content
+            : 'https://placehold.co/1280x720',
+      }));
   });
   pages = computed(() => {
     const total = this.totalPages();
