@@ -78,17 +78,6 @@
             </option>
           </select>
         </form>
-
-        <!-- <select
-        [value]="selectedCategory()"
-        (change)="onCategoryChange($event)"
-        class="px-4 py-2 rounded-lg border border-gray-200 shadow-xs text-gray-700"
-      >
-        <option value="">Toutes les catégories</option>
-        <option *ngFor="let category of categories()" [value]="category.id">
-          {{ category.label }}
-        </option>
-      </select> -->
       </div>
       <!-- Actions -->
       <button
@@ -101,23 +90,23 @@
     </div>
 
     <!-- Table -->
-    <div class="relative overflow-x-auto shadow-xs rounded-sm mb-3">
+    <div class="relative overflow-x-auto mb-3">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+        <thead class="text-sm text-gray-900 uppercase">
           <tr>
             <th scope="col" class="px-6 py-2">Image</th>
             <th scope="col" class="px-6 py-2">Nom</th>
             <th scope="col" class="px-6 py-2">Prix d'achat</th>
-            <th scope="col" class="px-6 py-2">Prix hors taxes</th>
+            <th scope="col" class="px-6 py-2">Prix HT</th>
             <th scope="col" class="px-6 py-2">Prix TTC</th>
             <th scope="col" class="px-6 py-2">Catégorie</th>
             <th scope="col" class="px-6 py-2">Labels</th>
             <th scope="col" class="px-6 py-2">Actions</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-gray-300">
           <tr
-            class="odd:bg-white even:bg-gray-50 border-b border-gray-200"
+            class="bg-white border-t border-gray-200"
             *ngFor="let meal of paginatedMeals()"
           >
             <td class="px-6 py-1 whitespace-nowrap">
@@ -130,7 +119,7 @@
             </td>
             <th
               scope="row"
-              class="px-6 py-1 font-medium text-gray-900 whitespace-nowrap"
+              class="px-6 py-1 w-64 font-medium text-gray-900 whitespace-nowrap"
             >
               {{ meal.designation }}
             </th>
