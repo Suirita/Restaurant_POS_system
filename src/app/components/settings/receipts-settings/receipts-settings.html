@@ -4,29 +4,45 @@
   </div>
 
   <!-- Tabs -->
-  <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-2 m-2">
-    <button
-      class="px-4 py-2 -mb-px border-b-2 font-medium focus:outline-none"
-      [ngClass]="{ 'border-black text-green-600': selectedTab() === 0, 'border-transparent text-gray-500': selectedTab() !== 0 }"
-      (click)="selectTab(0)"
-    >
-      Reçus
-    </button>
-    <button
-      class="px-4 py-2 -mb-px border-b-2 font-medium focus:outline-none"
-      [ngClass]="{ 'border-black text-green-600': selectedTab() === 1, 'border-transparent text-gray-500': selectedTab() !== 1 }"
-      (click)="selectTab(1)"
-    >
-      Factures
-    </button>
-
-    <ng-container>
-      <!-- Tab content -->
-      <div class="p-4">
-        <h3 class="text-lg font-semibold">Référence actuelle :</h3>
-        <p class="text-xl">{{ uniqueReference() }}</p>
+  <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-4 m-2">
+    <div class="w-full mb-8">
+      <div class="flex space-x-1 rounded-lg bg-gray-100 p-1">
+        <button
+          class="flex-1 flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+          [ngClass]="{ 'bg-white text-gray-900 shadow-sm': selectedTab() === 0, 'text-gray-500 hover:text-gray-700': selectedTab() !== 0 }"
+          (click)="selectTab(0)"
+        >
+          <i-lucide [img]="Receipt" class="h-5 w-5 mr-1"></i-lucide>
+          Reçus
+        </button>
+        <button
+          class="flex-1 flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+          [ngClass]="{ 'bg-white text-gray-900 shadow-sm': selectedTab() === 1, 'text-gray-500 hover:text-gray-700': selectedTab() !== 1 }"
+          (click)="selectTab(1)"
+        >
+          <i-lucide [img]="ReceiptText" class="h-5 w-5 mr-1"></i-lucide>
+          Factures
+        </button>
       </div>
-      <div class="p-4">
+    </div>
+
+    <!-- Tab content -->
+    <ng-container>
+      <!-- Current Reference -->
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+          <div>
+            <p class="text-sm font-medium text-blue-800">Référence actuelle</p>
+            <p class="text-lg font-bold text-blue-900">
+              {{ uniqueReference() }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuration Form -->
+      <div class="pt-4">
         <form
           (ngSubmit)="saveCounterSettings()"
           *ngIf="editableCounterSettings() as settings"
@@ -35,9 +51,10 @@
             <div class="mb-4">
               <label
                 for="racine"
-                class="block text-gray-700 text-sm font-bold mb-2"
-                >Racine :</label
+                class="block text-sm font-semibold text-gray-700"
               >
+                Racine
+              </label>
               <input
                 type="text"
                 id="racine"
@@ -46,21 +63,22 @@
                 (ngModelChange)="onSettingsChange(settings)"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
               />
             </div>
             <div class="mb-4">
               <label
                 for="dateFormat"
-                class="block text-gray-700 text-sm font-bold mb-2"
-                >Format de la date :</label
+                class="block text-sm font-semibold text-gray-700"
               >
+                Format de la date
+              </label>
               <select
                 id="dateFormat"
                 name="dateFormat"
                 [(ngModel)]="settings.dateFormat"
                 (ngModelChange)="onSettingsChange(settings)"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
               >
                 <option value="0">Pas de date</option>
                 <option value="1">Année</option>
@@ -70,9 +88,10 @@
             <div class="mb-4">
               <label
                 for="counterValue"
-                class="block text-gray-700 text-sm font-bold mb-2"
-                >Valeur du compteur :</label
+                class="block text-sm font-semibold text-gray-700"
               >
+                Valeur du compteur
+              </label>
               <input
                 type="number"
                 id="counterValue"
@@ -81,15 +100,16 @@
                 (ngModelChange)="onSettingsChange(settings)"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
               />
             </div>
             <div class="mb-4">
               <label
                 for="counterLength"
-                class="block text-gray-700 text-sm font-bold mb-2"
-                >Longueur du compteur :</label
+                class="block text-sm font-semibold text-gray-700"
               >
+                Longueur du compteur
+              </label>
               <input
                 type="number"
                 id="counterLength"
@@ -98,20 +118,30 @@
                 (ngModelChange)="onSettingsChange(settings)"
                 (focus)="openKeyboard()"
                 (blur)="closeKeyboard()"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-sm"
+                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
               />
             </div>
           </div>
-          <div class="mt-4 p-4 border-t border-gray-200">
-            <h3 class="text-lg font-semibold">
-              Aperçu de la nouvelle référence :
+
+          <!-- Preview -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">
+              Aperçu de la nouvelle référence
             </h3>
-            <p class="text-xl">{{ newReferencePreview() }}</p>
+            <div
+              class="bg-white border-2 border-dashed border-gray-300 rounded-lg p-4 text-center"
+            >
+              <p class="text-2xl font-bold text-gray-800">
+                {{ newReferencePreview() }}
+              </p>
+            </div>
           </div>
-          <div class="flex justify-end">
+
+          <!-- Save Button -->
+          <div class="flex justify-end pt-6 border-t border-gray-200">
             <button
               type="submit"
-              class="bg-black text-white px-4 py-2 rounded-md"
+              class="bg-black text-white border border-gray-800 shadow font-medium rounded-lg text-sm px-5 py-2.5"
             >
               Enregistrer
             </button>

@@ -13,7 +13,6 @@ import {
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
-import { PaginationComponent } from '../pagination/pagination';
 
 @Component({
   standalone: true,
@@ -24,7 +23,6 @@ import { PaginationComponent } from '../pagination/pagination';
     LucideAngularModule,
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
-    PaginationComponent,
   ],
 })
 export class AllReceiptsModalComponent {

@@ -7,6 +7,7 @@ import {
   computed,
   WritableSignal,
 } from '@angular/core';
+import { LucideAngularModule, ReceiptText, Receipt } from 'lucide-angular';
 import { KeyboardService } from '../../../keyboard.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,10 +17,13 @@ import { LoginService } from '../../../login.service';
 @Component({
   standalone: true,
   selector: 'app-receipts-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './receipts-settings.html',
 })
 export class ReceiptsSettingsComponent implements OnInit {
+  readonly ReceiptText = ReceiptText;
+  readonly Receipt = Receipt;
+
   selectedTab = signal(0);
   private configService = inject(ConfigurationService);
   private loginService = inject(LoginService);
