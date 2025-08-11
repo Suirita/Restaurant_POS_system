@@ -7,8 +7,9 @@ import {
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Invoice, CartItem } from '../../types/pos.types';
+import { Invoice, CartItem, Client } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
+import { ClientService } from '../../client.service';
 import {
   LucideAngularModule,
   ReceiptText,
@@ -37,6 +38,7 @@ export class AllInvoicesModalComponent {
   readonly Phone = Phone;
 
   private invoiceService = inject(InvoiceService);
+  private clientService = inject(ClientService);
   invoices = signal<Invoice[]>([]);
   isLoading = signal<boolean>(false);
   token = input.required<string>();
@@ -97,7 +99,7 @@ export class AllInvoicesModalComponent {
               detailedInvoice.orderDetails &&
               detailedInvoice.orderDetails.lineItems
             ) {
-              const lineItems: CartItem[] =
+              const lineItems: CartItem[] = 
                 detailedInvoice.orderDetails.lineItems.map((item: any) => ({
                   id: item.product.id,
                   designation: item.product.designation,
@@ -140,7 +142,25 @@ export class AllInvoicesModalComponent {
   }
 
   sendWhatsapp(invoice: Invoice) {
-    // Implement your WhatsApp logic here
-    console.log('Sending invoice via WhatsApp:', invoice);
+    this.clientService.getClients(this.token()).subscribe((clients: Client[]) => {
+      console.log('All clients:', clients);
+      console.log('Searching for client name:', invoice.clientName);
+
+      const client = clients.find(c => c.name.trim().toLowerCase() === invoice.clientName.trim().toLowerCase());
+      
+      console.log('Found client:', client);
+
+      if (client && client.mobile) {
+        const message = `Bonjour ${invoice.clientName},
+
+Voici les détails de votre facture ${invoice.invoiceNumber}:
+Total: ${invoice.total} EUR
+Date: ${new Date(invoice.date).toLocaleDateString()}`;
+        const whatsappUrl = `https://wa.me/${client.mobile}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+      } else {
+        alert('Numéro de téléphone du client non trouvé.');
+      }
+    });
   }
 }
