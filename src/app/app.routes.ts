@@ -11,7 +11,7 @@ import { CompanySettingsComponent } from './components/settings/company-settings
 import { ClientsSettingsComponent } from './components/settings/clients-settings/clients-settings';
 import { DashboardComponent } from './components/report/dashboard/dashboard';
 import { ReceiptsComponent } from './components/report/receipts/receipts';
-import { invoicesComponent } from './components/report/invoices/invoices';
+import { InvoicesComponent } from './components/report/invoices/invoices';
 
 export const routes: Routes = [
   {
@@ -44,7 +44,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'receipts', component: ReceiptsComponent },
-      { path: 'invoices', component: invoicesComponent },
+      { path: 'invoices', component: InvoicesComponent },
     ],
   },
 ];
