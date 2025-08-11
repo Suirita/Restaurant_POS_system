@@ -1,4 +1,4 @@
-<div class="bg-gray-100 rounded-xl shadow-2xl w-full max-w-5xl overflow-hidden relative">
+<div class="bg-gray-100 w-full overflow-hidden relative">
     <!-- Card Header -->
     <div class="flex justify-between">
       <div class="flex items-center gap-2 m-4">
@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-gray-900">Tous les reçus</h1>
       </div>
     </div>
-  
+
     <div class="px-4">
       <!-- Loading State -->
       <div *ngIf="isLoading()" class="text-center py-12">
@@ -16,7 +16,7 @@
           class="animate-spin mx-auto"
         ></i-lucide>
       </div>
-  
+
       <!-- No receipts found -->
       <div
         *ngIf="!isLoading() && receipts().length === 0"
@@ -26,7 +26,7 @@
         <p class="text-gray-500">Ajouter des reçus depuis le menu</p>
       </div>
     </div>
-  
+
     <!-- Card Body -->
     <div
       *ngIf="!isLoading() && receipts().length > 0"
@@ -56,7 +56,7 @@
               <span> {{ receipt.date | date: 'short' }} </span>
             </div>
           </div>
-  
+
           <!-- Card Body -->
           <div class="mb-1">
             <span class="text-xs font-medium text-gray-600">Total</span>
@@ -64,7 +64,7 @@
               {{ receipt.total | currency:'EUR' }}
             </div>
           </div>
-  
+
           <!-- Actions Buttons -->
           <div class="flex gap-2">
             <button
@@ -72,7 +72,7 @@
               class="border border-gray-200 shadow-xs font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center justify-center w-full"
             >
               <i-lucide [img]="FileText" class="w-4 h-4 me-2"></i-lucide>
-  
+
               Facturer
             </button>
             <button
@@ -80,7 +80,7 @@
               class="border border-gray-200 shadow-xs font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center justify-center w-full"
             >
               <i-lucide [img]="CreditCard" class="w-4 h-4 me-2"></i-lucide>
-  
+
               Payer
             </button>
           </div>
@@ -88,7 +88,7 @@
       </div>
     </div>
   </div>
-  
+
   <app-invoice-dialog
     *ngIf="isInvoiceDialogVisible()"
     [receipt]="selectedReceiptForInvoice()!"
@@ -96,7 +96,7 @@
     (close)="onCloseInvoiceDialog()"
     (invoiceGenerated)="onInvoiceGenerated()"
   ></app-invoice-dialog>
-  
+
   <app-receipt-details-modal
     *ngIf="isReceiptDetailsVisible()"
     [receipt]="selectedReceipt()!"

@@ -1,4 +1,4 @@
-<div class="bg-gray-100 rounded-xl shadow-2xl w-full max-w-5xl overflow-hidden relative">
+<div class="bg-gray-100 w-full overflow-hidden relative">
     <!-- Card Header -->
     <div class="p-2 text-center flex justify-between items-center">
       <div class="flex items-center gap-2 m-4">
@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-gray-900">Tous les factures</h1>
       </div>
     </div>
-  
+
     <div class="px-4">
       <!-- Loading State -->
       <div *ngIf="isLoading()" class="text-center py-12">
@@ -16,7 +16,7 @@
           class="animate-spin mx-auto"
         ></i-lucide>
       </div>
-  
+
       <!-- No invoices found -->
       <div
         *ngIf="!isLoading() && invoices().length === 0"
@@ -30,7 +30,7 @@
         </p>
       </div>
     </div>
-  
+
     <!-- Card Body -->
     <div
       *ngIf="!isLoading() && invoices().length > 0"
@@ -58,7 +58,7 @@
             <span> {{ invoice.date | date: 'short' }} </span>
           </div>
         </div>
-  
+
         <!-- Card Body -->
         <div class="mb-1">
           <span class="text-xs font-medium text-gray-600">Total</span>
@@ -66,7 +66,7 @@
             {{ invoice.total | currency:'EUR' }}
           </div>
         </div>
-  
+
         <!-- Actions Buttons -->
         <div>
           <button
@@ -87,7 +87,7 @@
       </div>
     </div>
   </div>
-  
+
   <app-invoice-details-modal
     *ngIf="isInvoiceDetailsVisible()"
     [invoice]="selectedInvoice()!"
