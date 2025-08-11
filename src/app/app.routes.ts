@@ -9,6 +9,9 @@ import { RoomsSettingsComponent } from './components/settings/rooms-settings/roo
 import { ReceiptsSettingsComponent } from './components/settings/receipts-settings/receipts-settings';
 import { CompanySettingsComponent } from './components/settings/company-settings/company-settings';
 import { ClientsSettingsComponent } from './components/settings/clients-settings/clients-settings';
+import { DashboardComponent } from './components/report/dashboard/dashboard';
+import { ReceiptsComponent } from './components/report/receipts/receipts';
+import { invoicesComponent } from './components/report/invoices/invoices';
 
 export const routes: Routes = [
   {
@@ -37,5 +40,11 @@ export const routes: Routes = [
   {
     path: 'reports',
     component: ReportComponent,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'receipts', component: ReceiptsComponent },
+      { path: 'invoices', component: invoicesComponent },
+    ],
   },
 ];
