@@ -57,8 +57,9 @@
       <div
         *ngFor="let receipt of paginatedReceipts()"
         class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm"
+        (click)="onReceiptClick(receipt)"
       >
-        <div (click)="onReceiptClick(receipt)">
+        <div>
           <!-- Card Header -->
           <div class="border-b border-gray-200 pb-2 mb-1">
             <div class="flex items-start justify-between mb-1">
@@ -107,7 +108,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
