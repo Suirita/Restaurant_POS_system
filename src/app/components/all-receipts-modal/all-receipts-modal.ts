@@ -58,7 +58,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   pay = output<string>();
   receiptSelected = output<Receipt>();
 
-  tableColumns: string[] = ['Order Number', 'Table Name', 'Date', 'Total'];
+  tableColumns: string[] = ['Numéro de commande', 'Service', 'Date', 'Total'];
   tableColumnKeys: string[] = ['orderNumber', 'tableName', 'date', 'total'];
 
   customActions: TableAction[] = [];
@@ -96,7 +96,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.receiptService
       .getAllReceipts(this.token(), this.userId(), ['in_progress'])
       .subscribe((receipts: Receipt[]) => {
-        this.receipts.set(receipts);
+        this.receipts.set(receipts.map(receipt => ({
+          ...receipt,
+          date: new Date(receipt.date) // Convert date string to Date object
+        })));
         this.isLoading.set(false);
       });
   }
