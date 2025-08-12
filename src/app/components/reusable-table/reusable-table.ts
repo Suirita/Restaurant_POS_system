@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
+
+export interface TableAction {
+  icon: any; // Lucide icon name
+  label: string;
+  onClick: (item: any) => void;
+}
 
 @Component({
   selector: 'app-reusable-table',
@@ -18,6 +24,8 @@ export class ReusableTable {
   } = {};
   @Input() imagePath?: string;
   @Input() onImageError!: (event: Event) => void;
+  @Input() customActions: TableAction[] = [];
+  @Input() columnTemplates: { [key: string]: TemplateRef<any> } = {};
 
   @Output() onEdit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();

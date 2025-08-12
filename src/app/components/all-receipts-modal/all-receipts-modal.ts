@@ -1,4 +1,4 @@
-import { Component, output, inject, input, signal, computed } from '@angular/core';
+import { Component, output, inject, input, signal, computed, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Receipt } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
@@ -9,10 +9,12 @@ import {
   Clock,
   CreditCard,
   FileText,
+
 } from 'lucide-angular';
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
+import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 
 @Component({
   standalone: true,
@@ -23,9 +25,10 @@ import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
     LucideAngularModule,
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
+    ReusableTable,
   ],
 })
-export class AllReceiptsModalComponent {
+export class AllReceiptsModalComponent implements AfterViewInit {
   readonly Receipt = ReceiptIcon;
   readonly XIcon = X;
   readonly Loader = LoaderCircle;
@@ -55,8 +58,37 @@ export class AllReceiptsModalComponent {
   pay = output<string>();
   receiptSelected = output<Receipt>();
 
+  tableColumns: string[] = ['Order Number', 'Table Name', 'Date', 'Total'];
+  tableColumnKeys: string[] = ['orderNumber', 'tableName', 'date', 'total'];
+
+  customActions: TableAction[] = [];
+
+  @ViewChild('totalColumnTemplate') totalColumnTemplate!: TemplateRef<any>;
+  @ViewChild('dateColumnTemplate') dateColumnTemplate!: TemplateRef<any>;
+
+  columnTemplates: { [key: string]: TemplateRef<any> } = {};
+
   ngOnInit() {
     this.loadReceipts();
+    this.customActions = [
+      {
+        icon: FileText,
+        label: 'Facturer',
+        onClick: (receipt: Receipt) => this.onGenerateInvoiceClick(receipt),
+      },
+      {
+        icon: CreditCard,
+        label: 'Payer',
+        onClick: (receipt: Receipt) => this.onPayClick(receipt.orderNumber),
+      },
+    ];
+  }
+
+  ngAfterViewInit() {
+    this.columnTemplates = {
+      total: this.totalColumnTemplate,
+      date: this.dateColumnTemplate,
+    };
   }
 
   loadReceipts() {

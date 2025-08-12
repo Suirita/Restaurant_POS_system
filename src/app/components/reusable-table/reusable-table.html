@@ -1,70 +1,85 @@
 <div class="relative overflow-x-auto mb-3">
-  <table class="w-full text-md font-medium text-left rtl:text-right text-gray-600">
+  <table
+    class="w-full text-md font-medium text-left rtl:text-right text-gray-600 bg-white rounded"
+  >
     <thead class="text-sm text-gray-900 uppercase">
       <tr>
         <th scope="col" class="px-6 py-2" *ngFor="let column of columns">
           {{ column }}
         </th>
-        <th scope="col" class="px-6 py-2" *ngIf="actions">Actions</th>
+        <th
+          scope="col"
+          class="px-6 py-2"
+          *ngIf="actions || customActions.length > 0"
+        >
+          Actions
+        </th>
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-300">
-      <tr
-        class="bg-white border-t border-gray-200"
-        *ngFor="let item of data"
-      >
+      <tr class="bg-white border-t border-gray-200" *ngFor="let item of data">
         <td class="px-6 py-1" *ngFor="let key of columnKeys">
-          <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="key === 'image'">
-              <img
-                [src]="item[key] || 'https://placehold.co/1280x720'"
-                (error)="onImageError($event)"
-                alt="{{ item.designation }}"
-                class="h-9 w-9 rounded-lg object-cover"
-              />
-            </ng-container>
+          <ng-container *ngIf="columnTemplates[key]; else defaultContent">
             <ng-container
-              *ngSwitchCase="isObject(item[key])"
-            >
-              <div *ngIf="item[key].length > 0">
-                <span
-                  *ngFor="let label of item[key]"
-                  class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-                >
-                  {{ label.value }}
-                </span>
-              </div>
-              <div *ngIf="item[key].length === 0">
-                <span class="text-3xl text-center">-</span>
-              </div>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              {{ item[key] }}
-            </ng-container>
+              *ngTemplateOutlet="columnTemplates[key]; context: { item: item }"
+            ></ng-container>
           </ng-container>
+          <ng-template #defaultContent>
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="key === 'image'">
+                <img
+                  [src]="item[key] || 'https://placehold.co/1280x720'"
+                  (error)="onImageError($event)"
+                  alt="{{ item.designation }}"
+                  class="h-9 w-9 rounded-lg object-cover"
+                />
+              </ng-container>
+              <ng-container *ngSwitchCase="isObject(item[key])">
+                <div *ngIf="item[key].length > 0">
+                  <span
+                    *ngFor="let label of item[key]"
+                    class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+                  >
+                    {{ label.value }}
+                  </span>
+                </div>
+                <div *ngIf="item[key].length === 0">
+                  <span class="text-3xl text-center">-</span>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchDefault> {{ item[key] }} </ng-container>
+            </ng-container>
+          </ng-template>
         </td>
-        <td class="px-6 py-2" *ngIf="actions">
+        <td class="px-6 py-2" *ngIf="actions || customActions.length > 0">
           <div class="flex space-x-2">
             <button
               *ngIf="actions.edit"
               (click)="onEdit.emit(item)"
-              class="inline-flex items-center p-1 text-sm font-medium text-white bg-blue-400 border border-gray-200 rounded-md"
+              class="text-white bg-blue-400 border border-gray-200 shadow font-medium rounded-lg text-sm px-2 py-2 text-center inline-flex items-center"
             >
               <i-lucide name="edit" class="w-5 h-5"></i-lucide>
             </button>
             <button
               *ngIf="actions.delete"
               (click)="onDelete.emit(item.id)"
-              class="inline-flex items-center p-1 text-sm font-medium text-white bg-red-400 border border-gray-200 rounded-md"
+              class="text-white bg-red-400 border border-gray-200 shadow font-medium rounded-lg text-sm px-2 py-2 text-center inline-flex items-center"
             >
               <i-lucide name="trash-2" class="w-5 h-5"></i-lucide>
+            </button>
+            <button
+              *ngFor="let action of customActions"
+              (click)="action.onClick(item)"
+              class="text-gray-800 border border-gray-200 shadow font-medium rounded-lg text-sm px-2 py-2 text-center inline-flex items-center"
+            >
+              <i-lucide [img]="action.icon" class="w-5 h-5"></i-lucide>
             </button>
           </div>
         </td>
       </tr>
       <tr *ngIf="data.length === 0">
         <td
-          [attr.colspan]="columns.length + (actions ? 1 : 0)"
+          [attr.colspan]="columns.length + (actions || customActions.length > 0 ? 1 : 0)"
           class="p-6 text-center text-gray-500"
         >
           No data found.
