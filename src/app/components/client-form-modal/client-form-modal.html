@@ -117,6 +117,9 @@
             class="w-full px-3 py-1.5 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:shadow-sm"
             required
           />
+          <span *ngIf="iceExistsError()" class="text-red-500 text-sm mt-1">
+            Ce numéro ICE existe déjà.
+          </span>
         </div>
       </div>
 
@@ -204,7 +207,7 @@
       <div class="flex justify-end">
         <button
           type="submit"
-          [disabled]="clientForm.invalid"
+          [disabled]="clientForm.invalid || iceExistsError()"
           class="bg-black text-white border border-gray-800 shadow font-medium rounded-lg text-sm px-5 py-2.5"
         >
           {{ editingClient() ? 'Mettre à jour' : 'Créer' }}

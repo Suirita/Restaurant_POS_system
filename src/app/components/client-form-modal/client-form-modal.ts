@@ -12,6 +12,8 @@ import { ClientService } from '../../client.service';
 import { KeyboardService } from '../../keyboard.service';
 import { Client } from '../../types/pos.types';
 import { LucideAngularModule, X, Users } from 'lucide-angular';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-client-form-modal',
@@ -27,6 +29,9 @@ export class ClientFormModalComponent implements OnInit {
   token = input.required<string>();
   newClient = signal<Client>({} as Client);
   isInputFocused = signal<boolean>(false);
+  iceExistsError = signal<boolean>(false);
+
+  private iceInputChanged = new Subject<string>();
 
   readonly XIcon = X;
   readonly Users = Users;
@@ -37,12 +42,24 @@ export class ClientFormModalComponent implements OnInit {
   ngOnInit() {
     if (this.editingClient()) {
       this.newClient.set({ ...this.editingClient()! });
+      this.iceExistsError.set(false);
     } else {
       this.newClient.set({} as Client);
     }
+
+    this.iceInputChanged.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((ice) => {
+      this.checkIceExistence(ice);
+    });
   }
 
   saveClient() {
+    if (this.iceExistsError()) {
+      return;
+    }
+
     if (this.editingClient()) {
       this.clientService
         .updateClient(this.newClient(), this.token())
@@ -59,7 +76,30 @@ export class ClientFormModalComponent implements OnInit {
   }
 
   updateNewClient<K extends keyof Client>(key: K, value: Client[K]) {
-    this.newClient.update((client) => ({ ...client, [key]: value }));
+    this.newClient.update((client) => ({
+      ...client,
+      [key]: value
+    }));
+    if (key === 'ice') {
+      this.iceInputChanged.next(value as string);
+    }
+  }
+
+  checkIceExistence(ice: string) {
+    if (!ice) {
+      this.iceExistsError.set(false);
+      return;
+    }
+
+    // If editing, allow the current client's ICE to pass
+    if (this.editingClient() && this.editingClient()?.ice === ice) {
+      this.iceExistsError.set(false);
+      return;
+    }
+
+    this.clientService.checkIceExists(ice, this.token()).subscribe((exists) => {
+      this.iceExistsError.set(exists);
+    });
   }
 
   openKeyboard(): void {

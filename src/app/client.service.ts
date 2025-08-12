@@ -118,4 +118,10 @@ export class ClientService {
       { headers }
     );
   }
+
+  checkIceExists(ice: string, token: string | undefined): Observable<boolean> {
+    return this.getClients(token).pipe(
+      map((clients) => clients.some((client) => client.ice === ice))
+    );
+  }
 }
