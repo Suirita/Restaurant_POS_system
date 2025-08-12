@@ -100,7 +100,6 @@ export class PosComponent implements OnInit {
   isTableOccupied = signal<boolean>(false);
 
   // Order counter for receipt numbers
-
   isEditing = signal(false);
   lastOrderContext = signal<
     'take away' | 'occupied_table' | 'unoccupied_table' | null
