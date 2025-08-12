@@ -1,5 +1,6 @@
 import { Component, output, inject, input, signal, computed, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { Receipt } from '../../types/pos.types';
 import { ReceiptService } from '../../receipt.service';
 import {
@@ -22,6 +23,7 @@ import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
   templateUrl: './all-receipts-modal.html',
   imports: [
     CommonModule,
+    FormsModule, // Add FormsModule here
     LucideAngularModule,
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
@@ -46,12 +48,51 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   userId = input.required<string>();
   token = input.required<string>();
 
+  // Filter signals
+  commandNumberFilter = signal<string>('');
+  serviceTypeFilter = signal<string>('all');
+  selectedDateFilter = signal<string>('');
+
   // Pagination
   currentPage = signal<number>(1);
+
+  filteredReceipts = computed(() => {
+    let filtered = this.receipts();
+
+    const commandNum = this.commandNumberFilter().toLowerCase();
+    if (commandNum) {
+      filtered = filtered.filter(receipt =>
+        receipt.orderNumber.toLowerCase().includes(commandNum)
+      );
+    }
+
+    const serviceType = this.serviceTypeFilter();
+    if (serviceType !== 'all') {
+      filtered = filtered.filter(receipt => {
+        if (serviceType === 'table') {
+          return receipt.tableName && receipt.tableName.toLowerCase() !== 'take away';
+        } else if (serviceType === 'takeaway') {
+          return receipt.tableName && receipt.tableName.toLowerCase() === 'take away';
+        }
+        return true;
+      });
+    }
+
+    const selectedDate = this.selectedDateFilter();
+    if (selectedDate) {
+      filtered = filtered.filter(receipt => {
+        const receiptDate = new Date(receipt.date).toISOString().split('T')[0];
+        return receiptDate === selectedDate;
+      });
+    }
+
+    return filtered;
+  });
+
   paginatedReceipts = computed(() => {
     const startIndex = (this.currentPage() - 1) * 8;
     const endIndex = startIndex + 8;
-    return this.receipts().slice(startIndex, endIndex);
+    return this.filteredReceipts().slice(startIndex, endIndex);
   });
 
   close = output<void>();
