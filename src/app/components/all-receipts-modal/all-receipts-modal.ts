@@ -10,7 +10,7 @@ import {
   Clock,
   CreditCard,
   FileText,
-
+Search,
 } from 'lucide-angular';
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
@@ -37,6 +37,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   readonly Clock = Clock;
   readonly CreditCard = CreditCard;
   readonly FileText = FileText;
+  readonly Search = Search;
 
   private receiptService = inject(ReceiptService);
   receipts = signal<Receipt[]>([]);
