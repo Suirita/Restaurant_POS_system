@@ -7,7 +7,8 @@ import {
   LucideAngularModule,
   X,
   ReceiptText,
-  ChevronDown
+  LoaderCircle,
+  ChevronDown,
 } from 'lucide-angular';
 import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
 import { finalize, switchMap } from 'rxjs';
@@ -27,6 +28,7 @@ export class InvoiceDialogComponent {
   readonly XIcon = X;
   readonly ReceiptText = ReceiptText;
   readonly ChevronDown = ChevronDown;
+  readonly LoaderCircle = LoaderCircle;
 
   clients = signal<Client[]>([]);
   isClientFormVisible = signal(false);
