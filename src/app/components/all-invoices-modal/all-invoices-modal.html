@@ -50,61 +50,33 @@
       </div>
     </div>
 
-    <!-- Card Body -->
+    <!-- Card Body: Table -->
     <div
       *ngIf="!isLoading() && invoices().length > 0"
-      class="grid grid-cols-4 gap-2 px-4 pb-4 max-h-[80vh] overflow-y-auto scrollbar-hide"
+      class="px-4 pb-4 max-h-[80vh] overflow-y-auto scrollbar-hide"
     >
-      <!-- Invoice Card -->
-      <div
-        *ngFor="let invoice of paginatedInvoices()"
-        class="bg-white rounded-lg p-2 border border-gray-200 shadow-sm"
-        (click)="onInvoiceClick(invoice)"
+      <app-reusable-table
+        [columns]="tableColumns"
+        [columnKeys]="tableColumnKeys"
+        [data]="paginatedInvoices()"
+        [customActions]="customActions"
+        [columnTemplates]="columnTemplates"
+        (onRowClick)="onInvoiceClick($event)"
       >
-        <!-- Card Header -->
-        <div class="border-b border-gray-200 pb-2 mb-1">
-          <div class="flex items-start justify-between">
-            <h2 class="text-lg font-medium text-gray-900">
-              {{ invoice.invoiceNumber }}
-            </h2>
-          </div>
-          <div class="flex items-center gap-2 text-md text-gray-700 mb-1">
-            <i-lucide [img]="User" class="w-5 h-5"></i-lucide>
-            <span> {{ invoice.clientName }} </span>
-          </div>
-          <div class="flex items-center gap-2 text-xs text-gray-500">
-            <i-lucide [img]="Clock" class="w-3 h-3"></i-lucide>
-            <span> {{ invoice.date | date: 'short' }} </span>
-          </div>
-        </div>
-
-        <!-- Card Body -->
-        <div class="mb-1">
-          <span class="text-xs font-medium text-gray-600">Total</span>
-          <div class="text-xl font-bold text-gray-900">
-            {{ invoice.total | currency:'EUR' }}
-          </div>
-        </div>
-
-        <!-- Actions Buttons -->
-        <div>
-          <button
-            (click)="sendWhatsapp(invoice); $event.stopPropagation()"
-            class="text-white bg-green-400 border border-green-200 shadow-xs font-medium rounded-lg text-sm px-4 py-1.5 text-center inline-flex items-center justify-center w-full"
-          >
-            <div class="flex items-center justify-center">
-              <i-lucide [img]="MessageCircle" [size]="22"></i-lucide>
-              <i-lucide
-                [img]="Phone"
-                [size]="10"
-                class="relative right-2"
-              ></i-lucide>
-            </div>
-            Envoyer
-          </button>
-        </div>
-      </div>
+      </app-reusable-table>
     </div>
+    <!-- Column templates for table -->
+    <ng-template #totalColumnTemplate let-item="item">
+      <div class="text-lg font-medium text-gray-900">
+        {{ item.total | currency:'EUR' }}
+      </div>
+    </ng-template>
+
+    <ng-template #dateColumnTemplate let-item="item">
+      <div class="flex items-center gap-2 text-md text-gray-600">
+        <span> {{ item.date | date: 'short' }} </span>
+      </div>
+    </ng-template>
   </div>
 </div>
 

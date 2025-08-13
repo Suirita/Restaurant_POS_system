@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+} from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 
 export interface TableAction {
@@ -29,6 +35,7 @@ export class ReusableTable {
 
   @Output() onEdit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+  @Output() onRowClick = new EventEmitter<any>();
 
   isObject(value: any): boolean {
     return typeof value === 'object' && value !== null;

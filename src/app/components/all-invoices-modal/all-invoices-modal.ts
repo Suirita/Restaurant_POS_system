@@ -5,6 +5,9 @@ import {
   input,
   signal,
   computed,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Invoice, CartItem, Client } from '../../types/pos.types';
@@ -21,14 +24,20 @@ import {
   Phone,
 } from 'lucide-angular';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
+import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 
 @Component({
   standalone: true,
   selector: 'app-all-invoices-modal',
   templateUrl: './all-invoices-modal.html',
-  imports: [CommonModule, LucideAngularModule, InvoiceDetailsModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    InvoiceDetailsModalComponent,
+    ReusableTable,
+  ],
 })
-export class AllInvoicesModalComponent {
+export class AllInvoicesModalComponent implements AfterViewInit {
   readonly ReceiptText = ReceiptText;
   readonly XIcon = X;
   readonly Loader = LoaderCircle;
@@ -56,8 +65,31 @@ export class AllInvoicesModalComponent {
 
   close = output<void>();
 
+  // Table configuration
+  tableColumns: string[] = ['Numéro de facture', 'Client', 'Date', 'Total'];
+  tableColumnKeys: string[] = ['invoiceNumber', 'clientName', 'date', 'total'];
+  customActions: TableAction[] = [];
+
+  @ViewChild('totalColumnTemplate') totalColumnTemplate!: TemplateRef<any>;
+  @ViewChild('dateColumnTemplate') dateColumnTemplate!: TemplateRef<any>;
+  columnTemplates: { [key: string]: TemplateRef<any> } = {};
+
   ngOnInit() {
     this.loadInvoices();
+    this.customActions = [
+      {
+        icon: MessageCircle,
+        label: 'Envoyer',
+        onClick: (invoice: Invoice) => this.sendWhatsapp(invoice),
+      },
+    ];
+  }
+
+  ngAfterViewInit() {
+    this.columnTemplates = {
+      total: this.totalColumnTemplate,
+      date: this.dateColumnTemplate,
+    };
   }
 
   loadInvoices() {
@@ -99,7 +131,7 @@ export class AllInvoicesModalComponent {
               detailedInvoice.orderDetails &&
               detailedInvoice.orderDetails.lineItems
             ) {
-              const lineItems: CartItem[] = 
+              const lineItems: CartItem[] =
                 detailedInvoice.orderDetails.lineItems.map((item: any) => ({
                   id: item.product.id,
                   designation: item.product.designation,
@@ -142,25 +174,33 @@ export class AllInvoicesModalComponent {
   }
 
   sendWhatsapp(invoice: Invoice) {
-    this.clientService.getClients(this.token()).subscribe((clients: Client[]) => {
-      console.log('All clients:', clients);
-      console.log('Searching for client name:', invoice.clientName);
+    this.clientService
+      .getClients(this.token())
+      .subscribe((clients: Client[]) => {
+        console.log('All clients:', clients);
+        console.log('Searching for client name:', invoice.clientName);
 
-      const client = clients.find(c => c.name.trim().toLowerCase() === invoice.clientName.trim().toLowerCase());
-      
-      console.log('Found client:', client);
+        const client = clients.find(
+          (c) =>
+            c.name.trim().toLowerCase() ===
+            invoice.clientName.trim().toLowerCase()
+        );
 
-      if (client && client.mobile) {
-        const message = `Bonjour ${invoice.clientName},
+        console.log('Found client:', client);
+
+        if (client && client.mobile) {
+          const message = `Bonjour ${invoice.clientName},
 
 Voici les détails de votre facture ${invoice.invoiceNumber}:
 Total: ${invoice.total} EUR
 Date: ${new Date(invoice.date).toLocaleDateString()}`;
-        const whatsappUrl = `https://wa.me/${client.mobile}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-      } else {
-        alert('Numéro de téléphone du client non trouvé.');
-      }
-    });
+          const whatsappUrl = `https://wa.me/${
+            client.mobile
+          }?text=${encodeURIComponent(message)}`;
+          window.open(whatsappUrl, '_blank');
+        } else {
+          alert('Numéro de téléphone du client non trouvé.');
+        }
+      });
   }
 }
