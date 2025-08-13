@@ -10,6 +10,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Invoice, CartItem, Client } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
 import { ClientService } from '../../client.service';
@@ -22,6 +23,7 @@ import {
   User,
   MessageCircle,
   Phone,
+  Search,
 } from 'lucide-angular';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
@@ -32,6 +34,7 @@ import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
   templateUrl: './all-invoices-modal.html',
   imports: [
     CommonModule,
+    FormsModule,
     LucideAngularModule,
     InvoiceDetailsModalComponent,
     ReusableTable,
@@ -45,6 +48,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   readonly User = User;
   readonly MessageCircle = MessageCircle;
   readonly Phone = Phone;
+  readonly Search = Search;
 
   private invoiceService = inject(InvoiceService);
   private clientService = inject(ClientService);
@@ -55,12 +59,44 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   isInvoiceDetailsVisible = signal(false);
   selectedInvoice = signal<Invoice | null>(null);
 
+  // Filters
+  invoiceNumberFilter = signal<string>('');
+  clientNameFilter = signal<string>('');
+  selectedDateFilter = signal<string>('');
+
   // Pagination
   currentPage = signal<number>(1);
+  filteredInvoices = computed(() => {
+    let filtered = this.invoices();
+
+    const invoiceTerm = this.invoiceNumberFilter().trim().toLowerCase();
+    if (invoiceTerm) {
+      filtered = filtered.filter((inv) =>
+        inv.invoiceNumber?.toLowerCase().includes(invoiceTerm)
+      );
+    }
+
+    const clientTerm = this.clientNameFilter().trim().toLowerCase();
+    if (clientTerm) {
+      filtered = filtered.filter((inv) =>
+        inv.clientName?.toLowerCase().includes(clientTerm)
+      );
+    }
+
+    const selectedDate = this.selectedDateFilter();
+    if (selectedDate) {
+      filtered = filtered.filter((inv) => {
+        const dateOnly = new Date(inv.date).toISOString().split('T')[0];
+        return dateOnly === selectedDate;
+      });
+    }
+
+    return filtered;
+  });
   paginatedInvoices = computed(() => {
     const startIndex = (this.currentPage() - 1) * 9;
     const endIndex = startIndex + 9;
-    return this.invoices().slice(startIndex, endIndex);
+    return this.filteredInvoices().slice(startIndex, endIndex);
   });
 
   close = output<void>();

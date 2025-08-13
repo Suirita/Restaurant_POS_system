@@ -27,6 +27,71 @@
     </div>
 
     <div class="px-4">
+      <!-- Filter Controls -->
+      <div class="w-full flex justify-between mb-3">
+        <div class="w-full flex gap-3">
+          <!-- Search by invoice number -->
+          <form class="w-1/2">
+            <label
+              for="search-invoice"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
+            >
+              Rechercher par facture
+            </label>
+            <div class="relative w-full">
+              <div
+                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+              >
+                <i-lucide [img]="Search" [size]="16"></i-lucide>
+              </div>
+              <input
+                type="search"
+                id="search-invoice"
+                placeholder=" Rechercher par Numéro de facture ..."
+                [(ngModel)]="invoiceNumberFilter"
+                name="invoiceNumberFilter"
+                class="block w-full p-2 ps-10 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
+              />
+            </div>
+          </form>
+
+          <!-- Search by client name -->
+          <form class="w-1/2">
+            <label
+              for="search-client"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
+            >
+              Rechercher par client
+            </label>
+            <div class="relative w-full">
+              <div
+                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+              >
+                <i-lucide [img]="Search" [size]="16"></i-lucide>
+              </div>
+              <input
+                type="search"
+                id="search-client"
+                placeholder=" Rechercher par Nom du client ..."
+                [(ngModel)]="clientNameFilter"
+                name="clientNameFilter"
+                class="block w-full p-2 ps-10 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
+              />
+            </div>
+          </form>
+
+          <!-- Filter by date -->
+          <div class="w-1/3">
+            <input
+              type="date"
+              class="block w-full p-2 ps-10 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
+              [(ngModel)]="selectedDateFilter"
+              name="selectedDateFilter"
+            />
+          </div>
+        </div>
+      </div>
+
       <!-- Loading State -->
       <div *ngIf="isLoading()" class="text-center py-12">
         <i-lucide
