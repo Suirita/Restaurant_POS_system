@@ -108,6 +108,15 @@
         [columnTemplates]="columnTemplates"
       >
       </app-reusable-table>
+
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="filteredReceipts().length > 8"
+        [totalItems]="filteredReceipts().length"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
     </div>
 
     <ng-template #totalColumnTemplate let-item="item">

@@ -27,6 +27,7 @@ import {
 } from 'lucide-angular';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
+import { PaginationComponent } from '../pagination/pagination';
 
 @Component({
   standalone: true,
@@ -38,6 +39,7 @@ import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
     LucideAngularModule,
     InvoiceDetailsModalComponent,
     ReusableTable,
+    PaginationComponent,
   ],
 })
 export class AllInvoicesModalComponent implements AfterViewInit {

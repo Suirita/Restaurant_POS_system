@@ -129,6 +129,15 @@
         (onRowClick)="onInvoiceClick($event)"
       >
       </app-reusable-table>
+
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="filteredInvoices().length > 9"
+        [totalItems]="filteredInvoices().length"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
     </div>
     <!-- Column templates for table -->
     <ng-template #totalColumnTemplate let-item="item">

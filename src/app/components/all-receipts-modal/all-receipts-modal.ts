@@ -1,4 +1,14 @@
-import { Component, output, inject, input, signal, computed, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  output,
+  inject,
+  input,
+  signal,
+  computed,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { Receipt } from '../../types/pos.types';
@@ -10,12 +20,13 @@ import {
   Clock,
   CreditCard,
   FileText,
-Search,
+  Search,
 } from 'lucide-angular';
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
+import { PaginationComponent } from '../pagination/pagination';
 
 @Component({
   standalone: true,
@@ -28,6 +39,7 @@ import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
     ReusableTable,
+    PaginationComponent,
   ],
 })
 export class AllReceiptsModalComponent implements AfterViewInit {
@@ -62,18 +74,22 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
     const commandNum = this.commandNumberFilter().toLowerCase();
     if (commandNum) {
-      filtered = filtered.filter(receipt =>
+      filtered = filtered.filter((receipt) =>
         receipt.orderNumber.toLowerCase().includes(commandNum)
       );
     }
 
     const serviceType = this.serviceTypeFilter();
     if (serviceType !== 'all') {
-      filtered = filtered.filter(receipt => {
+      filtered = filtered.filter((receipt) => {
         if (serviceType === 'table') {
-          return receipt.tableName && receipt.tableName.toLowerCase() !== 'take away';
+          return (
+            receipt.tableName && receipt.tableName.toLowerCase() !== 'take away'
+          );
         } else if (serviceType === 'takeaway') {
-          return receipt.tableName && receipt.tableName.toLowerCase() === 'take away';
+          return (
+            receipt.tableName && receipt.tableName.toLowerCase() === 'take away'
+          );
         }
         return true;
       });
@@ -81,7 +97,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
     const selectedDate = this.selectedDateFilter();
     if (selectedDate) {
-      filtered = filtered.filter(receipt => {
+      filtered = filtered.filter((receipt) => {
         const receiptDate = new Date(receipt.date).toISOString().split('T')[0];
         return receiptDate === selectedDate;
       });
@@ -138,10 +154,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.receiptService
       .getAllReceipts(this.token(), this.userId(), ['in_progress'])
       .subscribe((receipts: Receipt[]) => {
-        this.receipts.set(receipts.map(receipt => ({
-          ...receipt,
-          date: new Date(receipt.date) // Convert date string to Date object
-        })));
+        this.receipts.set(
+          receipts.map((receipt) => ({
+            ...receipt,
+            date: new Date(receipt.date), // Convert date string to Date object
+          }))
+        );
         this.isLoading.set(false);
       });
   }
