@@ -107,8 +107,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   });
 
   paginatedReceipts = computed(() => {
-    const startIndex = (this.currentPage() - 1) * 8;
-    const endIndex = startIndex + 8;
+    const startIndex = (this.currentPage() - 1) * 10;
+    const endIndex = startIndex + 10;
     return this.filteredReceipts().slice(startIndex, endIndex);
   });
 
