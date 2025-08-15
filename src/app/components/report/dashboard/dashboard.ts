@@ -210,8 +210,8 @@ export class DashboardComponent implements OnInit {
     if (!this.startDate || !this.endDate) {
       return invoices;
     }
-    return invoices.filter((invoice) => {
-      const invoiceDate = new Date(invoice.date);
+    return invoices.filter((invoice: any) => {
+      const invoiceDate = new Date(invoice.creationDate);
       return invoiceDate >= this.startDate! && invoiceDate <= this.endDate!;
     });
   }
