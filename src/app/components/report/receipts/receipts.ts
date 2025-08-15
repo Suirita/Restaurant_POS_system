@@ -69,7 +69,7 @@ export class ReceiptsComponent {
     if (!this.user || !this.user.token) return;
     this.isLoading.set(true);
     this.receiptService
-      .getAllReceipts(this.user.token, this.user.userId, ['in_progress'])
+      .getAllReceipts(this.user.token, [this.user.userId], ['in_progress'])
       .subscribe((receipts: Receipt[]) => {
         this.receipts.set(receipts);
         this.isLoading.set(false);

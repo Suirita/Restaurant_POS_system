@@ -34,26 +34,29 @@ export class DashboardComponent implements OnInit {
   loadAnalytics() {
     const token = JSON.parse(localStorage.getItem('user') || '{}').token;
     if (token) {
-      this.receiptService.getAllReceipts(token).subscribe((receipts) => {
-        this.calculateTotalRevenue(receipts);
-        this.createSalesByCategoryChart(receipts);
-        this.createSalesOverTimeChart(receipts);
+      this.userService.getUsers().subscribe((users) => {
+        const userIds = users.map((user) => user.userId);
+        this.receiptService
+          .getAllReceipts(token, userIds, [
+            'refused',
+            'accepted',
+            'in_progress',
+            'late',
+          ])
+          .subscribe((receipts) => {
+            this.calculateTotalRevenue(receipts);
+            this.createSalesByCategoryChart(receipts);
+            this.createSalesOverTimeChart(receipts);
+            this.calculateBusiestUser(receipts, users);
+
+            this.mealService.getMeals(token).subscribe((meals) => {
+              this.calculateTopSellingMeal(receipts, meals);
+            });
+          });
       });
 
       this.invoiceService.getAllInvoices(token).subscribe((invoices) => {
         this.calculateTotalInvoices(invoices.value);
-      });
-
-      this.mealService.getMeals(token).subscribe((meals) => {
-        this.receiptService.getAllReceipts(token).subscribe((receipts) => {
-          this.calculateTopSellingMeal(receipts, meals);
-        });
-      });
-
-      this.userService.getUsers().subscribe((users) => {
-        this.receiptService.getAllReceipts(token).subscribe((receipts) => {
-          this.calculateBusiestUser(receipts, users);
-        });
       });
     }
   }
@@ -82,6 +85,11 @@ export class DashboardComponent implements OnInit {
       });
     });
 
+    if (mealCounts.size === 0) {
+      this.topSellingMeal.set('N/A');
+      return;
+    }
+
     const topMealId = [...mealCounts.entries()].reduce((a, b) =>
       a[1] > b[1] ? a : b
     )[0];
@@ -92,8 +100,18 @@ export class DashboardComponent implements OnInit {
   calculateBusiestUser(receipts: Receipt[], users: UserAccount[]) {
     const userCounts = new Map<string, number>();
     receipts.forEach((receipt) => {
-      userCounts.set(receipt.userId, (userCounts.get(receipt.userId) || 0) + 1);
+      if (receipt.userId) {
+        userCounts.set(
+          receipt.userId,
+          (userCounts.get(receipt.userId) || 0) + 1
+        );
+      }
     });
+
+    if (userCounts.size === 0) {
+      this.busiestUser.set('N/A');
+      return;
+    }
 
     const busiestUserId = [...userCounts.entries()].reduce((a, b) =>
       a[1] > b[1] ? a : b

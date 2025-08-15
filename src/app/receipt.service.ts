@@ -482,7 +482,11 @@ export class ReceiptService {
     tableName: string,
     token: string
   ): Observable<Receipt | undefined> {
-    return this.getAllReceipts(token, undefined, ['in_progress', 'refused', 'late']).pipe(
+    return this.getAllReceipts(token, undefined, [
+      'in_progress',
+      'refused',
+      'late',
+    ]).pipe(
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
         if (receipt && receipt.id) {
@@ -557,7 +561,7 @@ export class ReceiptService {
 
   public getAllReceipts(
     token: string,
-    userId?: string,
+    userIds?: string[],
     status?: string[]
   ): Observable<Receipt[]> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -566,12 +570,14 @@ export class ReceiptService {
       PageSize: 1000,
       status: ['refused', 'accepted', 'in_progress'],
     };
-    if (userId) {
-      body.techniciansId = [userId];
+    if (userIds && userIds.length > 0) {
+      body.techniciansId = userIds;
+      console.log(userIds);
     }
     if (status) {
       body.status = status;
     }
+
     return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
       map((response) => {
         if (response && response.value) {
