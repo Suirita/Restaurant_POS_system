@@ -281,8 +281,7 @@ export class InvoiceService {
                         )}`,
                         description: `Rappel total TTC Devis : ${receipt.total.toFixed(
                           2
-                        )}€
-Total avancement de facturation : 10 % `,
+                        )} € Total avancement de facturation : 10 % `,
                       },
                       typeFinanciere: 0,
                     };
