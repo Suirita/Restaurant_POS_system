@@ -6,8 +6,9 @@
 
     <div class="grid grid-cols-4 gap-4 mb-4">
       <div class="bg-white p-4 rounded-lg shadow">
-        <h2 class="text-lg font-semibold">Total Revenue</h2>
+        <h2 class="text-lg font-semibold">Total Revenue (Receipts)</h2>
         <p class="text-3xl font-bold">{{ totalRevenue() | currency:'EUR' }}</p>
+        <p class="text-sm text-gray-500">{{ totalReceipts() }} receipts</p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow">
         <h2 class="text-lg font-semibold">Total Invoices</h2>

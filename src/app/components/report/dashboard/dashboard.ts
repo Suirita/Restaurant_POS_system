@@ -22,6 +22,7 @@ export class DashboardComponent implements OnInit {
   private userService = inject(UserService);
 
   totalRevenue = signal<number>(0);
+  totalReceipts = signal<number>(0);
   totalInvoices = signal<number>(0);
   topSellingMeal = signal<string>('');
   busiestUser = signal<string>('');
@@ -58,8 +59,15 @@ export class DashboardComponent implements OnInit {
   }
 
   calculateTotalRevenue(receipts: Receipt[]) {
-    const revenue = receipts.reduce((sum, receipt) => sum + receipt.total, 0);
+    const filteredReceipts = receipts.filter(
+      (receipt) => receipt.status !== 'billed'
+    );
+    const revenue = filteredReceipts.reduce(
+      (sum, receipt) => sum + receipt.total,
+      0
+    );
     this.totalRevenue.set(revenue);
+    this.totalReceipts.set(filteredReceipts.length);
   }
 
   calculateTotalInvoices(invoices: Invoice[]) {

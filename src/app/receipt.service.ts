@@ -16,8 +16,15 @@ export class ReceiptService {
 
   constructor() {}
 
-  private buildQuoteBody(receipt: Receipt, reference: string, status: string = 'in_progress'): any {
-    const total = receipt.items.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0);
+  private buildQuoteBody(
+    receipt: Receipt,
+    reference: string,
+    status: string = 'in_progress'
+  ): any {
+    const total = receipt.items.reduce(
+      (sum, item) => sum + item.sellingPrice * item.quantity,
+      0
+    );
 
     const body = {
       labels: [],
@@ -305,7 +312,11 @@ export class ReceiptService {
     });
   }
 
-  saveReceipt(receipt: Receipt, token: string, status: string = 'in_progress'): void {
+  saveReceipt(
+    receipt: Receipt,
+    token: string,
+    status: string = 'in_progress'
+  ): void {
     this.configurationService
       .getUniqueReference(token, 4)
       .pipe(
@@ -323,7 +334,11 @@ export class ReceiptService {
       });
   }
 
-  updateReceipt(receipt: Receipt, token: string, status: string = 'in_progress'): Observable<any> {
+  updateReceipt(
+    receipt: Receipt,
+    token: string,
+    status: string = 'in_progress'
+  ): Observable<any> {
     return this.getReceiptDetails(receipt.id, token).pipe(
       switchMap((detailsResponse) => {
         const quoteToUpdate = detailsResponse.value;
@@ -467,7 +482,7 @@ export class ReceiptService {
     tableName: string,
     token: string
   ): Observable<Receipt | undefined> {
-    return this.getAllReceipts(token, undefined, ['in_progress']).pipe(
+    return this.getAllReceipts(token, undefined, ['in_progress', 'refused', 'late']).pipe(
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
         if (receipt && receipt.id) {
@@ -491,7 +506,7 @@ export class ReceiptService {
                       tva: product.vat || 0,
                       categoryId: product.categoryId,
                       categoryLabel: product.categoryLabel,
-                      image: '', // Image is not in the response, default to empty string
+                      image: '',
                       quantity: item.quantity,
                       labels: product.labels || [],
                     };
@@ -515,21 +530,29 @@ export class ReceiptService {
 
   deleteReceipt(id: string, token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete<any>(`${this.baseUrl}/Quote/${id}/Delete`, { headers });
+    return this.http.delete<any>(`${this.baseUrl}/Quote/${id}/Delete`, {
+      headers,
+    });
   }
 
   deleteReceiptByOrderNumber(orderNumber: string, token: string): void {
-    this.getAllReceipts(token, undefined, ['in_progress']).pipe(
-      switchMap(receipts => {
-        const receipt = receipts.find(r => r.orderNumber === orderNumber);
-        if (receipt && receipt.id) {
-          return this.deleteReceipt(receipt.id, token);
-        }
-        return of(null);
-      })
-    ).subscribe({
-      error: (error) => console.error(`Error deleting receipt with order number ${orderNumber}:`, error)
-    });
+    this.getAllReceipts(token, undefined, ['in_progress'])
+      .pipe(
+        switchMap((receipts) => {
+          const receipt = receipts.find((r) => r.orderNumber === orderNumber);
+          if (receipt && receipt.id) {
+            return this.deleteReceipt(receipt.id, token);
+          }
+          return of(null);
+        })
+      )
+      .subscribe({
+        error: (error) =>
+          console.error(
+            `Error deleting receipt with order number ${orderNumber}:`,
+            error
+          ),
+      });
   }
 
   public getAllReceipts(
@@ -540,7 +563,8 @@ export class ReceiptService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body: any = {
       Page: 1,
-      PageSize: 100,
+      PageSize: 1000,
+      status: ['refused', 'accepted', 'in_progress'],
     };
     if (userId) {
       body.techniciansId = [userId];

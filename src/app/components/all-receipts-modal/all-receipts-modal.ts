@@ -152,7 +152,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   loadReceipts() {
     this.isLoading.set(true);
     this.receiptService
-      .getAllReceipts(this.token(), this.userId(), ['in_progress'])
+      .getAllReceipts(this.token(), this.userId(), ['in_progress', 'refused', 'late'])
       .subscribe((receipts: Receipt[]) => {
         this.receipts.set(
           receipts.map((receipt) => ({
