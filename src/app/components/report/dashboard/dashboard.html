@@ -1,7 +1,7 @@
 <div class="p-4">
   <div class="mx-auto p-4 m-4 bg-white rounded-lg shadow border-gray-200">
     <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-bold">Analytics Dashboard</h1>
+      <h1 class="text-2xl font-bold">Tableau de bord analytique</h1>
       <div class="flex items-center space-x-4">
         <div
           *ngIf="selectedPeriod() === 'custom'"
@@ -26,39 +26,39 @@
           (change)="onPeriodChange(periodSelect.value)"
           class="text-gray-900 bg-white text-sm rounded-lg block w-full p-2 border border-gray-200 shadow-xs focus:outline-none focus:shadow-sm"
         >
-          <option value="today">Today</option>
-          <option value="this_week">This Week</option>
-          <option value="this_month">This Month</option>
-          <option value="this_quarter">This Quarter</option>
-          <option value="this_year" selected>This Year</option>
-          <option value="all">All Time</option>
-          <option value="custom">Custom</option>
+          <option value="today">Aujourd'hui</option>
+          <option value="this_week">Cette Semaine</option>
+          <option value="this_month">Ce Mois</option>
+          <option value="this_quarter">Ce Trimestre</option>
+          <option value="this_year" selected>Cette Année</option>
+          <option value="all">Tout le temps</option>
+          <option value="custom">Personnalisé</option>
         </select>
       </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="bg-white p-4 rounded-lg shadow">
-        <h2 class="text-lg font-semibold">Total Revenue (Receipts)</h2>
+        <h2 class="text-lg font-semibold">Revenu Total (Reçus)</h2>
         <p class="text-3xl font-bold">{{ totalRevenue() | currency:'EUR' }}</p>
-        <p class="text-sm text-gray-500">{{ totalReceipts() }} receipts</p>
+        <p class="text-sm text-gray-500">{{ totalReceipts() }} reçus</p>
       </div>
       <div class="bg-white p-4 rounded-lg shadow">
-        <h2 class="text-lg font-semibold">Total Revenue (Invoices)</h2>
+        <h2 class="text-lg font-semibold">Revenu Total (Factures)</h2>
         <p class="text-3xl font-bold">
           {{ totalInvoicesRevenue() | currency:'EUR' }}
         </p>
-        <p class="text-sm text-gray-500">{{ totalInvoices() }} invoices</p>
+        <p class="text-sm text-gray-500">{{ totalInvoices() }} factures</p>
       </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <div class="bg-white p-4 rounded-lg shadow max-h-96">
-        <h2 class="text-lg font-semibold mb-2">Sales by Category</h2>
+        <h2 class="text-lg font-semibold mb-2">Ventes par Catégorie</h2>
         <canvas id="salesByCategoryChart"></canvas>
       </div>
       <div class="bg-white p-4 rounded-lg shadow max-h-96">
-        <h2 class="text-lg font-semibold mb-2">Sales Over Time</h2>
+        <h2 class="text-lg font-semibold mb-2">Ventes au Fil du Temps</h2>
         <canvas id="salesOverTimeChart"></canvas>
       </div>
     </div>
