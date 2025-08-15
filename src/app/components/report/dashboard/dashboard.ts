@@ -24,8 +24,7 @@ export class DashboardComponent implements OnInit {
   totalRevenue = signal<number>(0);
   totalReceipts = signal<number>(0);
   totalInvoices = signal<number>(0);
-  topSellingMeal = signal<string>('');
-  busiestUser = signal<string>('');
+  totalInvoicesRevenue = signal<number>(0);
 
   ngOnInit() {
     this.loadAnalytics();
@@ -38,20 +37,15 @@ export class DashboardComponent implements OnInit {
         const userIds = users.map((user) => user.userId);
         this.receiptService
           .getAllReceipts(token, userIds, [
-            'refused',
-            'accepted',
             'in_progress',
+            'accepted',
             'late',
+            'refused',
           ])
           .subscribe((receipts) => {
             this.calculateTotalRevenue(receipts);
             this.createSalesByCategoryChart(receipts);
             this.createSalesOverTimeChart(receipts);
-            this.calculateBusiestUser(receipts, users);
-
-            this.mealService.getMeals(token).subscribe((meals) => {
-              this.calculateTopSellingMeal(receipts, meals);
-            });
           });
       });
 
@@ -74,50 +68,12 @@ export class DashboardComponent implements OnInit {
   }
 
   calculateTotalInvoices(invoices: Invoice[]) {
+    const revenue = invoices.reduce(
+      (sum, invoice) => sum + (invoice.totalTTC || invoice.total),
+      0
+    );
+    this.totalInvoicesRevenue.set(revenue);
     this.totalInvoices.set(invoices.length);
-  }
-
-  calculateTopSellingMeal(receipts: Receipt[], meals: Meal[]) {
-    const mealCounts = new Map<string, number>();
-    receipts.forEach((receipt) => {
-      receipt.items.forEach((item) => {
-        mealCounts.set(item.id, (mealCounts.get(item.id) || 0) + item.quantity);
-      });
-    });
-
-    if (mealCounts.size === 0) {
-      this.topSellingMeal.set('N/A');
-      return;
-    }
-
-    const topMealId = [...mealCounts.entries()].reduce((a, b) =>
-      a[1] > b[1] ? a : b
-    )[0];
-    const topMeal = meals.find((meal) => meal.id === topMealId);
-    this.topSellingMeal.set(topMeal ? topMeal.designation : 'N/A');
-  }
-
-  calculateBusiestUser(receipts: Receipt[], users: UserAccount[]) {
-    const userCounts = new Map<string, number>();
-    receipts.forEach((receipt) => {
-      if (receipt.userId) {
-        userCounts.set(
-          receipt.userId,
-          (userCounts.get(receipt.userId) || 0) + 1
-        );
-      }
-    });
-
-    if (userCounts.size === 0) {
-      this.busiestUser.set('N/A');
-      return;
-    }
-
-    const busiestUserId = [...userCounts.entries()].reduce((a, b) =>
-      a[1] > b[1] ? a : b
-    )[0];
-    const busiestUser = users.find((user) => user.userId === busiestUserId);
-    this.busiestUser.set(busiestUser ? busiestUser.username : 'N/A');
   }
 
   createSalesByCategoryChart(receipts: Receipt[]) {

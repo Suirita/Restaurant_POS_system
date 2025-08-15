@@ -215,16 +215,11 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     this.clientService
       .getClients(this.token())
       .subscribe((clients: Client[]) => {
-        console.log('All clients:', clients);
-        console.log('Searching for client name:', invoice.clientName);
-
         const client = clients.find(
           (c) =>
             c.name.trim().toLowerCase() ===
             invoice.clientName.trim().toLowerCase()
         );
-
-        console.log('Found client:', client);
 
         if (client && client.mobile) {
           const message = `Bonjour ${invoice.clientName},

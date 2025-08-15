@@ -61,8 +61,6 @@ export class MealsSettingsComponent implements OnInit {
   labelSearchTerm = signal<string>('');
 
   filteredMeals = computed(() => {
-    console.log(this.selectedCategory());
-    console.log(this.meals());
     const term = this.searchTerm().toLowerCase();
     const categoryId = this.selectedCategory();
     const labelTerm = this.labelSearchTerm().toLowerCase();
@@ -100,7 +98,7 @@ export class MealsSettingsComponent implements OnInit {
   tableColumns = [
     'Image',
     'Nom',
-    'Prix d\'achat',
+    "Prix d'achat",
     'Prix HT',
     'Prix TTC',
     'Catégorie',

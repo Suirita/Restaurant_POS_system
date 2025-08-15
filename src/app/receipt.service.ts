@@ -572,7 +572,6 @@ export class ReceiptService {
     };
     if (userIds && userIds.length > 0) {
       body.techniciansId = userIds;
-      console.log(userIds);
     }
     if (status) {
       body.status = status;

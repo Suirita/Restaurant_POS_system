@@ -92,6 +92,7 @@ export interface Invoice {
   clientName: string;
   date: Date;
   total: number;
+  totalTTC?: number;
   items: CartItem[];
   clientAddress?: string;
   clientICE?: string;
