@@ -77,23 +77,72 @@ export class DashboardComponent implements OnInit {
     const now = new Date();
     switch (period) {
       case 'today':
-        this.startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-        this.endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+        this.startDate = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          0,
+          0,
+          0,
+          0
+        );
+        this.endDate = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          23,
+          59,
+          59,
+          999
+        );
         break;
       case 'this_week':
         const currentDay = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-        const firstDay = now.getDate() - currentDay + (currentDay === 0 ? -6 : 1); // Adjust for Sunday
-        this.startDate = new Date(now.getFullYear(), now.getMonth(), firstDay, 0, 0, 0, 0);
-        this.endDate = new Date(this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate() + 6, 23, 59, 59, 999);
+        const firstDay =
+          now.getDate() - currentDay + (currentDay === 0 ? -6 : 1); // Adjust for Sunday
+        this.startDate = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          firstDay,
+          0,
+          0,
+          0,
+          0
+        );
+        this.endDate = new Date(
+          this.startDate.getFullYear(),
+          this.startDate.getMonth(),
+          this.startDate.getDate() + 6,
+          23,
+          59,
+          59,
+          999
+        );
         break;
       case 'this_month':
         this.startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        this.endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+        this.endDate = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0,
+          23,
+          59,
+          59,
+          999
+        );
         break;
       case 'this_quarter':
         const quarter = Math.floor(now.getMonth() / 3);
         this.startDate = new Date(now.getFullYear(), quarter * 3, 1);
-        this.endDate = new Date(now.getFullYear(), quarter * 3 + 3, 0, 23, 59, 59, 999);
+        this.endDate = new Date(
+          now.getFullYear(),
+          quarter * 3 + 3,
+          0,
+          23,
+          59,
+          59,
+          999
+        );
         break;
       case 'this_year':
         this.startDate = new Date(now.getFullYear(), 0, 1);
@@ -121,9 +170,25 @@ export class DashboardComponent implements OnInit {
     if (!dateValue) return;
     const date = new Date(dateValue);
     if (type === 'start') {
-      this.startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+      this.startDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        0,
+        0,
+        0,
+        0
+      );
     } else {
-      this.endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+      this.endDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+        999
+      );
     }
 
     if (this.startDate && this.endDate && this.startDate <= this.endDate) {
@@ -135,7 +200,7 @@ export class DashboardComponent implements OnInit {
     if (!this.startDate || !this.endDate) {
       return receipts;
     }
-    return receipts.filter(receipt => {
+    return receipts.filter((receipt) => {
       const receiptDate = new Date(receipt.date);
       return receiptDate >= this.startDate! && receiptDate <= this.endDate!;
     });
@@ -145,7 +210,7 @@ export class DashboardComponent implements OnInit {
     if (!this.startDate || !this.endDate) {
       return invoices;
     }
-    return invoices.filter(invoice => {
+    return invoices.filter((invoice) => {
       const invoiceDate = new Date(invoice.date);
       return invoiceDate >= this.startDate! && invoiceDate <= this.endDate!;
     });
@@ -221,8 +286,10 @@ export class DashboardComponent implements OnInit {
     });
 
     const sortedDates = [...salesByDate.keys()].sort();
-    const chartLabels = sortedDates.map(date => new Date(date).toLocaleDateString());
-    const chartDataValues = sortedDates.map(date => salesByDate.get(date)!);
+    const chartLabels = sortedDates.map((date) =>
+      new Date(date).toLocaleDateString()
+    );
+    const chartDataValues = sortedDates.map((date) => salesByDate.get(date)!);
 
     const chartData = {
       labels: chartLabels,

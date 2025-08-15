@@ -309,9 +309,6 @@ Total avancement de facturation : 10 % `,
     const body = {
       Page: 1,
       PageSize: 10000,
-      OrderBy: 'creationDate',
-      SortDirection: 0,
-      SearchQuery: '',
       techniciansId: [],
       label: ['chneg3084mkah1'],
     };

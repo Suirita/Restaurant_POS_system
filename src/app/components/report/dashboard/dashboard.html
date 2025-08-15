@@ -24,13 +24,13 @@
         <select
           #periodSelect
           (change)="onPeriodChange(periodSelect.value)"
-          class="border border-gray-200 shadow-xs text-gray-900 bg-white text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
+          class="text-gray-900 bg-white text-sm rounded-lg block w-full p-2 border border-gray-200 shadow-xs focus:outline-none focus:shadow-sm"
         >
           <option value="today">Today</option>
           <option value="this_week">This Week</option>
-          <option value="this_month" selected>This Month</option>
+          <option value="this_month">This Month</option>
           <option value="this_quarter">This Quarter</option>
-          <option value="this_year">This Year</option>
+          <option value="this_year" selected>This Year</option>
           <option value="all">All Time</option>
           <option value="custom">Custom</option>
         </select>
