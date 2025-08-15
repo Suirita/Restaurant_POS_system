@@ -11,20 +11,20 @@
             type="date"
             #startDateInput
             (change)="onDateChange(startDateInput.value, 'start')"
-            class="p-2 border rounded"
+            class="block w-full p-2 ps-2 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
           />
           <span>-</span>
           <input
             type="date"
             #endDateInput
             (change)="onDateChange(endDateInput.value, 'end')"
-            class="p-2 border rounded"
+            class="block w-full p-2 ps-2 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
           />
         </div>
         <select
           #periodSelect
           (change)="onPeriodChange(periodSelect.value)"
-          class="p-2 border rounded"
+          class="border border-gray-200 shadow-xs text-gray-900 bg-white text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
         >
           <option value="today">Today</option>
           <option value="this_week">This Week</option>
