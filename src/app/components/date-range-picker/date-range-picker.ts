@@ -1,5 +1,19 @@
-import { Component, EventEmitter, Input, Output, ElementRef, ViewChild, HostListener } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ElementRef,
+  ViewChild,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  LucideAngularModule,
+  CalendarRange,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-angular';
 
 export interface DateRange {
   from?: Date;
@@ -8,11 +22,15 @@ export interface DateRange {
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   selector: 'app-date-range-picker',
   templateUrl: './date-range-picker.html',
 })
 export class DateRangePickerComponent {
+  readonly CalendarRange = CalendarRange;
+  readonly ChevronLeft = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
+
   @Input() value: DateRange = {};
   @Input() placeholder: string = 'Pick a date range';
   @Input() className: string = '';
@@ -159,9 +177,17 @@ export class DateRangePickerComponent {
 
   formatDateRange(): string {
     if (!this.value?.from) return this.placeholder;
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    if (!this.value?.to) return this.value.from.toLocaleDateString('fr-FR', options);
-    return `${this.value.from.toLocaleDateString('fr-FR', options)} - ${this.value.to.toLocaleDateString('fr-FR', options)}`;
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+    if (!this.value?.to)
+      return this.value.from.toLocaleDateString('fr-FR', options);
+    return `${this.value.from.toLocaleDateString(
+      'fr-FR',
+      options
+    )} - ${this.value.to.toLocaleDateString('fr-FR', options)}`;
   }
 
   createNewDate(day: number): Date {

@@ -5,19 +5,7 @@
     (click)="toggleOpen()"
     class="text-gray-900 bg-white w-full flex items-center justify-start rounded-lg border border-gray-200 shadow-xs px-3 py-2 text-left text-sm"
   >
-    <svg
-      class="mr-2 h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-      />
-    </svg>
+    <i-lucide [img]="CalendarRange" class="mr-2 h-5 w-5"></i-lucide>
     {{ formatDateRange() }}
   </button>
 
@@ -29,19 +17,19 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-4">
       <button
-        class="h-7 w-7 flex items-center justify-center border rounded"
+        class="h-8 w-8 flex items-center justify-center bg-black text-white rounded-lg border shadow-2xs"
         (click)="navigateMonth('prev')"
       >
-        ‹
+        <i-lucide [img]="ChevronLeft" class="h-5 w-5"></i-lucide>
       </button>
       <div class="text-sm font-medium">
         {{ MONTHS[currentMonth] }} {{ currentYear }}
       </div>
       <button
-        class="h-7 w-7 flex items-center justify-center border rounded"
+        class="h-8 w-8 flex items-center justify-center bg-black text-white rounded-lg border shadow-2xs"
         (click)="navigateMonth('next')"
       >
-        ›
+        <i-lucide [img]="ChevronRight" class="h-5 w-5"></i-lucide>
       </button>
     </div>
 
