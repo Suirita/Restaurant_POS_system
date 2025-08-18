@@ -304,10 +304,7 @@ export class DashboardComponent implements OnInit {
           position: 'right',
         },
         centerText: {
-          text: `${totalSales.toLocaleString('fr-FR', {
-            style: 'currency',
-            currency: 'EUR',
-          })}`,
+          text: `${totalSales}`,
         },
       },
     };
