@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
   totalInvoices = signal<number>(0);
   totalInvoicesRevenue = signal<number>(0);
 
-  selectedPeriod = signal('this_year');
+  selectedPeriod = signal('this_month');
   startDate: Date | null = null;
   endDate: Date | null = null;
 
