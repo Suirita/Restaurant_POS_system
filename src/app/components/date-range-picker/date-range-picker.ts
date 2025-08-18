@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface DateRange {
@@ -17,6 +17,8 @@ export class DateRangePickerComponent {
   @Input() placeholder: string = 'Pick a date range';
   @Input() className: string = '';
   @Output() valueChange = new EventEmitter<DateRange>();
+
+  @ViewChild('dateRangePicker') dateRangePickerRef!: ElementRef;
 
   isOpen = false;
   currentMonth = new Date().getMonth();
@@ -39,6 +41,13 @@ export class DateRangePickerComponent {
     'Décembre',
   ];
   DAYS = ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'];
+
+  @HostListener('document:mousedown', ['$event'])
+  onGlobalClick(event: MouseEvent): void {
+    if (!this.dateRangePickerRef.nativeElement.contains(event.target as Node)) {
+      this.isOpen = false;
+    }
+  }
 
   toggleOpen() {
     this.isOpen = !this.isOpen;
