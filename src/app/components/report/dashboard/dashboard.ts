@@ -5,8 +5,14 @@ import { InvoiceService } from '../../../invoice.service';
 import { UserService } from '../../../user.service';
 import { Receipt, Invoice } from '../../../types/pos.types';
 import { CommonModule } from '@angular/common';
-import { CustomSelectComponent, Option } from '../../custom-select/custom-select';
-import { DateRangePickerComponent, DateRange } from '../../date-range-picker/date-range-picker';
+import {
+  CustomSelectComponent,
+  Option,
+} from '../../custom-select/custom-select';
+import {
+  DateRangePickerComponent,
+  DateRange,
+} from '../../date-range-picker/date-range-picker';
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -290,6 +296,8 @@ export class DashboardComponent implements OnInit {
     const chartOptions: any = {
       responsive: true,
       maintainAspectRatio: false,
+      radius: '80%',
+      borderRadius: 5,
       plugins: {
         legend: {
           display: true,
