@@ -39,13 +39,19 @@
 
     <div class="grid grid-cols-2 gap-4">
       <div class="bg-white p-4 rounded-lg shadow">
-        <h2 class="text-lg font-semibold mb-2">Ventes par Catégorie</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold mb-2">Ventes par Catégorie</h2>
+          <button (click)="exportToPDF('salesByCategoryChart')" class="text-sm text-blue-500">Exporter en PDF</button>
+        </div>
         <div class="mx-auto max-h-64">
           <canvas id="salesByCategoryChart"></canvas>
         </div>
       </div>
       <div class="bg-white p-4 rounded-lg shadow">
-        <h2 class="text-lg font-semibold mb-2">Ventes au Fil du Temps</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold mb-2">Ventes au Fil du Temps</h2>
+          <button (click)="exportToPDF('salesOverTimeChart')" class="text-sm text-blue-500">Exporter en PDF</button>
+        </div>
         <div class="mx-auto max-h-64">
           <canvas id="salesOverTimeChart"></canvas>
         </div>

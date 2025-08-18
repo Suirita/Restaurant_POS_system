@@ -13,6 +13,8 @@ import {
   DateRangePickerComponent,
   DateRange,
 } from '../../date-range-picker/date-range-picker';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -354,5 +356,37 @@ export class DashboardComponent implements OnInit {
       type: 'bar',
       data: chartData,
     });
+  }
+
+  exportToPDF(chartId: string) {
+    const chart = chartId === 'salesByCategoryChart' ? this.salesByCategoryChart : this.salesOverTimeChart;
+    if (!chart) {
+      return;
+    }
+
+    const doc = new jsPDF();
+    const canvas = chart.canvas;
+    const chartDataURL = canvas.toDataURL('image/png');
+
+    doc.setFontSize(18);
+    doc.text(chart.data.datasets[0].label || 'Chart', 14, 22);
+
+    const imgProps = doc.getImageProperties(chartDataURL);
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    doc.addImage(chartDataURL, 'PNG', 10, 30, pdfWidth - 20, pdfHeight);
+
+    const tableData = chart.data.labels!.map((label, index) => [
+      label,
+      chart.data.datasets[0].data[index],
+    ]);
+
+    autoTable(doc, {
+      head: [['Label', 'Value']],
+      body: tableData as any[][],
+      startY: pdfHeight + 40,
+    });
+
+    doc.save(`${chartId}.pdf`);
   }
 }
