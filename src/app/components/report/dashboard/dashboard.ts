@@ -295,23 +295,19 @@ export class DashboardComponent implements OnInit {
       labels: chartLabels,
       datasets: [
         {
-          label: 'Sales Over Time',
+          label: 'Ventes au Fil du Temps',
           data: chartDataValues,
-          fill: false,
-          borderColor: '#4BC0C0',
-          tension: 0.1,
+          backgroundColor: '#4BC0C0',
         },
       ],
     };
 
     if (this.salesOverTimeChart) {
-      this.salesOverTimeChart.data = chartData;
-      this.salesOverTimeChart.update();
-    } else {
-      this.salesOverTimeChart = new Chart('salesOverTimeChart', {
-        type: 'line',
-        data: chartData,
-      });
+      this.salesOverTimeChart.destroy();
     }
+    this.salesOverTimeChart = new Chart('salesOverTimeChart', {
+      type: 'bar',
+      data: chartData,
+    });
   }
 }
