@@ -337,6 +337,7 @@ export class DashboardComponent implements OnInit {
           label: 'Ventes au Fil du Temps',
           data: chartDataValues,
           backgroundColor: '#4ADE80',
+          barThickness: 25,
         },
       ],
     };
