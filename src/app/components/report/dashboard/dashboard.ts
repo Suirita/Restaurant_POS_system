@@ -5,6 +5,7 @@ import { InvoiceService } from '../../../invoice.service';
 import { UserService } from '../../../user.service';
 import { Receipt, Invoice } from '../../../types/pos.types';
 import { CommonModule } from '@angular/common';
+import { CustomSelectComponent, Option } from '../../custom-select/custom-select';
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -34,7 +35,7 @@ Chart.register(...registerables, centerTextPlugin);
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, CustomSelectComponent],
   templateUrl: './dashboard.html',
 })
 export class DashboardComponent implements OnInit {
@@ -47,9 +48,19 @@ export class DashboardComponent implements OnInit {
   totalInvoices = signal<number>(0);
   totalInvoicesRevenue = signal<number>(0);
 
-  selectedPeriod = signal('this_month');
+  selectedPeriod = signal('this_year');
   startDate: Date | null = null;
   endDate: Date | null = null;
+
+  periodOptions: Option[] = [
+    { value: 'today', label: "Aujourd'hui" },
+    { value: 'this_week', label: 'Cette Semaine' },
+    { value: 'this_month', label: 'Ce Mois' },
+    { value: 'this_quarter', label: 'Ce Trimestre' },
+    { value: 'this_year', label: 'Cette Année' },
+    { value: 'all', label: 'Tout le temps' },
+    { value: 'custom', label: 'Personnalisé' },
+  ];
 
   private allReceipts: Receipt[] = [];
   private allInvoices: Invoice[] = [];
