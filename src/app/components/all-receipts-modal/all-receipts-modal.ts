@@ -28,6 +28,7 @@ import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
 import { DatePickerComponent } from '../date-picker/date-picker';
+import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 
 @Component({
   standalone: true,
@@ -42,6 +43,7 @@ import { DatePickerComponent } from '../date-picker/date-picker';
     ReusableTable,
     PaginationComponent,
     DatePickerComponent,
+    TableSkeletonComponent,
   ],
 })
 export class AllReceiptsModalComponent implements AfterViewInit {

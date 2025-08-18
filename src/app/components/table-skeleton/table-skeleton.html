@@ -1,0 +1,27 @@
+<div class="relative overflow-x-auto mb-3 animate-pulse">
+  <table class="w-full text-md font-medium text-left text-gray-600 bg-white rounded">
+    <thead class="text-sm text-gray-900 uppercase">
+      <tr>
+        <th scope="col" class="px-6 py-2" *ngFor="let column of columns">
+          <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+        </th>
+        <th scope="col" class="px-6 py-2">
+          <div class="h-4 bg-gray-300 rounded w-1/2"></div>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-300">
+      <tr *ngFor="let row of dummyRows">
+        <td class="px-6 py-4" *ngFor="let column of columns">
+          <div class="h-4 bg-gray-300 rounded"></div>
+        </td>
+        <td class="px-6 py-4">
+          <div class="flex items-center space-x-2">
+            <div class="h-7 w-7 bg-gray-300 rounded-lg"></div>
+            <div class="h-7 w-7 bg-gray-300 rounded-lg"></div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
