@@ -64,7 +64,7 @@
           (click)="handleDateClick(createNewDate(day))"
           (mouseenter)="hoverDate = createNewDate(day)"
           (mouseleave)="hoverDate = null"
-          class="h-9 w-9 text-sm rounded flex items-center justify-center hover:bg-gray-800 hover:text-white transition-colors"
+          class="h-9 w-9 text-sm rounded flex items-center justify-center hover:bg-gray-800 hover:text-white hover:z-10 transition-colors"
           [ngClass]="{
             'bg-black text-white z-10': isRangeStart(createNewDate(day)) || isRangeEnd(createNewDate(day)),
             'bg-gray-100': (isInRange(createNewDate(day), value.from, value.to) || isHovering(createNewDate(day))) && !isRangeStart(createNewDate(day)) && !isRangeEnd(createNewDate(day)),
