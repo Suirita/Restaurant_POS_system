@@ -28,6 +28,7 @@ import {
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
+import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 
 @Component({
   standalone: true,
@@ -40,6 +41,7 @@ import { PaginationComponent } from '../pagination/pagination';
     InvoiceDetailsModalComponent,
     ReusableTable,
     PaginationComponent,
+    TableSkeletonComponent,
   ],
 })
 export class AllInvoicesModalComponent implements AfterViewInit {

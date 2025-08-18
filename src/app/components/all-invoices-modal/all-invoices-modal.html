@@ -93,12 +93,8 @@
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="isLoading()" class="text-center py-12">
-        <i-lucide
-          [img]="Loader"
-          [size]="48"
-          class="animate-spin mx-auto"
-        ></i-lucide>
+      <div *ngIf="isLoading()">
+        <app-table-skeleton [columns]="tableColumns" [rowCount]="9"></app-table-skeleton>
       </div>
 
       <!-- No invoices found -->
