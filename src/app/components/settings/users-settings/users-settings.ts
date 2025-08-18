@@ -20,6 +20,10 @@ import { switchMap, map } from 'rxjs/operators';
 import { UserFormModalComponent } from '../../user-form-modal/user-form-modal';
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
+import {
+  CustomSelectComponent,
+  Option,
+} from '../../custom-select/custom-select';
 
 @Component({
   standalone: true,
@@ -31,6 +35,7 @@ import { PaginationComponent } from '../../pagination/pagination';
     UserFormModalComponent,
     ReusableTable,
     PaginationComponent,
+    CustomSelectComponent,
   ],
   templateUrl: './users-settings.html',
 })
@@ -56,6 +61,15 @@ export class UsersSettingsComponent implements OnInit {
   // Filtering and Search
   searchTerm = signal<string>('');
   selectedRole = signal<string>('');
+
+  roleOptions = computed<Option[]>(() => {
+    const allRolesOption: Option = { value: '', label: 'Tous les rôles' };
+    const roleOptions: Option[] = this.roles().map((role) => ({
+      value: role.name,
+      label: role.name === 'Direction' ? 'admin' : 'serveur',
+    }));
+    return [allRolesOption, ...roleOptions];
+  });
 
   filteredUsers = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -147,8 +161,7 @@ export class UsersSettingsComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  onRoleChange(event: Event): void {
-    const role = (event.target as HTMLSelectElement).value;
+  onRoleChange(role: string): void {
     this.selectedRole.set(role);
     this.currentPage.set(1);
   }

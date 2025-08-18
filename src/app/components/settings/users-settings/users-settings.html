@@ -1,8 +1,6 @@
 <div class="w-full">
   <div class="bg-white shadow-xs border-b border-gray-200 p-4">
-    <h2 class="text-2xl font-bold text-gray-900">
-      Utilisateurs
-    </h2>
+    <h2 class="text-2xl font-bold text-gray-900">Utilisateurs</h2>
   </div>
 
   <div class="bg-white rounded-lg border border-gray-200 shadow-xs p-2 m-2">
@@ -34,20 +32,14 @@
           </div>
         </form>
 
-        <!-- Select Role -->
-        <form class="w-1/3">
-          <select
-            id="categories"
+        <div class="w-1/3">
+          <!-- Select Role -->
+          <app-custom-select
+            [options]="roleOptions()"
             [value]="selectedRole()"
-            (change)="onRoleChange($event)"
-            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
-          >
-            <option value="">Tous les rôles</option>
-            <option *ngFor="let role of roles()" [value]="role.name">
-              {{ role.name === 'Direction' ? 'admin' : 'serveur' }}
-            </option>
-          </select>
-        </form>
+            (valueChange)="onRoleChange($event)"
+          ></app-custom-select>
+        </div>
       </div>
 
       <!-- Actions -->
