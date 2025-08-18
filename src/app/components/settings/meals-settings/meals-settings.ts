@@ -20,6 +20,7 @@ import {
 } from 'lucide-angular';
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
+import { CustomSelectComponent } from '../../custom-select/custom-select';
 
 @Component({
   standalone: true,
@@ -30,6 +31,7 @@ import { PaginationComponent } from '../../pagination/pagination';
     LucideAngularModule,
     ReusableTable,
     PaginationComponent,
+    CustomSelectComponent,
   ],
   templateUrl: './meals-settings.html',
 })
@@ -59,6 +61,22 @@ export class MealsSettingsComponent implements OnInit {
   searchTerm = signal<string>('');
   selectedCategory = signal<string>('');
   labelSearchTerm = signal<string>('');
+
+  categoryOptions = computed(() => {
+    const allCategoriesOption = { value: '', label: 'Toutes les catégories' };
+    const categoryOptions = this.categories().map((c) => ({
+      value: c.id,
+      label: c.label,
+    }));
+    return [allCategoriesOption, ...categoryOptions];
+  });
+
+  formCategoryOptions = computed(() => {
+    return this.categories().map((c) => ({
+      value: c.id,
+      label: c.label,
+    }));
+  });
 
   filteredMeals = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -133,8 +151,7 @@ export class MealsSettingsComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  onCategoryChange(event: Event): void {
-    const categoryId = (event.target as HTMLSelectElement).value;
+  onCategoryChange(categoryId: string): void {
     this.selectedCategory.set(categoryId);
     this.currentPage.set(1);
   }

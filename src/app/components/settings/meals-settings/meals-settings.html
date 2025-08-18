@@ -62,19 +62,15 @@
         </form>
 
         <!-- Select category -->
-        <form class="w-2/3">
-          <select
-            id="categories"
+        <div class="w-2/3">
+          <app-custom-select
+            [options]="categoryOptions()"
             [value]="selectedCategory()"
-            (change)="onCategoryChange($event)"
-            class="border border-gray-200 shadow-xs text-gray-900 text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
+            (valueChange)="onCategoryChange($event)"
+            placeholder="Toutes les catégories"
           >
-            <option value="">Toutes les catégories</option>
-            <option *ngFor="let category of categories()" [value]="category.id">
-              {{ category.label }}
-            </option>
-          </select>
-        </form>
+          </app-custom-select>
+        </div>
       </div>
 
       <!-- Actions -->
@@ -176,21 +172,13 @@
               >
                 Catégorie <span class="text-red-500">*</span>
               </label>
-              <select
-                id="categoryId"
-                name="categoryId"
-                [(ngModel)]="newMeal.categoryId"
-                class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:shadow-sm"
-                required
+              <app-custom-select
+                [options]="formCategoryOptions()"
+                [value]="newMeal.categoryId"
+                (valueChange)="newMeal.categoryId = $event"
+                placeholder="Sélectionner une catégorie"
               >
-                <option value="">Sélectionner une catégorie</option>
-                <option
-                  *ngFor="let category of categories()"
-                  [value]="category.id"
-                >
-                  {{ category.label }}
-                </option>
-              </select>
+              </app-custom-select>
             </div>
           </div>
 
