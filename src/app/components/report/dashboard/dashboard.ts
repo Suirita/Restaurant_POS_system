@@ -6,6 +6,7 @@ import { UserService } from '../../../user.service';
 import { Receipt, Invoice } from '../../../types/pos.types';
 import { CommonModule } from '@angular/common';
 import { CustomSelectComponent, Option } from '../../custom-select/custom-select';
+import { DateRangePickerComponent, DateRange } from '../../date-range-picker/date-range-picker';
 
 const centerTextPlugin = {
   id: 'centerText',
@@ -35,7 +36,7 @@ Chart.register(...registerables, centerTextPlugin);
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule, CustomSelectComponent],
+  imports: [CommonModule, CustomSelectComponent, DateRangePickerComponent],
   templateUrl: './dashboard.html',
 })
 export class DashboardComponent implements OnInit {
@@ -51,6 +52,7 @@ export class DashboardComponent implements OnInit {
   selectedPeriod = signal('this_month');
   startDate: Date | null = null;
   endDate: Date | null = null;
+  dateRange: DateRange = {};
 
   periodOptions: Option[] = [
     { value: 'today', label: "Aujourd'hui" },
@@ -200,32 +202,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onDateChange(dateValue: string, type: 'start' | 'end') {
-    if (!dateValue) return;
-    const date = new Date(dateValue);
-    if (type === 'start') {
-      this.startDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        0,
-        0,
-        0,
-        0
-      );
-    } else {
-      this.endDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        23,
-        59,
-        59,
-        999
-      );
-    }
-
-    if (this.startDate && this.endDate && this.startDate <= this.endDate) {
+  onDateRangeChange(dateRange: DateRange) {
+    this.dateRange = dateRange;
+    if (dateRange.from && dateRange.to) {
+      this.startDate = dateRange.from;
+      this.endDate = dateRange.to;
       this.processData();
     }
   }

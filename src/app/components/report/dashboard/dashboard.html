@@ -7,19 +7,11 @@
           *ngIf="selectedPeriod() === 'custom'"
           class="flex items-center space-x-2"
         >
-          <input
-            type="date"
-            #startDateInput
-            (change)="onDateChange(startDateInput.value, 'start')"
-            class="block w-full p-2 ps-2 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
-          />
-          <span>-</span>
-          <input
-            type="date"
-            #endDateInput
-            (change)="onDateChange(endDateInput.value, 'end')"
-            class="block w-full p-2 ps-2 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
-          />
+          <app-date-range-picker
+            [value]="dateRange"
+            (valueChange)="onDateRangeChange($event)"
+            placeholder="Sélectionnez une plage de dates"
+          ></app-date-range-picker>
         </div>
         <app-custom-select
           [options]="periodOptions"

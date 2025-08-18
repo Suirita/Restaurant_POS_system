@@ -1,0 +1,79 @@
+<div class="relative inline-block w-64" [ngClass]="className">
+  <!-- Trigger Button -->
+  <button
+    type="button"
+    (click)="toggleOpen()"
+    class="text-gray-900 bg-white w-full flex items-center justify-start rounded-lg border border-gray-200 shadow-xs px-3 py-2 text-left text-sm"
+  >
+    <svg
+      class="mr-2 h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+      />
+    </svg>
+    {{ formatDateRange() }}
+  </button>
+
+  <!-- Popover -->
+  <div
+    *ngIf="isOpen"
+    class="absolute z-50 mt-2 w-auto bg-white rounded-lg border border-gray-200 shadow-xs p-3"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <button
+        class="h-7 w-7 flex items-center justify-center border rounded"
+        (click)="navigateMonth('prev')"
+      >
+        ‹
+      </button>
+      <div class="text-sm font-medium">
+        {{ MONTHS[currentMonth] }} {{ currentYear }}
+      </div>
+      <button
+        class="h-7 w-7 flex items-center justify-center border rounded"
+        (click)="navigateMonth('next')"
+      >
+        ›
+      </button>
+    </div>
+
+    <!-- Weekdays -->
+    <div class="grid grid-cols-7 gap-1 mb-2">
+      <div
+        *ngFor="let day of DAYS"
+        class="h-9 w-9 flex items-center justify-center text-sm font-medium text-gray-500"
+      >
+        {{ day }}
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="grid grid-cols-7 gap-1">
+      <ng-container *ngFor="let day of renderCalendar(); let i = index">
+        <div *ngIf="day === null" class="h-9 w-9"></div>
+        <button
+          *ngIf="day !== null"
+          (click)="handleDateClick(createNewDate(day))"
+          (mouseenter)="hoverDate = createNewDate(day)"
+          (mouseleave)="hoverDate = null"
+          class="h-9 w-9 text-sm rounded flex items-center justify-center hover:bg-gray-800 hover:text-white transition-colors"
+          [ngClass]="{
+            'bg-black text-white z-10': isRangeStart(createNewDate(day)) || isRangeEnd(createNewDate(day)),
+            'bg-gray-100': (isInRange(createNewDate(day), value.from, value.to) || isHovering(createNewDate(day))) && !isRangeStart(createNewDate(day)) && !isRangeEnd(createNewDate(day)),
+            'font-medium': isSameDay(today, createNewDate(day))
+          }"
+        >
+          {{ day }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
