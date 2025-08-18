@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Receipt, CartItem } from './types/pos.types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ConfigurationService } from './configuration.service';
 
@@ -578,9 +578,9 @@ export class ReceiptService {
     }
 
     return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
-      map((response) => {
-        if (response && response.value) {
-          return response.value.map(
+      switchMap((response) => {
+        if (response && response.value && response.value.length > 0) {
+          const receiptsWithoutDetails: Receipt[] = response.value.map(
             (quote: any) =>
               ({
                 id: quote.id,
@@ -596,12 +596,56 @@ export class ReceiptService {
                     ? quote.responsables[0]
                     : null),
                 client: quote.client,
-                orderDetails: null, // Not available in this response
+                orderDetails: null,
                 status: quote.status,
               } as Receipt)
           );
+
+          if (receiptsWithoutDetails.length === 0) {
+            return of([]);
+          }
+
+          const detailRequests = receiptsWithoutDetails.map((receipt) =>
+            this.getReceiptDetails(receipt.id, token).pipe(
+              map((detailsResponse) => {
+                const quoteDetails = detailsResponse.value;
+                if (
+                  quoteDetails &&
+                  quoteDetails.orderDetails &&
+                  quoteDetails.orderDetails.lineItems
+                ) {
+                  const lineItems: CartItem[] =
+                    quoteDetails.orderDetails.lineItems.map((item: any) => {
+                      const product = item.product;
+                      return {
+                        id: product.id,
+                        designation: product.designation,
+                        sellingPrice: product.sellingPrice,
+                        purchasePrice: product.purchasePrice || 0,
+                        totalTTC: item.totalTTC,
+                        tva: product.vat || 0,
+                        categoryId: product.categoryId,
+                        categoryLabel: product.categoryLabel,
+                        image: '',
+                        quantity: item.quantity,
+                        labels: product.labels || [],
+                      };
+                    });
+
+                  return {
+                    ...receipt,
+                    items: lineItems,
+                    total: quoteDetails.totalTTC,
+                  } as Receipt;
+                }
+                return receipt; // Return basic receipt if details are not available
+              })
+            )
+          );
+
+          return forkJoin(detailRequests);
         }
-        return [];
+        return of([]);
       })
     );
   }

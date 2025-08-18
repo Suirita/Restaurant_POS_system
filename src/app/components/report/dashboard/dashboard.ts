@@ -6,7 +6,36 @@ import { UserService } from '../../../user.service';
 import { Receipt, Invoice } from '../../../types/pos.types';
 import { CommonModule } from '@angular/common';
 
-Chart.register(...registerables);
+const centerTextPlugin = {
+  id: 'centerText',
+  afterDraw: (chart: any) => {
+    console.log('centerTextPlugin afterDraw called');
+    const text = chart.options.plugins?.centerText?.text;
+    if (chart.config.type !== 'doughnut' || !text) {
+      console.log('centerTextPlugin: not a doughnut chart or no text', {
+        type: chart.config.type,
+        text,
+      });
+      return;
+    }
+    console.log('centerTextPlugin: drawing text:', text);
+
+    const {
+      ctx,
+      chartArea: { left, right, top, bottom },
+    } = chart;
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+
+    ctx.save();
+    ctx.font = 'bold 20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, centerX, centerY);
+    ctx.restore();
+  },
+};
+Chart.register(...registerables, centerTextPlugin);
 
 @Component({
   standalone: true,
@@ -238,6 +267,7 @@ export class DashboardComponent implements OnInit {
   }
 
   updateSalesByCategoryChart(receipts: Receipt[]) {
+    console.log('updateSalesByCategoryChart receipts:', receipts);
     const categorySales = new Map<string, number>();
     receipts.forEach((receipt) => {
       receipt.items.forEach((item) => {
@@ -248,32 +278,62 @@ export class DashboardComponent implements OnInit {
         );
       });
     });
+    console.log('updateSalesByCategoryChart categorySales:', categorySales);
+
+    const totalSales = [...categorySales.values()].reduce(
+      (acc, v) => acc + v,
+      0
+    );
+    console.log('updateSalesByCategoryChart totalSales:', totalSales);
 
     const chartData = {
       labels: [...categorySales.keys()],
       datasets: [
         {
-          label: 'Sales by Category',
+          label: 'Ventes par Catégorie',
           data: [...categorySales.values()],
           backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40',
+            '#F87171',
+            '#60A5FA',
+            '#4ADE80',
+            '#D1D5DB',
+            '#FACC15',
+            '#C084FC',
           ],
         },
       ],
     };
+    console.log('updateSalesByCategoryChart chartData:', chartData);
+
+    const chartOptions: any = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right',
+        },
+        centerText: {
+          text: `${totalSales.toLocaleString('fr-FR', {
+            style: 'currency',
+            currency: 'EUR',
+          })}`,
+        },
+      },
+    };
+    console.log('updateSalesByCategoryChart chartOptions:', chartOptions);
 
     if (this.salesByCategoryChart) {
+      console.log('Updating existing category chart');
       this.salesByCategoryChart.data = chartData;
+      this.salesByCategoryChart.options = chartOptions;
       this.salesByCategoryChart.update();
     } else {
+      console.log('Creating new category chart');
       this.salesByCategoryChart = new Chart('salesByCategoryChart', {
         type: 'doughnut',
         data: chartData,
+        options: chartOptions,
       });
     }
   }
@@ -297,7 +357,7 @@ export class DashboardComponent implements OnInit {
         {
           label: 'Ventes au Fil du Temps',
           data: chartDataValues,
-          backgroundColor: '#4BC0C0',
+          backgroundColor: '#4ADE80',
         },
       ],
     };
