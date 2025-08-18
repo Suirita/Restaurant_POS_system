@@ -31,7 +31,7 @@
     <div class="px-4">
       <!-- Filter Controls -->
       <div class="w-full flex justify-between mb-3">
-        <div class="w-3/4 flex gap-3">
+        <div class="w-full flex gap-3">
           <!-- Search by name -->
           <form class="w-full">
             <label
@@ -73,18 +73,23 @@
               placeholder="Select a date"
             ></app-date-picker>
           </div>
+          <div class="w-full">
+            <button
+              (click)="clearFilters()"
+              class="bg-white border border-gray-200 shadow-xs font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center mb-2"
+            >
+              Effacer les filtres
+            </button>
+          </div>
         </div>
-        <button
-          (click)="clearFilters()"
-          class="text-sm font-medium text-gray-500 hover:text-gray-800"
-        >
-          Effacer les filtres
-        </button>
       </div>
 
       <!-- Loading State -->
       <div *ngIf="isLoading()">
-        <app-table-skeleton [columns]="tableColumns" [rowCount]="10"></app-table-skeleton>
+        <app-table-skeleton
+          [columns]="tableColumns"
+          [rowCount]="10"
+        ></app-table-skeleton>
       </div>
 
       <!-- No receipts found -->
