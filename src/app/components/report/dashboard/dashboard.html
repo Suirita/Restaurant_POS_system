@@ -41,20 +41,32 @@
       <div class="bg-white p-4 rounded-lg shadow">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold mb-2">Ventes par Catégorie</h2>
-          <button (click)="exportToPDF('salesByCategoryChart')" class="text-sm text-blue-500">Exporter en PDF</button>
         </div>
-        <div class="mx-auto max-h-64">
+        <div class="mx-auto h-64">
           <canvas id="salesByCategoryChart"></canvas>
         </div>
+        <button
+          (click)="exportToPDF('salesOverTimeChart')"
+          class="flex items-center justify-center py-1 px-2 bg-black text-white rounded-lg border shadow-2xs"
+        >
+          <i-lucide [img]="Download" class="mr-1 h-5 w-5"></i-lucide>
+          Exporter
+        </button>
       </div>
       <div class="bg-white p-4 rounded-lg shadow">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold mb-2">Ventes au Fil du Temps</h2>
-          <button (click)="exportToPDF('salesOverTimeChart')" class="text-sm text-blue-500">Exporter en PDF</button>
         </div>
-        <div class="mx-auto max-h-64">
+        <div class="mx-auto h-64">
           <canvas id="salesOverTimeChart"></canvas>
         </div>
+        <button
+          (click)="exportToPDF('salesOverTimeChart')"
+          class="flex items-center justify-center py-1 px-2 bg-black text-white rounded-lg border shadow-2xs"
+        >
+          <i-lucide [img]="Download" class="mr-1 h-5 w-5"></i-lucide>
+          Exporter
+        </button>
       </div>
     </div>
   </div>

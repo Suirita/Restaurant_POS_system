@@ -13,6 +13,7 @@ import {
   DateRangePickerComponent,
   DateRange,
 } from '../../date-range-picker/date-range-picker';
+import { LucideAngularModule, Download } from 'lucide-angular';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -44,10 +45,12 @@ Chart.register(...registerables, centerTextPlugin);
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule, CustomSelectComponent, DateRangePickerComponent],
+  imports: [CommonModule, CustomSelectComponent, DateRangePickerComponent, LucideAngularModule],
   templateUrl: './dashboard.html',
 })
 export class DashboardComponent implements OnInit {
+  readonly Download = Download;
+
   private receiptService = inject(ReceiptService);
   private invoiceService = inject(InvoiceService);
   private userService = inject(UserService);
