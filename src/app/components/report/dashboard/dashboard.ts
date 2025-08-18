@@ -9,16 +9,10 @@ import { CommonModule } from '@angular/common';
 const centerTextPlugin = {
   id: 'centerText',
   afterDraw: (chart: any) => {
-    console.log('centerTextPlugin afterDraw called');
     const text = chart.options.plugins?.centerText?.text;
     if (chart.config.type !== 'doughnut' || !text) {
-      console.log('centerTextPlugin: not a doughnut chart or no text', {
-        type: chart.config.type,
-        text,
-      });
       return;
     }
-    console.log('centerTextPlugin: drawing text:', text);
 
     const {
       ctx,
@@ -267,7 +261,6 @@ export class DashboardComponent implements OnInit {
   }
 
   updateSalesByCategoryChart(receipts: Receipt[]) {
-    console.log('updateSalesByCategoryChart receipts:', receipts);
     const categorySales = new Map<string, number>();
     receipts.forEach((receipt) => {
       receipt.items.forEach((item) => {
@@ -278,13 +271,11 @@ export class DashboardComponent implements OnInit {
         );
       });
     });
-    console.log('updateSalesByCategoryChart categorySales:', categorySales);
 
     const totalSales = [...categorySales.values()].reduce(
       (acc, v) => acc + v,
       0
     );
-    console.log('updateSalesByCategoryChart totalSales:', totalSales);
 
     const chartData = {
       labels: [...categorySales.keys()],
@@ -303,7 +294,6 @@ export class DashboardComponent implements OnInit {
         },
       ],
     };
-    console.log('updateSalesByCategoryChart chartData:', chartData);
 
     const chartOptions: any = {
       responsive: true,
@@ -321,15 +311,12 @@ export class DashboardComponent implements OnInit {
         },
       },
     };
-    console.log('updateSalesByCategoryChart chartOptions:', chartOptions);
 
     if (this.salesByCategoryChart) {
-      console.log('Updating existing category chart');
       this.salesByCategoryChart.data = chartData;
       this.salesByCategoryChart.options = chartOptions;
       this.salesByCategoryChart.update();
     } else {
-      console.log('Creating new category chart');
       this.salesByCategoryChart = new Chart('salesByCategoryChart', {
         type: 'doughnut',
         data: chartData,
