@@ -258,4 +258,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.onCloseInvoiceDialog();
     this.onClose();
   }
+
+  clearFilters() {
+    this.commandNumberFilter.set('');
+    this.serviceTypeFilter.set('all');
+    this.selectedDateFilter.set(undefined);
+  }
 }

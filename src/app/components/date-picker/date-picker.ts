@@ -1,9 +1,14 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
-  LucideAngularModule,
-  Calendar,
-} from 'lucide-angular';
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Calendar } from 'lucide-angular';
 
 @Component({
   standalone: true,
@@ -26,10 +31,20 @@ export class DatePickerComponent {
   @ViewChild('containerRef') containerRef!: ElementRef<HTMLDivElement>;
 
   MONTHS = [
-    'January','February','March','April','May','June',
-    'July','August','September','October','November','December'
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Noctobre',
+    'novembre',
+    'Décembre',
   ];
-  WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  WEEKDAYS = ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'];
 
   constructor() {
     const today = new Date();
@@ -44,7 +59,10 @@ export class DatePickerComponent {
   // Close when clicking outside
   @HostListener('document:mousedown', ['$event'])
   handleClickOutside(event: MouseEvent) {
-    if (this.containerRef && !this.containerRef.nativeElement.contains(event.target as Node)) {
+    if (
+      this.containerRef &&
+      !this.containerRef.nativeElement.contains(event.target as Node)
+    ) {
       this.isOpen = false;
     }
   }
@@ -58,8 +76,14 @@ export class DatePickerComponent {
   }
 
   generateCalendarDays(): (number | null)[] {
-    const daysInMonth = this.getDaysInMonth(this.currentMonth, this.currentYear);
-    const firstDay = this.getFirstDayOfMonth(this.currentMonth, this.currentYear);
+    const daysInMonth = this.getDaysInMonth(
+      this.currentMonth,
+      this.currentYear
+    );
+    const firstDay = this.getFirstDayOfMonth(
+      this.currentMonth,
+      this.currentYear
+    );
 
     const days: (number | null)[] = [];
     for (let i = 0; i < firstDay; i++) {
@@ -118,7 +142,7 @@ export class DatePickerComponent {
     return this.selected.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 }
