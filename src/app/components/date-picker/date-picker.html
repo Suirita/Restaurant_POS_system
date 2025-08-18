@@ -1,0 +1,67 @@
+<div class="relative w-56" [ngClass]="className" #containerRef>
+  <!-- Trigger button -->
+  <button
+    type="button"
+    (click)="toggleOpen()"
+    class="text-gray-900 bg-white w-full flex items-center justify-start rounded-lg border border-gray-200 shadow-xs px-3 py-2 text-left text-sm"
+    [ngClass]="{ 'text-gray-400': !selected }"
+  >
+    <!-- Calendar icon -->
+    <i-lucide [img]="Calendar" class="mr-2 h-5 w-5"></i-lucide>
+    {{ formatSelected() }}
+  </button>
+
+  <!-- Calendar popover -->
+  <div
+    *ngIf="isOpen"
+    class="absolute z-50 mt-2 w-auto bg-white rounded-lg border border-gray-200 shadow-xs p-3"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <button
+        (click)="navigateMonth('prev')"
+        class="h-7 w-7 flex items-center justify-center border rounded"
+      >
+        ‹
+      </button>
+      <div class="font-semibold text-sm">
+        {{ MONTHS[currentMonth] }} {{ currentYear }}
+      </div>
+      <button
+        (click)="navigateMonth('next')"
+        class="h-7 w-7 flex items-center justify-center border rounded"
+      >
+        ›
+      </button>
+    </div>
+
+    <!-- Weekdays -->
+    <div class="grid grid-cols-7 gap-1 mb-2">
+      <div
+        *ngFor="let day of WEEKDAYS"
+        class="h-8 w-8 flex items-center justify-center text-xs font-medium text-gray-500"
+      >
+        {{ day }}
+      </div>
+    </div>
+
+    <!-- Days -->
+    <div class="grid grid-cols-7 gap-1">
+      <ng-container *ngFor="let day of generateCalendarDays(); let i = index">
+        <div *ngIf="day === null" class="h-8 w-8"></div>
+        <button
+          *ngIf="day !== null"
+          (click)="handleDateSelect(day)"
+          class="h-7 w-7 text-sm rounded flex items-center justify-center"
+          [ngClass]="{
+                  'bg-blue-500 text-white': isSelectedDate(day),
+                  'bg-gray-200': isToday(day) && !isSelectedDate(day),
+                  'hover:bg-blue-100': !isSelectedDate(day)
+                }"
+        >
+          {{ day }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>

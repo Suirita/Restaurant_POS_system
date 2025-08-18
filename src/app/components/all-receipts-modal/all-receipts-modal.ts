@@ -27,6 +27,7 @@ import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-d
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
+import { DatePickerComponent } from '../date-picker/date-picker';
 
 @Component({
   standalone: true,
@@ -40,6 +41,7 @@ import { PaginationComponent } from '../pagination/pagination';
     InvoiceDialogComponent,
     ReusableTable,
     PaginationComponent,
+    DatePickerComponent,
   ],
 })
 export class AllReceiptsModalComponent implements AfterViewInit {
@@ -64,7 +66,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   // Filter signals
   commandNumberFilter = signal<string>('');
   serviceTypeFilter = signal<string>('all');
-  selectedDateFilter = signal<string>('');
+  selectedDateFilter = signal<Date | undefined>(undefined);
 
   // Pagination
   currentPage = signal<number>(1);
@@ -97,9 +99,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
     const selectedDate = this.selectedDateFilter();
     if (selectedDate) {
+      const selectedDateString = selectedDate.toISOString().split('T')[0];
       filtered = filtered.filter((receipt) => {
         const receiptDate = new Date(receipt.date).toISOString().split('T')[0];
-        return receiptDate === selectedDate;
+        return receiptDate === selectedDateString;
       });
     }
 
@@ -152,7 +155,11 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   loadReceipts() {
     this.isLoading.set(true);
     this.receiptService
-      .getAllReceipts(this.token(), [this.userId()], ['in_progress', 'refused', 'late'])
+      .getAllReceipts(
+        this.token(),
+        [this.userId()],
+        ['in_progress', 'refused', 'late']
+      )
       .subscribe((receipts: Receipt[]) => {
         this.receipts.set(
           receipts.map((receipt) => ({

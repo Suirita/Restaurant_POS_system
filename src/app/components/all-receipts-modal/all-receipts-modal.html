@@ -67,11 +67,11 @@
           </div>
 
           <div class="w-2/3">
-            <input
-              type="date"
-              class="block w-full p-2 ps-2 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
-              [(ngModel)]="selectedDateFilter"
-            />
+            <app-date-picker
+              [selected]="selectedDateFilter()"
+              (selectedChange)="selectedDateFilter.set($event)"
+              placeholder="Select a date"
+            ></app-date-picker>
           </div>
         </div>
       </div>
