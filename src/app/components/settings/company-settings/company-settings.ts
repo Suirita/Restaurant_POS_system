@@ -21,6 +21,7 @@ export class CompanySettingsComponent implements OnInit {
 
   form: FormGroup;
   logoUrl: string | ArrayBuffer | null = null;
+  cachetUrl: string | ArrayBuffer | null = null;
   pdfConfiguration: any = null;
   isLoading = false;
   isInputFocused = signal<boolean>(false);
@@ -68,12 +69,13 @@ export class CompanySettingsComponent implements OnInit {
 
         // Process invoice config for logo
         this.pdfConfiguration = invoiceConfig;
-        if (
-          invoiceConfig &&
-          invoiceConfig.images &&
-          invoiceConfig.images.logo
-        ) {
-          this.logoUrl = invoiceConfig.images.logo;
+        if (invoiceConfig && invoiceConfig.images) {
+          if (invoiceConfig.images.logo) {
+            this.logoUrl = invoiceConfig.images.logo;
+          }
+          if (invoiceConfig.images.cachet) {
+            this.cachetUrl = invoiceConfig.images.cachet;
+          }
         }
         this.isLoading = false;
       },
@@ -91,9 +93,23 @@ export class CompanySettingsComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.logoUrl = reader.result;
-        if (this.pdfConfiguration && this.pdfConfiguration.images) {
-          this.pdfConfiguration.images.logo = reader.result as string;
-        }
+        if (!this.pdfConfiguration) this.pdfConfiguration = {};
+        if (!this.pdfConfiguration.images) this.pdfConfiguration.images = {};
+        this.pdfConfiguration.images.logo = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onCachetSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.cachetUrl = reader.result;
+        if (!this.pdfConfiguration) this.pdfConfiguration = {};
+        if (!this.pdfConfiguration.images) this.pdfConfiguration.images = {};
+        this.pdfConfiguration.images.cachet = reader.result as string;
       };
       reader.readAsDataURL(file);
     }

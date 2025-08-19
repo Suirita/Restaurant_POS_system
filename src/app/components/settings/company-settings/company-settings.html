@@ -11,41 +11,82 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex gap-2">
-    <div
-      class="w-2/6 bg-white rounded-lg border border-gray-200 shadow-xs p-4 m-2"
-      [ngClass]="{'-translate-y-48': isInputFocused()}"
-    >
-      <label class="block text-sm font-semibold text-gray-700">Logo</label>
-      <div class="mt-1 flex items-center">
-        <span
-          class="inline-block h-36 w-full overflow-hidden rounded-lg"
-          (click)="fileInput.click()"
-        >
-          <img
-            *ngIf="logoUrl"
-            [src]="logoUrl"
-            alt="Company Logo"
-            class="h-full w-full object-contain"
-          />
-          <svg
-            *ngIf="!logoUrl"
-            class="h-full w-full text-gray-300"
-            fill="currentColor"
-            viewBox="0 0 24 24"
+    <div class="w-2/6 flex flex-col gap-4 m-2">
+      <div
+        class="bg-white rounded-lg border border-gray-200 shadow-xs p-4"
+        [ngClass]="{'-translate-y-48': isInputFocused()}"
+      >
+        <label class="block text-sm font-semibold text-gray-700">Logo</label>
+        <div class="mt-1 flex items-center">
+          <span
+            class="inline-block h-36 w-full overflow-hidden rounded-lg"
+            (click)="fileInput.click()"
           >
-            <path
-              d="M24 20.993V24H0v-2.997A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"
+            <img
+              *ngIf="logoUrl"
+              [src]="logoUrl"
+              alt="Company Logo"
+              class="h-full w-full object-contain"
             />
-          </svg>
-        </span>
-        <div class="ml-5">
-          <input
-            type="file"
-            (change)="onFileSelected($event)"
-            accept="image/png, image/jpeg"
-            class="hidden"
-            #fileInput
-          />
+            <svg
+              *ngIf="!logoUrl"
+              class="h-full w-full text-gray-300"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M24 20.993V24H0v-2.997A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+          </span>
+          <div class="ml-5">
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              accept="image/png, image/jpeg"
+              class="hidden"
+              #fileInput
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-white rounded-lg border border-gray-200 shadow-xs p-4"
+        [ngClass]="{'-translate-y-48': isInputFocused()}"
+      >
+        <label class="block text-sm font-semibold text-gray-700">Cachet</label>
+        <div class="mt-1 flex items-center">
+          <span
+            class="inline-block h-36 w-full overflow-hidden rounded-lg"
+            (click)="cachetInput.click()"
+          >
+            <img
+              *ngIf="cachetUrl"
+              [src]="cachetUrl"
+              alt="Company Cachet"
+              class="h-full w-full object-contain"
+            />
+            <svg
+              *ngIf="!cachetUrl"
+              class="h-full w-full text-gray-300"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M24 20.993V24H0v-2.997A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+          </span>
+          <div class="ml-5">
+            <input
+              type="file"
+              (change)="onCachetSelected($event)"
+              accept="image/png, image/jpeg"
+              class="hidden"
+              #cachetInput
+            />
+          </div>
         </div>
       </div>
     </div>
