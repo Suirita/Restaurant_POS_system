@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { Receipt, Client, Invoice } from './types/pos.types';
 import { ConfigurationService } from './configuration.service';
@@ -27,14 +27,14 @@ export class InvoiceService {
     receipt: Receipt,
     clientId: string,
     token: string
-  ): Observable<any> {
+  ): Observable<string | null> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     return this.receiptService.getReceiptDetails(receipt.id, token).pipe(
-      switchMap((response) => {
+      switchMap((response): Observable<string | null> => {
         const quote = response.value;
         return this.getClientDetails(clientId, token).pipe(
-          switchMap((clientResponse) => {
+          switchMap((clientResponse): Observable<string | null> => {
             const client = clientResponse.value;
             if (!client || !quote) {
               return of(null);
@@ -42,9 +42,9 @@ export class InvoiceService {
             quote.client = client;
             quote.clientId = client.id;
             return this.receiptService.updateQuote(quote, token).pipe(
-              switchMap(() => {
+              switchMap((): Observable<string | null> => {
                 return this.configService.getUniqueReference(token, 6).pipe(
-                  switchMap((reference) => {
+                  switchMap((reference): Observable<string | null> => {
                     const body = {
                       reference: reference,
                       status: 'in_progress',
@@ -286,13 +286,23 @@ export class InvoiceService {
                       typeFinanciere: 0,
                     };
 
-                    return this.http.post(
-                      `${this.baseURL}/Invoice/Create`,
-                      body,
-                      {
-                        headers,
-                      }
-                    );
+                    return this.http
+                      .post(`${this.baseURL}/Invoice/Create`, body, { headers })
+                      .pipe(
+                        switchMap(
+                          (createResponse: any): Observable<string | null> => {
+                            const directId =
+                              createResponse?.value?.id ??
+                              createResponse?.id ??
+                              null;
+                            if (directId) {
+                              return of(directId as string);
+                            }
+                            // Fallback: newest invoice id
+                            return this.getLatestInvoiceId(token);
+                          }
+                        )
+                      );
                   })
                 );
               })
@@ -314,6 +324,23 @@ export class InvoiceService {
     return this.http.post<any>(`${this.baseURL}/Invoice`, body, {
       headers,
     });
+  }
+
+  getLatestInvoiceId(token: string): Observable<string | null> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = {
+      Page: 1,
+      PageSize: 1,
+      techniciansId: [],
+      label: ['chneg3084mkah1'],
+      OrderBy: 'creationDate',
+      SortDirection: 1,
+    } as any;
+    return this.http
+      .post<any>(`${this.baseURL}/Invoice`, body, { headers })
+      .pipe(
+        map((response: any): string | null => response?.value?.[0]?.id ?? null)
+      );
   }
 
   getInvoiceDetails(id: string, token: string): Observable<any> {

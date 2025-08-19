@@ -11,7 +11,7 @@ import {
   ChevronDown,
 } from 'lucide-angular';
 import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
-import { finalize, switchMap } from 'rxjs';
+import { finalize, switchMap, map } from 'rxjs';
 import { ReceiptService } from '../../receipt.service';
 
 @Component({
@@ -39,7 +39,7 @@ export class InvoiceDialogComponent {
   token = input.required<string>();
 
   close = output<void>();
-  invoiceGenerated = output<void>();
+  invoiceGenerated = output<string | null>();
 
   ngOnInit() {
     this.loadClients();
@@ -65,8 +65,10 @@ export class InvoiceDialogComponent {
       this.invoiceService
         .createInvoice(receipt, clientId, this.token())
         .pipe(
-          switchMap(() =>
-            this.receiptService.updateReceipt(receipt, this.token(), 'billed')
+          switchMap((createdInvoiceId: string | null) =>
+            this.receiptService
+              .updateReceipt(receipt, this.token(), 'billed')
+              .pipe(map(() => createdInvoiceId))
           ),
           finalize(() => {
             this.isGeneratingInvoice.set(false);
@@ -74,8 +76,8 @@ export class InvoiceDialogComponent {
           })
         )
         .subscribe({
-          next: () => {
-            this.invoiceGenerated.emit();
+          next: (createdInvoiceId: string | null) => {
+            this.invoiceGenerated.emit(createdInvoiceId ?? null);
           },
           error: (error) => {
             console.error('Error generating invoice:', error);

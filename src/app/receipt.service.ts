@@ -652,8 +652,13 @@ export class ReceiptService {
 
   updateQuote(quote: any, token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    if (quote.responsables && quote.responsables.length > 0) {
-      quote.responsables = quote.responsables.map((r: any) => r.id || r);
+    if (Array.isArray(quote.responsables)) {
+      quote.responsables = quote.responsables
+        .filter((r: any) => r != null)
+        .map((r: any) => (typeof r === 'object' ? r.id : r))
+        .filter((id: any) => !!id);
+    } else {
+      quote.responsables = [];
     }
     return this.http.put<any>(
       `${this.baseUrl}/Quote/${quote.id}/Update`,

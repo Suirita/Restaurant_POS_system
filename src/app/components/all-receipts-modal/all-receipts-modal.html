@@ -50,14 +50,18 @@
                 type="search"
                 id="search"
                 placeholder=" Rechercher par Numéro de commande ..."
-                [(ngModel)]="commandNumberFilter"
+                [ngModel]="commandNumberFilter()"
+                (ngModelChange)="commandNumberFilter.set($event)"
+                name="commandNumberFilter"
                 class="block w-full p-2 ps-10 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               />
             </div>
           </form>
           <div class="w-2/3">
             <select
-              [(ngModel)]="serviceTypeFilter"
+              [ngModel]="serviceTypeFilter()"
+              (ngModelChange)="serviceTypeFilter.set($event)"
+              name="serviceTypeFilter"
               class="border border-gray-200 shadow-xs text-gray-900 bg-white text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
             >
               <option value="all">Tous les services</option>
@@ -142,8 +146,14 @@
     [receipt]="selectedReceiptForInvoice()!"
     [token]="token()"
     (close)="onCloseInvoiceDialog()"
-    (invoiceGenerated)="onInvoiceGenerated()"
+    (invoiceGenerated)="onInvoiceGenerated($event)"
   ></app-invoice-dialog>
+
+  <app-invoice-details-modal
+    *ngIf="isInvoiceDetailsVisible()"
+    [invoice]="selectedInvoice()!"
+    (close)="onCloseInvoiceDetails()"
+  ></app-invoice-details-modal>
 
   <app-receipt-details-modal
     *ngIf="isReceiptDetailsVisible()"

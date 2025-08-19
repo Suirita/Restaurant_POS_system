@@ -11,7 +11,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { Receipt } from '../../types/pos.types';
+import { Receipt, Invoice } from '../../types/pos.types';
+import { InvoiceService } from '../../invoice.service';
 import { ReceiptService } from '../../receipt.service';
 import {
   LucideAngularModule,
@@ -25,6 +26,7 @@ import {
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
+import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
 import { DatePickerComponent } from '../date-picker/date-picker';
@@ -40,6 +42,7 @@ import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
     LucideAngularModule,
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
+    InvoiceDetailsModalComponent,
     ReusableTable,
     PaginationComponent,
     DatePickerComponent,
@@ -56,11 +59,14 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   readonly Search = Search;
 
   private receiptService = inject(ReceiptService);
+  private invoiceService = inject(InvoiceService);
   receipts = signal<Receipt[]>([]);
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
   isReceiptDetailsVisible = signal(false);
+  isInvoiceDetailsVisible = signal(false);
   selectedReceipt = signal<Receipt | null>(null);
+  selectedInvoice = signal<Invoice | null>(null);
   selectedReceiptForInvoice = signal<Receipt | null>(null);
   userId = input.required<string>();
   token = input.required<string>();
@@ -255,10 +261,65 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.selectedReceiptForInvoice.set(null);
   }
 
-  onInvoiceGenerated() {
+  onInvoiceGenerated(invoiceId?: string | null) {
     this.loadReceipts();
-    this.onCloseInvoiceDialog();
-    this.onClose();
+    const evt: any = invoiceId as any;
+    let id: string | null = null;
+    if (typeof invoiceId === 'string') {
+      id = invoiceId;
+    } else if (evt) {
+      id = evt.id ?? evt.value?.id ?? evt.invoiceId ?? evt.data?.id ?? null;
+    }
+    if (typeof id !== 'string') id = null;
+    if (!id) {
+      this.onCloseInvoiceDialog();
+      this.onClose();
+      return;
+    }
+    this.invoiceService.getInvoiceDetails(id, this.token()).subscribe({
+      next: (detailedInvoiceResponse) => {
+        const detailedInvoice = detailedInvoiceResponse.value;
+        if (
+          detailedInvoice &&
+          detailedInvoice.orderDetails &&
+          detailedInvoice.orderDetails.lineItems
+        ) {
+          const lineItems = detailedInvoice.orderDetails.lineItems.map(
+            (item: any) => ({
+              id: item.product.id,
+              designation: item.product.designation,
+              sellingPrice: item.product.sellingPrice,
+              purchasePrice: item.product.purchasePrice || 0,
+              totalTTC: item.totalTTC,
+              tva: item.product.vat || 0,
+              categoryId: item.product.categoryId,
+              categoryLabel: item.product.categoryLabel,
+              image: '',
+              quantity: item.quantity,
+              labels: item.product.labels || [],
+            })
+          );
+          this.selectedInvoice.set({
+            id: detailedInvoice.id,
+            invoiceNumber: detailedInvoice.reference,
+            clientName: detailedInvoice.client,
+            date: new Date(detailedInvoice.creationDate),
+            total: detailedInvoice.totalTTC,
+            items: lineItems,
+          });
+          this.isInvoiceDetailsVisible.set(true);
+        }
+        this.onCloseInvoiceDialog();
+      },
+      error: () => {
+        this.onCloseInvoiceDialog();
+      },
+    });
+  }
+
+  onCloseInvoiceDetails() {
+    this.isInvoiceDetailsVisible.set(false);
+    this.selectedInvoice.set(null);
   }
 
   clearFilters() {

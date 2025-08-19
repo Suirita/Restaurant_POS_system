@@ -84,8 +84,14 @@
   [receipt]="selectedReceiptForInvoice()!"
   [token]="getToken()!"
   (close)="onCloseInvoiceDialog()"
-  (invoiceGenerated)="onInvoiceGenerated()"
+  (invoiceGenerated)="onInvoiceGenerated($event)"
 ></app-invoice-dialog>
+
+<app-invoice-details-modal
+  *ngIf="isInvoiceDetailsVisible()"
+  [invoice]="selectedInvoice()!"
+  (close)="onCloseInvoiceDetails()"
+></app-invoice-details-modal>
 
 <app-receipt-details-modal
   *ngIf="isReceiptDetailsVisible()"
