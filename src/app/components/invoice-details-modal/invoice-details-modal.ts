@@ -1,4 +1,11 @@
-import { Component, input, output, inject, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Client, Invoice } from '../../types/pos.types';
 import { ConfigurationService } from '../../configuration.service';
@@ -23,6 +30,14 @@ export class InvoiceDetailsModalComponent implements OnInit {
   logoUrl = signal<string | null>(null);
   client = signal<Client | null>(null);
 
+  getClientName(): string {
+    const value: any = (this.invoice() as any)?.clientName;
+    if (typeof value === 'string') return value;
+    if (value && typeof value === 'object')
+      return (value.name ?? '').toString();
+    return '';
+  }
+
   ngOnInit() {
     this.loadCompanyInfo();
     this.loadClientInfo();
@@ -30,15 +45,25 @@ export class InvoiceDetailsModalComponent implements OnInit {
 
   loadClientInfo() {
     const token = this.loginService.getToken();
-    if (token) {
-      this.clientService.getClients(token).subscribe((clients) => {
-        this.client.set(
-          clients.find(
-            (c) => c.name.trim() === this.invoice().clientName.trim()
-          ) ?? null
-        );
-      });
-    }
+    if (!token) return;
+    this.clientService.getClients(token).subscribe((clients) => {
+      const currentInvoice = this.invoice();
+      const rawClientName: any = currentInvoice?.clientName as any;
+      const normalizedName =
+        typeof rawClientName === 'string'
+          ? rawClientName
+          : rawClientName?.name ?? '';
+      const target = (normalizedName ?? '').toString().trim().toLowerCase();
+      if (!target) {
+        this.client.set(null);
+        return;
+      }
+      const matched =
+        clients.find(
+          (c) => (c.name ?? '').toString().trim().toLowerCase() === target
+        ) ?? null;
+      this.client.set(matched);
+    });
   }
 
   loadCompanyInfo() {
