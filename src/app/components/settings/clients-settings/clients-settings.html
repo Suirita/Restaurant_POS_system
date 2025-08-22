@@ -45,23 +45,31 @@
     </div>
 
     <!-- Table -->
-    <app-reusable-table
-      [columns]="tableColumns"
-      [columnKeys]="tableColumnKeys"
-      [data]="paginatedClients()"
-      [actions]="{ edit: true, delete: true }"
-      (onEdit)="openEditForm($event)"
-      (onDelete)="deleteClient($event)"
-    ></app-reusable-table>
+    <app-table-skeleton
+      *ngIf="loading()"
+      [columns]="tableColumnKeys"
+      [rowCount]="10"
+    ></app-table-skeleton>
 
-    <!-- Pagination -->
-    <app-pagination
-      *ngIf="filteredClients().length > 10"
-      [totalItems]="filteredClients().length"
-      [currentPage]="currentPage()"
-      (pageChange)="onPageChange($event)"
-    >
-    </app-pagination>
+    <div *ngIf="!loading()">
+      <app-reusable-table
+        [columns]="tableColumns"
+        [columnKeys]="tableColumnKeys"
+        [data]="paginatedClients()"
+        [actions]="{ edit: true, delete: true }"
+        (onEdit)="openEditForm($event)"
+        (onDelete)="deleteClient($event)"
+      ></app-reusable-table>
+
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="filteredClients().length > 10"
+        [totalItems]="filteredClients().length"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
+    </div>
 
     <app-client-form-modal
       *ngIf="showClientForm()"

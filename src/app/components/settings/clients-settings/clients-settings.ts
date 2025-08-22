@@ -17,6 +17,7 @@ import { ClientFormModalComponent } from '../../client-form-modal/client-form-mo
 import { KeyboardService } from '../../../keyboard.service';
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
+import { TableSkeletonComponent } from '../../table-skeleton/table-skeleton';
 
 @Component({
   selector: 'app-clients-settings',
@@ -28,6 +29,7 @@ import { PaginationComponent } from '../../pagination/pagination';
     ClientFormModalComponent,
     ReusableTable,
     PaginationComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './clients-settings.html',
 })
@@ -45,6 +47,7 @@ export class ClientsSettingsComponent implements OnInit {
   currentUser = signal<UserAccount | null>(null);
   showClientForm = signal(false);
   editingClient = signal<Client | null>(null);
+  loading = signal<boolean>(true);
 
   // Filtering and Search
   searchTerm = signal<string>('');
@@ -93,10 +96,12 @@ export class ClientsSettingsComponent implements OnInit {
   }
 
   loadClients() {
+    this.loading.set(true);
     this.clientService
       .getClients(this.currentUser()?.token)
       .subscribe((data) => {
         this.clients.set(data);
+        this.loading.set(false);
       });
   }
 
