@@ -250,7 +250,7 @@ export class DashboardComponent implements OnInit {
       (sum, receipt) => sum + receipt.total,
       0
     );
-    this.totalRevenue.set(revenue);
+    this.totalRevenue.set(parseFloat(revenue.toFixed(2)));
     this.totalReceipts.set(filteredReceipts.length);
   }
 
@@ -259,7 +259,7 @@ export class DashboardComponent implements OnInit {
       (sum, invoice) => sum + (invoice.totalTTC || invoice.total),
       0
     );
-    this.totalInvoicesRevenue.set(revenue);
+    this.totalInvoicesRevenue.set(parseFloat(revenue.toFixed(2)));
     this.totalInvoices.set(invoices.length);
   }
 
@@ -285,7 +285,7 @@ export class DashboardComponent implements OnInit {
       datasets: [
         {
           label: 'Ventes par Catégorie',
-          data: [...categorySales.values()],
+          data: [...categorySales.values()].map((v) => parseFloat(v.toFixed(2))),
           backgroundColor: [
             '#F87171',
             '#60A5FA',
@@ -308,8 +308,25 @@ export class DashboardComponent implements OnInit {
           display: true,
           position: 'right',
         },
+        tooltip: {
+          callbacks: {
+            label: function (context: any) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed) {
+                label += new Intl.NumberFormat('fr-FR', {
+                  style: 'currency',
+                  currency: 'EUR',
+                }).format(context.parsed);
+              }
+              return label;
+            },
+          },
+        },
         centerText: {
-          text: `${totalSales}`,
+          text: `${parseFloat(totalSales.toFixed(2))}`,
         },
       },
     };
@@ -345,7 +362,7 @@ export class DashboardComponent implements OnInit {
       datasets: [
         {
           label: 'Ventes au Fil du Temps',
-          data: chartDataValues,
+          data: chartDataValues.map((v) => parseFloat(v.toFixed(2))),
           backgroundColor: '#4ADE80',
           barThickness: 25,
         },
@@ -358,6 +375,27 @@ export class DashboardComponent implements OnInit {
     this.salesOverTimeChart = new Chart('salesOverTimeChart', {
       type: 'bar',
       data: chartData,
+      options: {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context: any) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y) {
+                  label += new Intl.NumberFormat('fr-FR', {
+                    style: 'currency',
+                    currency: 'EUR',
+                  }).format(context.parsed.y);
+                }
+                return label;
+              },
+            },
+          },
+        },
+      },
     });
   }
 
