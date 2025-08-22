@@ -353,7 +353,7 @@ export class DashboardComponent implements OnInit {
 
     const sortedDates = [...salesByDate.keys()].sort();
     const chartLabels = sortedDates.map((date) =>
-      new Date(date).toLocaleDateString()
+      new Date(date).toLocaleDateString('fr-FR')
     );
     const chartDataValues = sortedDates.map((date) => salesByDate.get(date)!);
 
