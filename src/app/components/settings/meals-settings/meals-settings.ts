@@ -21,6 +21,8 @@ import {
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
 import { CustomSelectComponent } from '../../custom-select/custom-select';
+import { TableSkeletonComponent } from '../../table-skeleton/table-skeleton';
+import { forkJoin } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -32,6 +34,7 @@ import { CustomSelectComponent } from '../../custom-select/custom-select';
     ReusableTable,
     PaginationComponent,
     CustomSelectComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './meals-settings.html',
 })
@@ -56,6 +59,7 @@ export class MealsSettingsComponent implements OnInit {
   showMealForm = signal<boolean>(false);
   editingMeal = signal<Meal | null>(null);
   isInputFocused = signal<boolean>(false);
+  loading = signal<boolean>(true);
 
   // Filtering and Search
   searchTerm = signal<string>('');
@@ -133,8 +137,24 @@ export class MealsSettingsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadMeals();
-    this.loadCategories();
+    this.loadData();
+  }
+
+  loadData(): void {
+    this.loading.set(true);
+    const user = JSON.parse(localStorage.getItem('user')!);
+    const meals$ = this.mealService.getMeals(user.token);
+    const categories$ = this.categoryService.getCategories(user.token);
+
+    forkJoin({
+      meals: meals$,
+      categories: categories$,
+    }).subscribe(({ meals, categories }) => {
+      this.meals.set(meals);
+      this.categories.set(categories);
+      this.currentPage.set(1);
+      this.loading.set(false);
+    });
   }
 
   loadMeals(): void {

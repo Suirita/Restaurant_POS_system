@@ -46,24 +46,31 @@
     </div>
 
     <!-- Table -->
-    <app-reusable-table
-      [columns]="tableColumns"
-      [columnKeys]="tableColumnKeys"
-      [data]="paginatedCategories()"
-      [actions]="{ edit: true, delete: true }"
-      (onEdit)="openEditForm($event)"
-      (onDelete)="deleteCategory($event)"
-      (onImageError)="onImageError($event)"
-    ></app-reusable-table>
+    <app-table-skeleton
+      *ngIf="loading()"
+      [columns]="tableColumnKeys"
+      [rowCount]="10"
+    ></app-table-skeleton>
+    <div *ngIf="!loading()">
+      <app-reusable-table
+        [columns]="tableColumns"
+        [columnKeys]="tableColumnKeys"
+        [data]="paginatedCategories()"
+        [actions]="{ edit: true, delete: true }"
+        (onEdit)="openEditForm($event)"
+        (onDelete)="deleteCategory($event)"
+        (onImageError)="onImageError($event)"
+      ></app-reusable-table>
 
-    <!-- Pagination -->
-    <app-pagination
-      *ngIf="filteredCategories().length > 10"
-      [totalItems]="filteredCategories().length"
-      [currentPage]="currentPage()"
-      (pageChange)="onPageChange($event)"
-    >
-    </app-pagination>
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="filteredCategories().length > 10"
+        [totalItems]="filteredCategories().length"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
+    </div>
 
     <!-- Category Create/Edit Form Modal -->
     <div

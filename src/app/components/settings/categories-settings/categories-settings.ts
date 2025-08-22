@@ -18,6 +18,8 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { ReusableTable } from '../../reusable-table/reusable-table';
 import { PaginationComponent } from '../../pagination/pagination';
+import { TableSkeletonComponent } from '../../table-skeleton/table-skeleton';
+import { forkJoin } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -28,6 +30,7 @@ import { PaginationComponent } from '../../pagination/pagination';
     LucideAngularModule,
     ReusableTable,
     PaginationComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './categories-settings.html',
 })
@@ -50,6 +53,7 @@ export class CategoriesSettingsComponent implements OnInit {
   showCategoryForm = signal<boolean>(false);
   editingCategory = signal<Category | null>(null);
   isInputFocused = signal<boolean>(false);
+  loading = signal<boolean>(true);
 
   newCategoryLabel: string = '';
   newCategoryImage: File | null = null;
@@ -81,24 +85,25 @@ export class CategoriesSettingsComponent implements OnInit {
   tableColumnKeys = ['image', 'label'];
 
   ngOnInit(): void {
-    this.loadCategories();
-    this.loadCategoryImages();
+    this.reloadData();
   }
 
-  loadCategoryImages() {
-    this.http
-      .get<{ [key: string]: string }>('assets/category-images.json')
-      .subscribe((data) => {
-        this.categoryImages.set(data);
-      });
-  }
-
-  loadCategories(): void {
+  reloadData(): void {
+    this.loading.set(true);
     const user = JSON.parse(localStorage.getItem('user')!);
-    this.categoryService.getCategories(user.token).subscribe((categories) => {
-      this.categories.set(categories);
-      this.currentPage.set(1); // Reset to first page
-    });
+    const categories$ = this.categoryService.getCategories(user.token);
+    const categoryImages$ = this.http.get<{ [key: string]: string }>(
+      'assets/category-images.json'
+    );
+
+    forkJoin([categories$, categoryImages$]).subscribe(
+      ([categories, images]) => {
+        this.categories.set(categories);
+        this.categoryImages.set(images);
+        this.currentPage.set(1);
+        this.loading.set(false);
+      }
+    );
   }
 
   onSearchTermChange(event: Event): void {
@@ -143,7 +148,7 @@ export class CategoriesSettingsComponent implements OnInit {
       this.categoryService
         .updateCategory(updatedCategory, user.token)
         .subscribe(() => {
-          this.loadCategories();
+          this.reloadData();
           this.showCategoryForm.set(false);
         });
     } else {
@@ -172,8 +177,7 @@ export class CategoriesSettingsComponent implements OnInit {
                     });
                   })
                   .then(() => {
-                    this.loadCategories();
-                    this.loadCategoryImages();
+                    this.reloadData();
                     this.showCategoryForm.set(false);
                   })
                   .catch((err: any) => {
@@ -185,7 +189,7 @@ export class CategoriesSettingsComponent implements OnInit {
             };
             reader.readAsDataURL(this.newCategoryImage);
           } else {
-            this.loadCategories();
+            this.reloadData();
             this.showCategoryForm.set(false);
           }
         });
@@ -219,8 +223,7 @@ export class CategoriesSettingsComponent implements OnInit {
                   .toPromise()
               )
               .then(() => {
-                this.loadCategories();
-                this.loadCategoryImages();
+                this.reloadData();
               })
               .catch((err: any) =>
                 console.error('Error deleting category:', err)
@@ -235,7 +238,7 @@ export class CategoriesSettingsComponent implements OnInit {
             .deleteCategory(categoryId, user.token)
             .subscribe({
               next: () => {
-                this.loadCategories();
+                this.reloadData();
               },
               error: (err) => console.error('Error deleting category:', err),
             });

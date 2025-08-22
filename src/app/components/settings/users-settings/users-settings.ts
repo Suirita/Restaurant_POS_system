@@ -24,6 +24,7 @@ import {
   CustomSelectComponent,
   Option,
 } from '../../custom-select/custom-select';
+import { TableSkeletonComponent } from '../../table-skeleton/table-skeleton';
 
 @Component({
   standalone: true,
@@ -36,6 +37,7 @@ import {
     ReusableTable,
     PaginationComponent,
     CustomSelectComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './users-settings.html',
 })
@@ -57,6 +59,7 @@ export class UsersSettingsComponent implements OnInit {
   showUserForm = signal<boolean>(false);
   editingUser = signal<UserAccount | null>(null);
   token = signal<string>(''); // You might need to get this from a service
+  loading = signal<boolean>(true);
 
   // Filtering and Search
   searchTerm = signal<string>('');
@@ -115,6 +118,7 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   loadUsers(): void {
+    this.loading.set(true);
     this.userService
       .getUsers()
       .pipe(
@@ -142,6 +146,7 @@ export class UsersSettingsComponent implements OnInit {
       .subscribe((users) => {
         this.users.set(users);
         this.currentPage.set(1);
+        this.loading.set(false);
       });
   }
 

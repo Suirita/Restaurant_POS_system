@@ -84,24 +84,31 @@
     </div>
 
     <!-- Table -->
-    <app-reusable-table
-      [columns]="tableColumns"
-      [columnKeys]="tableColumnKeys"
-      [data]="paginatedMeals()"
-      [actions]="{ edit: true, delete: true }"
-      (onEdit)="openEditForm($event)"
-      (onDelete)="deleteMeal($event)"
-      (onImageError)="onImageError($event)"
-    ></app-reusable-table>
+    <app-table-skeleton
+      *ngIf="loading()"
+      [columns]="tableColumnKeys"
+      [rowCount]="10"
+    ></app-table-skeleton>
+    <div *ngIf="!loading()">
+      <app-reusable-table
+        [columns]="tableColumns"
+        [columnKeys]="tableColumnKeys"
+        [data]="paginatedMeals()"
+        [actions]="{ edit: true, delete: true }"
+        (onEdit)="openEditForm($event)"
+        (onDelete)="deleteMeal($event)"
+        (onImageError)="onImageError($event)"
+      ></app-reusable-table>
 
-    <!-- Pagination -->
-    <app-pagination
-      *ngIf="filteredMeals().length > 10"
-      [totalItems]="filteredMeals().length"
-      [currentPage]="currentPage()"
-      (pageChange)="onPageChange($event)"
-    >
-    </app-pagination>
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="filteredMeals().length > 10"
+        [totalItems]="filteredMeals().length"
+        [currentPage]="currentPage()"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
+    </div>
 
     <!-- Meal Create/Edit Form Modal -->
     <div
