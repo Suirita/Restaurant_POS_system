@@ -567,7 +567,7 @@ export class ReceiptService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body: any = {
       Page: 1,
-      PageSize: 1000,
+      PageSize: 10000,
       status: ['refused', 'accepted', 'in_progress'],
     };
     if (userIds && userIds.length > 0) {
