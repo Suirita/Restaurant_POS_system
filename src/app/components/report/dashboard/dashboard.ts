@@ -71,7 +71,6 @@ export class DashboardComponent implements OnInit {
     { value: 'this_month', label: 'Ce Mois' },
     { value: 'this_quarter', label: 'Ce Trimestre' },
     { value: 'this_year', label: 'Cette Année' },
-    { value: 'all', label: 'Tout le temps' },
     { value: 'custom', label: 'Personnalisé' },
   ];
 
@@ -194,10 +193,6 @@ export class DashboardComponent implements OnInit {
       case 'this_year':
         this.startDate = new Date(now.getFullYear(), 0, 1);
         this.endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
-        break;
-      case 'all':
-        this.startDate = null;
-        this.endDate = null;
         break;
       case 'custom':
         this.startDate = null;
