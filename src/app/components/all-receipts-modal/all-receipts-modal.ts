@@ -172,6 +172,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         this.receipts.set(
           receipts.map((receipt) => ({
             ...receipt,
+            total: parseFloat(receipt.total.toFixed(2)),
             date: new Date(receipt.date), // Convert date string to Date object
           }))
         );
@@ -227,7 +228,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
               this.selectedReceipt.set({
                 ...receipt,
                 items: lineItems,
-                total: detailedReceipt.totalTTC,
+                total: parseFloat(detailedReceipt.totalTTC.toFixed(2)),
               });
               this.isReceiptDetailsVisible.set(true);
             } else {
@@ -304,7 +305,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
             invoiceNumber: detailedInvoice.reference,
             clientName: detailedInvoice.client,
             date: new Date(detailedInvoice.creationDate),
-            total: detailedInvoice.totalTTC,
+            total: parseFloat(detailedInvoice.totalTTC.toFixed(2)),
             items: lineItems,
           });
           this.isInvoiceDetailsVisible.set(true);

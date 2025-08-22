@@ -131,7 +131,9 @@
     </div>
 
     <ng-template #totalColumnTemplate let-item="item">
-      <div class="text-lg font-medium text-gray-900">{{ item.total }}</div>
+      <div class="text-lg font-medium text-gray-900">
+        {{ item.total | currency:'EUR' }}
+      </div>
     </ng-template>
 
     <ng-template #dateColumnTemplate let-item="item">

@@ -143,7 +143,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
             invoiceNumber: apiInvoice.reference,
             clientName: apiInvoice.client,
             date: new Date(apiInvoice.creationDate),
-            total: apiInvoice.totalTTC,
+            total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
           })
         );
         this.invoices.set(mappedInvoices);
@@ -189,7 +189,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
               this.selectedInvoice.set({
                 ...invoice,
                 items: lineItems,
-                total: detailedInvoice.totalTTC,
+                total: parseFloat(detailedInvoice.totalTTC.toFixed(2)),
               });
               this.isInvoiceDetailsVisible.set(true);
             } else {
@@ -227,8 +227,10 @@ export class AllInvoicesModalComponent implements AfterViewInit {
           const message = `Bonjour ${invoice.clientName},
 
 Voici les détails de votre facture ${invoice.invoiceNumber}:
-Total: ${invoice.total} EUR
-Date: ${new Date(invoice.date).toLocaleDateString()}`;
+Total: ${invoice.total.toFixed(2)} EUR
+Date: ${new Date(
+            invoice.date
+          ).toLocaleDateString()}`;
           const whatsappUrl = `https://wa.me/${
             client.mobile
           }?text=${encodeURIComponent(message)}`;
