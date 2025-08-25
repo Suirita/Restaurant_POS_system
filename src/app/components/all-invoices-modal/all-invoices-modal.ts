@@ -30,6 +30,10 @@ import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-d
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
+import {
+  DateRangePickerComponent,
+  DateRange,
+} from '../date-range-picker/date-range-picker';
 
 @Component({
   standalone: true,
@@ -43,6 +47,7 @@ import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
     ReusableTable,
     PaginationComponent,
     TableSkeletonComponent,
+    DateRangePickerComponent,
   ],
 })
 export class AllInvoicesModalComponent implements AfterViewInit {
@@ -67,7 +72,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   // Filters
   invoiceNumberFilter = signal<string>('');
   clientNameFilter = signal<string>('');
-  selectedDateFilter = signal<string>('');
+  selectedDateRange = signal<DateRange>({});
 
   // Pagination
   currentPage = signal<number>(1);
@@ -90,11 +95,23 @@ export class AllInvoicesModalComponent implements AfterViewInit {
       );
     }
 
-    const selectedDate = this.selectedDateFilter();
-    if (selectedDate) {
+    const { from, to } = this.selectedDateRange();
+    if (from && to) {
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
       filtered = filtered.filter((inv) => {
-        const dateOnly = new Date(inv.date).toISOString().split('T')[0];
-        return dateOnly === selectedDate;
+        const invDate = new Date(inv.date);
+        return invDate >= from && invDate <= toDate;
+      });
+    } else if (from) {
+      const fromDayStart = new Date(from);
+      fromDayStart.setHours(0, 0, 0, 0);
+      const fromDayEnd = new Date(from);
+      fromDayEnd.setHours(23, 59, 59, 999);
+
+      filtered = filtered.filter((inv) => {
+        const invDate = new Date(inv.date);
+        return invDate >= fromDayStart && invDate <= fromDayEnd;
       });
     }
 
@@ -159,6 +176,10 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   onPageChange(page: number) {
     this.currentPage.set(page);
+  }
+
+  onDateRangeChange(range: DateRange) {
+    this.selectedDateRange.set(range);
   }
 
   onClose() {
