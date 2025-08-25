@@ -313,17 +313,42 @@ export class InvoiceService {
     );
   }
 
-  getAllInvoices(token: string): Observable<any> {
+  getAllInvoices(
+    token: string,
+    page: number,
+    pageSize: number
+  ): Observable<{
+    invoices: Invoice[];
+    totalItems: number;
+    currentPage: number;
+    pagesCount: number;
+  }> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
-      Page: 1,
-      PageSize: 10000,
+      Page: page,
+      PageSize: pageSize,
       techniciansId: [],
       label: ['chneg3084mkah1'],
     };
-    return this.http.post<any>(`${this.baseURL}/Invoice`, body, {
-      headers,
-    });
+    return this.http.post<any>(`${this.baseURL}/Invoice`, body, { headers }).pipe(
+      map((response: any) => {
+        const mappedInvoices: Invoice[] = (response.value || []).map(
+          (apiInvoice: any) => ({
+            id: apiInvoice.id,
+            invoiceNumber: apiInvoice.reference,
+            clientName: apiInvoice.client,
+            date: new Date(apiInvoice.creationDate),
+            total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
+          })
+        );
+        return {
+          invoices: mappedInvoices,
+          totalItems: response.rowsCount || 0,
+          currentPage: response.currentPage || 1,
+          pagesCount: response.pagesCount || 0,
+        };
+      })
+    );
   }
 
   getLatestInvoiceId(token: string): Observable<string | null> {

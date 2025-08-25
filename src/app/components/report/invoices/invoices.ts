@@ -48,10 +48,11 @@ import {
   
     // Pagination
     currentPage = signal<number>(1);
+    totalInvoices = signal<number>(0);
+    totalPages = signal<number>(0);
+
     paginatedInvoices = computed(() => {
-      const startIndex = (this.currentPage() - 1) * 9;
-      const endIndex = startIndex + 9;
-      return this.invoices().slice(startIndex, endIndex);
+      return this.invoices();
     });
   
     constructor() {
@@ -69,24 +70,18 @@ import {
       if (!this.user || !this.user.token) return;
       this.isLoading.set(true);
       this.invoiceService
-        .getAllInvoices(this.user.token)
-        .subscribe((response: any) => {
-          const mappedInvoices: Invoice[] = response.value.map(
-            (apiInvoice: any) => ({
-              id: apiInvoice.id,
-              invoiceNumber: apiInvoice.reference,
-              clientName: apiInvoice.client,
-              date: new Date(apiInvoice.creationDate),
-              total: apiInvoice.totalTTC,
-            })
-          );
-          this.invoices.set(mappedInvoices);
+        .getAllInvoices(this.user.token, this.currentPage(), 9)
+        .subscribe((response) => {
+          this.invoices.set(response.invoices);
+          this.totalInvoices.set(response.totalItems);
+          this.totalPages.set(response.pagesCount);
           this.isLoading.set(false);
         });
     }
   
     onPageChange(page: number) {
       this.currentPage.set(page);
+      this.loadInvoices();
     }
   
     onInvoiceClick(invoice: Invoice) {

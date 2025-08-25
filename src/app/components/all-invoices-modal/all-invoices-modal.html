@@ -119,7 +119,7 @@
       <app-reusable-table
         [columns]="tableColumns"
         [columnKeys]="tableColumnKeys"
-        [data]="paginatedInvoices()"
+        [data]="filteredInvoices()"
         [customActions]="customActions"
         [columnTemplates]="columnTemplates"
         (onRowClick)="onInvoiceClick($event)"
@@ -128,8 +128,8 @@
 
       <!-- Pagination -->
       <app-pagination
-        *ngIf="filteredInvoices().length > 9"
-        [totalItems]="filteredInvoices().length"
+        *ngIf="rowsCount() > 9"
+        [totalItems]="rowsCount()"
         [currentPage]="currentPage()"
         (pageChange)="onPageChange($event)"
       >

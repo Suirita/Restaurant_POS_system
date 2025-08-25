@@ -99,8 +99,8 @@ export class DashboardComponent implements OnInit {
           ])
           .subscribe((response) => {
             this.allReceipts = response.receipts;
-            this.invoiceService.getAllInvoices(token).subscribe((invoices) => {
-              this.allInvoices = invoices.value;
+            this.invoiceService.getAllInvoices(token, 1, 10000).subscribe((response) => {
+              this.allInvoices = response.invoices;
               this.processData();
             });
           });

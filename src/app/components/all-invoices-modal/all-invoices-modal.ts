@@ -70,6 +70,9 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   // Pagination
   currentPage = signal<number>(1);
+  rowsCount = signal<number>(0);
+  pagesCount = signal<number>(0);
+
   filteredInvoices = computed(() => {
     let filtered = this.invoices();
 
@@ -96,11 +99,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     }
 
     return filtered;
-  });
-  paginatedInvoices = computed(() => {
-    const startIndex = (this.currentPage() - 1) * 9;
-    const endIndex = startIndex + 9;
-    return this.filteredInvoices().slice(startIndex, endIndex);
   });
 
   close = output<void>();
@@ -135,24 +133,19 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   loadInvoices() {
     this.isLoading.set(true);
     this.invoiceService
-      .getAllInvoices(this.token())
-      .subscribe((response: any) => {
-        const mappedInvoices: Invoice[] = response.value.map(
-          (apiInvoice: any) => ({
-            id: apiInvoice.id,
-            invoiceNumber: apiInvoice.reference,
-            clientName: apiInvoice.client,
-            date: new Date(apiInvoice.creationDate),
-            total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
-          })
-        );
-        this.invoices.set(mappedInvoices);
+      .getAllInvoices(this.token(), this.currentPage(), 9)
+      .subscribe((response) => {
+        this.invoices.set(response.invoices);
+        this.rowsCount.set(response.totalItems);
+        this.pagesCount.set(response.pagesCount);
+        this.currentPage.set(response.currentPage);
         this.isLoading.set(false);
       });
   }
 
   onPageChange(page: number) {
     this.currentPage.set(page);
+    this.loadInvoices();
   }
 
   onClose() {
