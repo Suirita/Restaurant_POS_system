@@ -156,8 +156,20 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   pay = output<string>();
   receiptSelected = output<Receipt>();
 
-  tableColumns: string[] = ['Numéro de commande', 'Service', 'Date', 'Total'];
-  tableColumnKeys: string[] = ['orderNumber', 'tableName', 'date', 'total'];
+  tableColumns: string[] = [
+    'Numéro de commande',
+    'Service',
+    'Responsable',
+    'Date',
+    'Total',
+  ];
+  tableColumnKeys: string[] = [
+    'orderNumber',
+    'tableName',
+    'responsable',
+    'date',
+    'total',
+  ];
 
   customActions: TableAction[] = [];
 

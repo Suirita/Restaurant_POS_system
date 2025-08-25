@@ -583,46 +583,46 @@ export class ReceiptService {
       body.techniciansId = userIds;
     }
 
-    return this.http
-      .post<any>(`${this.baseUrl}/Quote`, body, { headers })
-      .pipe(
-        map((response) => {
-          if (response && response.value && response.value.length > 0) {
-            const receipts: Receipt[] = response.value.map(
-              (quote: any) =>
-                ({
-                  id: quote.id,
-                  orderNumber: quote.reference,
-                  tableName: quote.purpose,
-                  items: [], // Items will be loaded on demand
-                  total: parseFloat(quote.totalTTC.toFixed(2)),
-                  date: new Date(quote.creationDate),
-                  paymentMethod: '',
-                  userId:
-                    quote.userId ||
-                    (quote.responsables && quote.responsables.length > 0
-                      ? quote.responsables[0]
-                      : null),
-                  client: quote.client,
-                  orderDetails: null,
-                  status: quote.status,
-                } as Receipt)
-            );
-            return {
-              receipts,
-              totalItems: response.rowsCount,
-              currentPage: response.currentPage,
-              pagesCount: response.pagesCount,
-            };
-          }
+    return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
+      map((response) => {
+        if (response && response.value && response.value.length > 0) {
+          const receipts: Receipt[] = response.value.map(
+            (quote: any) =>
+              ({
+                id: quote.id,
+                orderNumber: quote.reference,
+                tableName: quote.purpose,
+                items: [], // Items will be loaded on demand
+                total: parseFloat(quote.totalTTC.toFixed(2)),
+                date: new Date(quote.creationDate),
+                paymentMethod: '',
+                userId:
+                  quote.userId ||
+                  (quote.responsables && quote.responsables.length > 0
+                    ? quote.responsables[0]
+                    : null),
+                responsable:
+                  quote.responsable || quote.responsables?.[0] || null,
+                client: quote.client,
+                orderDetails: null,
+                status: quote.status,
+              } as Receipt)
+          );
           return {
-            receipts: [],
-            totalItems: 0,
-            currentPage: 1,
-            pagesCount: 0,
+            receipts,
+            totalItems: response.rowsCount,
+            currentPage: response.currentPage,
+            pagesCount: response.pagesCount,
           };
-        })
-      );
+        }
+        return {
+          receipts: [],
+          totalItems: 0,
+          currentPage: 1,
+          pagesCount: 0,
+        };
+      })
+    );
   }
 
   updateQuote(quote: any, token: string): Observable<any> {

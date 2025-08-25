@@ -47,6 +47,7 @@ export interface Receipt {
   date: Date;
   paymentMethod: string;
   userId: string;
+  responsable?: string;
   client: any;
   orderDetails: any;
   status: string;
