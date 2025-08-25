@@ -35,8 +35,9 @@
               (click)="goToPage(page)"
               [class.text-white]="currentPage() === page"
               [class.bg-black]="currentPage() === page"
+              [class.bg-white]="currentPage() !== page"
               [class.border-gray-800]="currentPage() === page"
-              class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 font-medium rounded-md border border-gray-300 shadow-xs"
+              class=" flex items-center justify-center px-3 h-8 leading-tight text-gray-500 font-medium rounded-md border border-gray-300 shadow-xs"
             >
               {{ page }}
             </button>
