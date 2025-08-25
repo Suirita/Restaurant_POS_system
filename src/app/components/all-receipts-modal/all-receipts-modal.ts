@@ -30,7 +30,10 @@ import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
 import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
-import { DatePickerComponent } from '../date-picker/date-picker';
+import {
+  DateRangePickerComponent,
+  DateRange,
+} from '../date-range-picker/date-range-picker';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 
 @Component({
@@ -46,7 +49,7 @@ import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
     InvoiceDetailsModalComponent,
     ReusableTable,
     PaginationComponent,
-    DatePickerComponent,
+    DateRangePickerComponent,
     TableSkeletonComponent,
   ],
 })
@@ -75,7 +78,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   // Filter signals
   commandNumberFilter = signal<string>('');
   serviceTypeFilter = signal<string>('all');
-  selectedDateFilter = signal<Date | undefined>(undefined);
+  selectedDateRangeFilter = signal<DateRange>({});
 
   // Pagination
   currentPage = signal<number>(1);
@@ -107,12 +110,16 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       });
     }
 
-    const selectedDate = this.selectedDateFilter();
-    if (selectedDate) {
-      const selectedDateString = selectedDate.toISOString().split('T')[0];
+    const selectedDateRange = this.selectedDateRangeFilter();
+    if (selectedDateRange.from && selectedDateRange.to) {
+      const from = new Date(selectedDateRange.from);
+      from.setHours(0, 0, 0, 0);
+      const to = new Date(selectedDateRange.to);
+      to.setHours(23, 59, 59, 999);
+
       filtered = filtered.filter((receipt) => {
-        const receiptDate = new Date(receipt.date).toISOString().split('T')[0];
-        return receiptDate === selectedDateString;
+        const receiptDate = new Date(receipt.date);
+        return receiptDate >= from && receiptDate <= to;
       });
     }
 
@@ -335,6 +342,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   clearFilters() {
     this.commandNumberFilter.set('');
     this.serviceTypeFilter.set('all');
-    this.selectedDateFilter.set(undefined);
+    this.selectedDateRangeFilter.set({});
   }
 }
