@@ -79,7 +79,8 @@ export class UsersSettingsComponent implements OnInit {
     const role = this.selectedRole();
     return this.users().filter(
       (user) =>
-        user.fullName.toLowerCase().includes(term) &&
+        (user.fullName.toLowerCase().includes(term) ||
+          user.username.toLowerCase().includes(term)) &&
         (role === '' || user.roleName === role)
     );
   });

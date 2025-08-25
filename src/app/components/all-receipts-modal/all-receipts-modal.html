@@ -98,7 +98,7 @@
 
       <!-- No receipts found -->
       <div
-        *ngIf="!isLoading() && receipts().length === 0"
+        *ngIf="!isLoading() && allReceipts().length === 0"
         class="text-center py-12"
       >
         <p class="text-gray-700 text-xl font-medium mb-1">Aucun reçu trouvé</p>
@@ -108,13 +108,13 @@
 
     <!-- Card Body -->
     <div
-      *ngIf="!isLoading() && receipts().length > 0"
+      *ngIf="!isLoading() && allReceipts().length > 0"
       class="px-4 pb-4 max-h-[80vh] overflow-y-auto scrollbar-hide"
     >
       <app-reusable-table
         [columns]="tableColumns"
         [columnKeys]="tableColumnKeys"
-        [data]="filteredReceipts()"
+        [data]="paginatedReceipts()"
         [customActions]="customActions"
         [columnTemplates]="columnTemplates"
       >

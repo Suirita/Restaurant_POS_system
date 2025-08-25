@@ -8,6 +8,7 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
@@ -60,7 +61,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   private receiptService = inject(ReceiptService);
   private invoiceService = inject(InvoiceService);
-  receipts = signal<Receipt[]>([]);
+  allReceipts = signal<Receipt[]>([]);
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
   isReceiptDetailsVisible = signal(false);
@@ -78,11 +79,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   // Pagination
   currentPage = signal<number>(1);
-  pagesCount = signal<number>(1);
   rowsCount = signal<number>(0);
 
   filteredReceipts = computed(() => {
-    let filtered = this.receipts();
+    let filtered = this.allReceipts();
 
     const commandNum = this.commandNumberFilter().toLowerCase();
     if (commandNum) {
@@ -118,6 +118,22 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
     return filtered;
   });
+
+  paginatedReceipts = computed(() => {
+    const filtered = this.filteredReceipts();
+    const start = (this.currentPage() - 1) * 10;
+    const end = start + 10;
+    return filtered.slice(start, end);
+  });
+
+  constructor() {
+    effect(() => {
+      this.rowsCount.set(this.filteredReceipts().length);
+      if (this.currentPage() > Math.ceil(this.rowsCount() / 10)) {
+        this.currentPage.set(1);
+      }
+    });
+  }
 
   close = output<void>();
   pay = output<string>();
@@ -161,23 +177,20 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.receiptService
       .getAllReceipts(
         this.token(),
-        this.currentPage(),
-        10,
+        1,
+        10000,
         [this.userId()],
         ['in_progress', 'refused', 'late']
       )
       .subscribe((response) => {
-        this.receipts.set(response.receipts);
+        this.allReceipts.set(response.receipts);
         this.rowsCount.set(response.totalItems);
-        this.pagesCount.set(response.pagesCount);
-        this.currentPage.set(response.currentPage);
         this.isLoading.set(false);
       });
   }
 
   onPageChange(page: number) {
     this.currentPage.set(page);
-    this.loadReceipts();
   }
 
   onClose() {
