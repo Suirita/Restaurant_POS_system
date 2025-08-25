@@ -8,6 +8,7 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -56,7 +57,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   private invoiceService = inject(InvoiceService);
   private clientService = inject(ClientService);
-  invoices = signal<Invoice[]>([]);
+  allInvoices = signal<Invoice[]>([]);
   isLoading = signal<boolean>(false);
   token = input.required<string>();
 
@@ -71,10 +72,9 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   // Pagination
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
-  pagesCount = signal<number>(0);
 
   filteredInvoices = computed(() => {
-    let filtered = this.invoices();
+    let filtered = this.allInvoices();
 
     const invoiceTerm = this.invoiceNumberFilter().trim().toLowerCase();
     if (invoiceTerm) {
@@ -100,6 +100,22 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
     return filtered;
   });
+
+  paginatedInvoices = computed(() => {
+    const filtered = this.filteredInvoices();
+    const start = (this.currentPage() - 1) * 9;
+    const end = start + 9;
+    return filtered.slice(start, end);
+  });
+
+  constructor() {
+    effect(() => {
+      this.rowsCount.set(this.filteredInvoices().length);
+      if (this.currentPage() > Math.ceil(this.rowsCount() / 9)) {
+        this.currentPage.set(1);
+      }
+    });
+  }
 
   close = output<void>();
 
@@ -133,19 +149,16 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   loadInvoices() {
     this.isLoading.set(true);
     this.invoiceService
-      .getAllInvoices(this.token(), this.currentPage(), 9)
+      .getAllInvoices(this.token(), 1, 10000)
       .subscribe((response) => {
-        this.invoices.set(response.invoices);
+        this.allInvoices.set(response.invoices);
         this.rowsCount.set(response.totalItems);
-        this.pagesCount.set(response.pagesCount);
-        this.currentPage.set(response.currentPage);
         this.isLoading.set(false);
       });
   }
 
   onPageChange(page: number) {
     this.currentPage.set(page);
-    this.loadInvoices();
   }
 
   onClose() {
@@ -224,9 +237,7 @@ Total: ${invoice.total.toFixed(2)} EUR
 Date: ${new Date(
             invoice.date
           ).toLocaleDateString()}`;
-          const whatsappUrl = `https://wa.me/${
-            client.mobile
-          }?text=${encodeURIComponent(message)}`;
+          const whatsappUrl = `https://wa.me/${client.mobile}?text=${encodeURIComponent(message)}`;
           window.open(whatsappUrl, '_blank');
         } else {
           alert('Numéro de téléphone du client non trouvé.');
