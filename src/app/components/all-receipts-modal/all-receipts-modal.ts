@@ -121,6 +121,16 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         const receiptDate = new Date(receipt.date);
         return receiptDate >= from && receiptDate <= to;
       });
+    } else if (selectedDateRange.from) {
+      const fromDayStart = new Date(selectedDateRange.from);
+      fromDayStart.setHours(0, 0, 0, 0);
+      const fromDayEnd = new Date(selectedDateRange.from);
+      fromDayEnd.setHours(23, 59, 59, 999);
+
+      filtered = filtered.filter((receipt) => {
+        const receiptDate = new Date(receipt.date);
+        return receiptDate >= fromDayStart && receiptDate <= fromDayEnd;
+      });
     }
 
     return filtered;
