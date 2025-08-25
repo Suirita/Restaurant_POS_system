@@ -78,6 +78,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   // Pagination
   currentPage = signal<number>(1);
+  pagesCount = signal<number>(1);
+  rowsCount = signal<number>(0);
 
   filteredReceipts = computed(() => {
     let filtered = this.receipts();
@@ -115,12 +117,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     }
 
     return filtered;
-  });
-
-  paginatedReceipts = computed(() => {
-    const startIndex = (this.currentPage() - 1) * 10;
-    const endIndex = startIndex + 10;
-    return this.filteredReceipts().slice(startIndex, endIndex);
   });
 
   close = output<void>();
@@ -165,23 +161,23 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.receiptService
       .getAllReceipts(
         this.token(),
+        this.currentPage(),
+        10,
         [this.userId()],
         ['in_progress', 'refused', 'late']
       )
-      .subscribe((receipts: Receipt[]) => {
-        this.receipts.set(
-          receipts.map((receipt) => ({
-            ...receipt,
-            total: parseFloat(receipt.total.toFixed(2)),
-            date: new Date(receipt.date), // Convert date string to Date object
-          }))
-        );
+      .subscribe((response) => {
+        this.receipts.set(response.receipts);
+        this.rowsCount.set(response.totalItems);
+        this.pagesCount.set(response.pagesCount);
+        this.currentPage.set(response.currentPage);
         this.isLoading.set(false);
       });
   }
 
   onPageChange(page: number) {
     this.currentPage.set(page);
+    this.loadReceipts();
   }
 
   onClose() {

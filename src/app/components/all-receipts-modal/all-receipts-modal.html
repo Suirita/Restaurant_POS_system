@@ -114,7 +114,7 @@
       <app-reusable-table
         [columns]="tableColumns"
         [columnKeys]="tableColumnKeys"
-        [data]="paginatedReceipts()"
+        [data]="filteredReceipts()"
         [customActions]="customActions"
         [columnTemplates]="columnTemplates"
       >
@@ -122,8 +122,8 @@
 
       <!-- Pagination -->
       <app-pagination
-        *ngIf="filteredReceipts().length > 10"
-        [totalItems]="filteredReceipts().length"
+        *ngIf="rowsCount() > 10"
+        [totalItems]="rowsCount()"
         [currentPage]="currentPage()"
         (pageChange)="onPageChange($event)"
       >

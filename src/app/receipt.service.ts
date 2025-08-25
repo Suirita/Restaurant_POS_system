@@ -482,11 +482,12 @@ export class ReceiptService {
     tableName: string,
     token: string
   ): Observable<Receipt | undefined> {
-    return this.getAllReceipts(token, undefined, [
+    return this.getAllReceipts(token, 1, 10000, undefined, [
       'in_progress',
       'refused',
       'late',
     ]).pipe(
+      map((response) => response.receipts),
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
         if (receipt && receipt.id) {
@@ -540,8 +541,9 @@ export class ReceiptService {
   }
 
   deleteReceiptByOrderNumber(orderNumber: string, token: string): void {
-    this.getAllReceipts(token, undefined, ['in_progress'])
+    this.getAllReceipts(token, 1, 10000, undefined, ['in_progress'])
       .pipe(
+        map((response) => response.receipts),
         switchMap((receipts) => {
           const receipt = receipts.find((r) => r.orderNumber === orderNumber);
           if (receipt && receipt.id) {
@@ -561,93 +563,66 @@ export class ReceiptService {
 
   public getAllReceipts(
     token: string,
+    page: number,
+    pageSize: number,
     userIds?: string[],
     status?: string[]
-  ): Observable<Receipt[]> {
+  ): Observable<{
+    receipts: Receipt[];
+    totalItems: number;
+    currentPage: number;
+    pagesCount: number;
+  }> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body: any = {
-      Page: 1,
-      PageSize: 10000,
-      status: ['refused', 'accepted', 'in_progress'],
+      Page: page,
+      PageSize: pageSize,
+      status: status || ['refused', 'accepted', 'in_progress'],
     };
     if (userIds && userIds.length > 0) {
       body.techniciansId = userIds;
     }
-    if (status) {
-      body.status = status;
-    }
 
-    return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
-      switchMap((response) => {
-        if (response && response.value && response.value.length > 0) {
-          const receiptsWithoutDetails: Receipt[] = response.value.map(
-            (quote: any) =>
-              ({
-                id: quote.id,
-                orderNumber: quote.reference,
-                tableName: quote.purpose,
-                items: [],
-                total: quote.totalTTC,
-                date: new Date(quote.creationDate),
-                paymentMethod: '',
-                userId:
-                  quote.userId ||
-                  (quote.responsables && quote.responsables.length > 0
-                    ? quote.responsables[0]
-                    : null),
-                client: quote.client,
-                orderDetails: null,
-                status: quote.status,
-              } as Receipt)
-          );
-
-          if (receiptsWithoutDetails.length === 0) {
-            return of([]);
+    return this.http
+      .post<any>(`${this.baseUrl}/Quote`, body, { headers })
+      .pipe(
+        map((response) => {
+          if (response && response.value && response.value.length > 0) {
+            const receipts: Receipt[] = response.value.map(
+              (quote: any) =>
+                ({
+                  id: quote.id,
+                  orderNumber: quote.reference,
+                  tableName: quote.purpose,
+                  items: [], // Items will be loaded on demand
+                  total: parseFloat(quote.totalTTC.toFixed(2)),
+                  date: new Date(quote.creationDate),
+                  paymentMethod: '',
+                  userId:
+                    quote.userId ||
+                    (quote.responsables && quote.responsables.length > 0
+                      ? quote.responsables[0]
+                      : null),
+                  client: quote.client,
+                  orderDetails: null,
+                  status: quote.status,
+                } as Receipt)
+            );
+            return {
+              receipts,
+              totalItems: response.rowsCount,
+              currentPage: response.currentPage,
+              pagesCount: response.pagesCount,
+            };
           }
-
-          const detailRequests = receiptsWithoutDetails.map((receipt) =>
-            this.getReceiptDetails(receipt.id, token).pipe(
-              map((detailsResponse) => {
-                const quoteDetails = detailsResponse.value;
-                if (
-                  quoteDetails &&
-                  quoteDetails.orderDetails &&
-                  quoteDetails.orderDetails.lineItems
-                ) {
-                  const lineItems: CartItem[] =
-                    quoteDetails.orderDetails.lineItems.map((item: any) => {
-                      const product = item.product;
-                      return {
-                        id: product.id,
-                        designation: product.designation,
-                        sellingPrice: product.sellingPrice,
-                        purchasePrice: product.purchasePrice || 0,
-                        totalTTC: item.totalTTC,
-                        tva: product.vat || 0,
-                        categoryId: product.categoryId,
-                        categoryLabel: product.categoryLabel,
-                        image: '',
-                        quantity: item.quantity,
-                        labels: product.labels || [],
-                      };
-                    });
-
-                  return {
-                    ...receipt,
-                    items: lineItems,
-                    total: quoteDetails.totalTTC,
-                  } as Receipt;
-                }
-                return receipt; // Return basic receipt if details are not available
-              })
-            )
-          );
-
-          return forkJoin(detailRequests);
-        }
-        return of([]);
-      })
-    );
+          return {
+            receipts: [],
+            totalItems: 0,
+            currentPage: 1,
+            pagesCount: 0,
+          };
+        })
+      );
   }
 
   updateQuote(quote: any, token: string): Observable<any> {
@@ -674,7 +649,8 @@ export class ReceiptService {
     token: string
   ): Observable<any | undefined> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.getAllReceipts(token).pipe(
+    return this.getAllReceipts(token, 1, 10000).pipe(
+      map((response) => response.receipts),
       switchMap((receipts) => {
         const receipt = receipts.find((r) => r.tableName === tableName);
         if (receipt) {

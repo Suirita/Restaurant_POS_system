@@ -54,10 +54,11 @@ export class ReceiptsComponent {
 
   // Pagination
   currentPage = signal<number>(1);
+  totalReceipts = signal<number>(0);
+  totalPages = signal<number>(0);
+
   paginatedReceipts = computed(() => {
-    const startIndex = (this.currentPage() - 1) * 8;
-    const endIndex = startIndex + 8;
-    return this.receipts().slice(startIndex, endIndex);
+    return this.receipts();
   });
 
   constructor() {
@@ -75,15 +76,24 @@ export class ReceiptsComponent {
     if (!this.user || !this.user.token) return;
     this.isLoading.set(true);
     this.receiptService
-      .getAllReceipts(this.user.token, [this.user.userId], ['in_progress'])
-      .subscribe((receipts: Receipt[]) => {
-        this.receipts.set(receipts);
+      .getAllReceipts(
+        this.user.token,
+        this.currentPage(),
+        8, // 8 items per page as in original component
+        [this.user.userId],
+        ['in_progress']
+      )
+      .subscribe((response) => {
+        this.receipts.set(response.receipts);
+        this.totalReceipts.set(response.totalItems);
+        this.totalPages.set(response.pagesCount);
         this.isLoading.set(false);
       });
   }
 
   onPageChange(page: number) {
     this.currentPage.set(page);
+    this.loadReceipts();
   }
 
   onPay(orderNumber: string) {

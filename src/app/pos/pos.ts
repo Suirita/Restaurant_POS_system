@@ -634,8 +634,9 @@ export class PosComponent implements OnInit {
 
   private syncTablesWithReceipts() {
     this.receiptService
-      .getAllReceipts(this.currentUser()!.token)
-      .subscribe((allReceipts) => {
+      .getAllReceipts(this.currentUser()!.token, 1, 10000)
+      .subscribe((response) => {
+        const allReceipts = response.receipts;
         const occupiedTables = allReceipts
           .filter((receipt) => receipt.status === 'in_progress')
           .reduce((acc, receipt) => {
@@ -667,8 +668,9 @@ export class PosComponent implements OnInit {
     if (!currentUser) return;
 
     this.receiptService
-      .getAllReceipts(currentUser.token, undefined, ['in_progress'])
-      .subscribe((receipts) => {
+      .getAllReceipts(currentUser.token, 1, 10000, undefined, ['in_progress'])
+      .subscribe((response) => {
+        const receipts = response.receipts;
         const receipt = receipts.find((r) => r.orderNumber === orderNumber);
         if (receipt) {
           receipt.userId = currentUser.userId;

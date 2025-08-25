@@ -91,14 +91,14 @@ export class DashboardComponent implements OnInit {
       this.userService.getUsers().subscribe((users) => {
         const userIds = users.map((user) => user.userId);
         this.receiptService
-          .getAllReceipts(token, userIds, [
+          .getAllReceipts(token, 1, 10000, userIds, [
             'in_progress',
             'accepted',
             'late',
             'refused',
           ])
-          .subscribe((receipts) => {
-            this.allReceipts = receipts;
+          .subscribe((response) => {
+            this.allReceipts = response.receipts;
             this.invoiceService.getAllInvoices(token).subscribe((invoices) => {
               this.allInvoices = invoices.value;
               this.processData();
