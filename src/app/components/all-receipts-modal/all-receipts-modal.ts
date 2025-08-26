@@ -109,6 +109,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     { value: 'billed', label: 'Facturé' },
   ];
 
+  serviceTypeOptions: Option[] = [
+    { value: 'all', label: 'Tous les services' },
+    { value: 'table', label: 'Table' },
+    { value: 'takeaway', label: 'À emporter' },
+  ];
+
   responsableOptions = computed<Option[]>(() => {
     const unique = Array.from(
       new Set(

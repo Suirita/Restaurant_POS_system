@@ -59,16 +59,12 @@
           </form>
 
           <div class="w-full">
-            <select
-              [ngModel]="serviceTypeFilter()"
-              (ngModelChange)="serviceTypeFilter.set($event)"
-              name="serviceTypeFilter"
-              class="border border-gray-200 shadow-xs text-gray-900 bg-white text-sm rounded-lg block w-full p-2 focus:outline-none focus:shadow-sm"
-            >
-              <option value="all">Tous les services</option>
-              <option value="table">Table</option>
-              <option value="takeaway">À emporter</option>
-            </select>
+            <app-custom-select
+              [options]="serviceTypeOptions"
+              [value]="serviceTypeFilter()"
+              (valueChange)="serviceTypeFilter.set($event)"
+              placeholder="Tous les services"
+            ></app-custom-select>
           </div>
 
           <div class="w-full">
