@@ -98,6 +98,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     })()
   );
   statusFilter = signal<string>('in_progress');
+  responsableFilter = signal<string>('all');
 
   statusOptions: Option[] = [
     { value: 'all', label: 'Tous les statuts' },
@@ -107,6 +108,18 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     { value: 'late', label: 'En retard' },
     { value: 'billed', label: 'Facturé' },
   ];
+
+  responsableOptions = computed<Option[]>(() => {
+    const unique = Array.from(
+      new Set(
+        this.allReceipts()
+          .map((r) => r.responsable)
+          .filter((v): v is string => !!v && String(v).trim().length > 0)
+      )
+    );
+    const mapped = unique.map((r) => ({ value: r, label: r } as Option));
+    return [{ value: 'all', label: 'Tous les responsables' }, ...mapped];
+  });
 
   // Pagination
   currentPage = signal<number>(1);
@@ -166,6 +179,13 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       filtered = filtered.filter((receipt) => receipt.status === status);
     }
 
+    const responsable = this.responsableFilter();
+    if (responsable !== 'all') {
+      filtered = filtered.filter(
+        (receipt) => (receipt.responsable || '').toString() === responsable
+      );
+    }
+
     return filtered;
   });
 
@@ -190,20 +210,20 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   receiptSelected = output<Receipt>();
 
   tableColumns: string[] = [
-    'Numéro de commande',
+    'Commande',
     'Service',
     'Responsable',
-    'Date',
-    'Total',
     'Statut',
+    'Temps',
+    'Total',
   ];
   tableColumnKeys: string[] = [
     'orderNumber',
     'tableName',
     'responsable',
+    'status',
     'date',
     'total',
-    'status',
   ];
 
   customActions: TableAction[] = [];
@@ -218,6 +238,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.loadCompanyInfo();
     this.customActions = [
       {
+        icon: Printer,
+        label: 'Imprimer',
+        onClick: (receipt: Receipt) => this.onPrintReceipt(receipt),
+        isVisible: (receipt: Receipt) => true,
+      },
+      {
         icon: FileText,
         label: 'Facturer',
         onClick: (receipt: Receipt) => this.onGenerateInvoiceClick(receipt),
@@ -229,12 +255,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         onClick: (receipt: Receipt) => this.onPayClick(receipt.orderNumber),
         isVisible: (receipt: Receipt) =>
           receipt.status !== 'accepted' && receipt.status !== 'billed',
-      },
-      {
-        icon: Printer,
-        label: 'Imprimer',
-        onClick: (receipt: Receipt) => this.onPrintReceipt(receipt),
-        isVisible: (receipt: Receipt) => true, // Always visible
       },
     ];
   }
@@ -648,5 +668,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     end.setHours(23, 59, 59, 999);
     this.selectedDateRangeFilter.set({ from: today, to: end });
     this.statusFilter.set('in_progress');
+    this.responsableFilter.set('all');
   }
 }

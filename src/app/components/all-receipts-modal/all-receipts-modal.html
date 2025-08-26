@@ -9,7 +9,7 @@
 
   <!-- All Receipts Modal -->
   <div
-    class="bg-gray-100 rounded-xl shadow-2xl w-6xl min-h-[90vh] overflow-hidden relative"
+    class="bg-gray-100 rounded-xl shadow-2xl w-7xl min-h-[90vh] overflow-hidden relative"
     (click)="$event.stopPropagation()"
   >
     <!-- Card Header -->
@@ -30,7 +30,7 @@
 
     <div class="px-4">
       <!-- Filter Controls -->
-      <div class="w-full flex justify-between mb-3">
+      <div class="w-full flex justify-between mb-2">
         <div class="w-full flex gap-3">
           <!-- Search by name -->
           <form class="w-full">
@@ -49,7 +49,7 @@
               <input
                 type="search"
                 id="search"
-                placeholder="Numéro de commande ..."
+                placeholder=" Rechercher par Numéro de commande ..."
                 [ngModel]="commandNumberFilter()"
                 (ngModelChange)="commandNumberFilter.set($event)"
                 name="commandNumberFilter"
@@ -57,7 +57,8 @@
               />
             </div>
           </form>
-          <div class="w-2/3">
+
+          <div class="w-full">
             <select
               [ngModel]="serviceTypeFilter()"
               (ngModelChange)="serviceTypeFilter.set($event)"
@@ -70,15 +71,16 @@
             </select>
           </div>
 
-          <div class="w-2/3">
-            <app-date-range-picker
-              [value]="selectedDateRangeFilter()"
-              (valueChange)="selectedDateRangeFilter.set($event)"
-              placeholder="Select a date range"
-            ></app-date-range-picker>
+          <div class="w-full">
+            <app-custom-select
+              [options]="responsableOptions()"
+              [value]="responsableFilter()"
+              (valueChange)="responsableFilter.set($event)"
+              placeholder="Tous les responsables"
+            ></app-custom-select>
           </div>
 
-          <div class="w-2/3">
+          <div class="w-full">
             <app-custom-select
               [options]="statusOptions"
               [value]="statusFilter()"
@@ -88,9 +90,17 @@
           </div>
 
           <div class="w-full">
+            <app-date-range-picker
+              [value]="selectedDateRangeFilter()"
+              (valueChange)="selectedDateRangeFilter.set($event)"
+              placeholder="Select a date range"
+            ></app-date-range-picker>
+          </div>
+
+          <div class="w-full">
             <button
               (click)="clearFilters()"
-              class="bg-white border border-gray-200 shadow-xs font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center mb-2"
+              class="bg-white border border-gray-200 shadow-xs rounded-lg text-sm px-5 py-2 text-center inline-flex items-center mb-2"
             >
               Effacer les filtres
             </button>
