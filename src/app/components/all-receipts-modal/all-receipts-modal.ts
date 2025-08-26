@@ -236,8 +236,22 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   @ViewChild('totalColumnTemplate') totalColumnTemplate!: TemplateRef<any>;
   @ViewChild('dateColumnTemplate') dateColumnTemplate!: TemplateRef<any>;
+  @ViewChild('statusColumnTemplate') statusColumnTemplate!: TemplateRef<any>;
 
   columnTemplates: { [key: string]: TemplateRef<any> } = {};
+
+  private statusLabels: { [key: string]: string } = {
+    in_progress: 'En cours',
+    accepted: 'Accepté',
+    refused: 'Refusé',
+    late: 'En retard',
+    billed: 'Facturé',
+  };
+
+  getStatusLabel(status?: string): string {
+    if (!status) return '';
+    return this.statusLabels[status] ?? status;
+  }
 
   ngOnInit() {
     this.loadReceipts();
@@ -269,6 +283,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.columnTemplates = {
       total: this.totalColumnTemplate,
       date: this.dateColumnTemplate,
+      status: this.statusColumnTemplate,
     };
   }
 

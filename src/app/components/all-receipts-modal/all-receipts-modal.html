@@ -148,6 +148,10 @@
         <span> {{ item.date | date: 'short' }} </span>
       </div>
     </ng-template>
+
+    <ng-template #statusColumnTemplate let-item="item">
+      <div class="text-md text-gray-700">{{ getStatusLabel(item.status) }}</div>
+    </ng-template>
   </div>
 
   <app-invoice-dialog
