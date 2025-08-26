@@ -634,7 +634,7 @@ export class PosComponent implements OnInit {
 
   private syncTablesWithReceipts() {
     this.receiptService
-      .getAllReceipts(this.currentUser()!.token, 1, 10000)
+      .getAllReceipts(this.currentUser()!.token, 1, 1000)
       .subscribe((response) => {
         const allReceipts = response.receipts;
         const occupiedTables = allReceipts

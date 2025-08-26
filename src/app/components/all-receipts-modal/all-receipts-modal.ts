@@ -35,6 +35,7 @@ import {
   DateRange,
 } from '../date-range-picker/date-range-picker';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
+import { CustomSelectComponent, Option } from '../custom-select/custom-select';
 
 @Component({
   standalone: true,
@@ -51,6 +52,7 @@ import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
     PaginationComponent,
     DateRangePickerComponent,
     TableSkeletonComponent,
+    CustomSelectComponent,
   ],
 })
 export class AllReceiptsModalComponent implements AfterViewInit {
@@ -79,6 +81,16 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   commandNumberFilter = signal<string>('');
   serviceTypeFilter = signal<string>('all');
   selectedDateRangeFilter = signal<DateRange>({});
+  statusFilter = signal<string>('all');
+
+  statusOptions: Option[] = [
+    { value: 'all', label: 'Tous les statuts' },
+    { value: 'in_progress', label: 'En cours' },
+    { value: 'accepted', label: 'Accepté' },
+    { value: 'refused', label: 'Refusé' },
+    { value: 'late', label: 'En retard' },
+    { value: 'billed', label: 'Facturé' },
+  ];
 
   // Pagination
   currentPage = signal<number>(1);
@@ -133,6 +145,11 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       });
     }
 
+    const status = this.statusFilter();
+    if (status !== 'all') {
+      filtered = filtered.filter((receipt) => receipt.status === status);
+    }
+
     return filtered;
   });
 
@@ -162,6 +179,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     'Responsable',
     'Date',
     'Total',
+    'Statut',
   ];
   tableColumnKeys: string[] = [
     'orderNumber',
@@ -169,6 +187,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     'responsable',
     'date',
     'total',
+    'status',
   ];
 
   customActions: TableAction[] = [];
@@ -209,7 +228,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         1,
         10000,
         [this.userId()],
-        ['in_progress', 'refused', 'late']
+        ['in_progress', 'refused', 'late', 'accepted', 'billed']
       )
       .subscribe((response) => {
         this.allReceipts.set(response.receipts);
@@ -365,5 +384,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.commandNumberFilter.set('');
     this.serviceTypeFilter.set('all');
     this.selectedDateRangeFilter.set({});
+    this.statusFilter.set('all');
   }
 }
