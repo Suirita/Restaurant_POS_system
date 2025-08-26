@@ -212,11 +212,14 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         icon: FileText,
         label: 'Facturer',
         onClick: (receipt: Receipt) => this.onGenerateInvoiceClick(receipt),
+        isVisible: (receipt: Receipt) => receipt.status !== 'billed',
       },
       {
         icon: CreditCard,
         label: 'Payer',
         onClick: (receipt: Receipt) => this.onPayClick(receipt.orderNumber),
+        isVisible: (receipt: Receipt) =>
+          receipt.status !== 'accepted' && receipt.status !== 'billed',
       },
     ];
   }

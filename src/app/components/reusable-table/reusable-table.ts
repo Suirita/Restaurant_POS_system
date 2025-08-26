@@ -12,6 +12,7 @@ export interface TableAction {
   icon: any; // Lucide icon name
   label: string;
   onClick: (item: any) => void;
+  isVisible?: (item: any) => boolean;
 }
 
 @Component({

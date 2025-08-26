@@ -71,13 +71,15 @@
             >
               <i-lucide name="trash-2" class="w-5 h-5"></i-lucide>
             </button>
-            <button
-              *ngFor="let action of customActions"
-              (click)="action.onClick(item); $event.stopPropagation()"
-              class="text-white bg-black border border-gray-800 shadow font-medium rounded-lg text-sm px-1 py-1 text-center inline-flex items-center"
-            >
-              <i-lucide [img]="action.icon" class="w-5 h-5"></i-lucide>
-            </button>
+            <ng-container *ngFor="let action of customActions">
+              <button
+                *ngIf="!action.isVisible || action.isVisible(item)"
+                (click)="action.onClick(item); $event.stopPropagation()"
+                class="text-white bg-black border border-gray-800 shadow font-medium rounded-lg text-sm px-1 py-1 text-center inline-flex items-center"
+              >
+                <i-lucide [img]="action.icon" class="w-5 h-5"></i-lucide>
+              </button>
+            </ng-container>
           </div>
         </td>
       </tr>
