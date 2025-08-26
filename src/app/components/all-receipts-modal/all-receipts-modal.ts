@@ -80,8 +80,16 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   // Filter signals
   commandNumberFilter = signal<string>('');
   serviceTypeFilter = signal<string>('all');
-  selectedDateRangeFilter = signal<DateRange>({});
-  statusFilter = signal<string>('all');
+  selectedDateRangeFilter = signal<DateRange>(
+    (() => {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      const end = new Date();
+      end.setHours(23, 59, 59, 999);
+      return { from: start, to: end } as DateRange;
+    })()
+  );
+  statusFilter = signal<string>('in_progress');
 
   statusOptions: Option[] = [
     { value: 'all', label: 'Tous les statuts' },
@@ -383,7 +391,11 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   clearFilters() {
     this.commandNumberFilter.set('');
     this.serviceTypeFilter.set('all');
-    this.selectedDateRangeFilter.set({});
-    this.statusFilter.set('all');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = new Date(today);
+    end.setHours(23, 59, 59, 999);
+    this.selectedDateRangeFilter.set({ from: today, to: end });
+    this.statusFilter.set('in_progress');
   }
 }
