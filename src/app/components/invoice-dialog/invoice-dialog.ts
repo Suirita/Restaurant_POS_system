@@ -65,11 +65,6 @@ export class InvoiceDialogComponent {
       this.invoiceService
         .createInvoice(receipt, clientId, this.token())
         .pipe(
-          switchMap((createdInvoiceId: string | null) =>
-            this.receiptService
-              .updateReceipt(receipt, this.token(), 'billed')
-              .pipe(map(() => createdInvoiceId))
-          ),
           finalize(() => {
             this.isGeneratingInvoice.set(false);
             this.onClose();
