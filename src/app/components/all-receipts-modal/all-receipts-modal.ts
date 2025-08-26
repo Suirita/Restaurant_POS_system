@@ -668,12 +668,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   clearFilters() {
     this.commandNumberFilter.set('');
     this.serviceTypeFilter.set('all');
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const end = new Date(today);
-    end.setHours(23, 59, 59, 999);
-    this.selectedDateRangeFilter.set({ from: today, to: end });
-    this.statusFilter.set('in_progress');
+    this.selectedDateRangeFilter.set({});
+    this.statusFilter.set('all');
     this.responsableFilter.set('all');
   }
 }
