@@ -46,6 +46,7 @@ export class InvoiceService {
                 return this.configService.getUniqueReference(token, 6).pipe(
                   switchMap((reference): Observable<string | null> => {
                     const body = {
+                      isPrincipale: true,
                       reference: reference,
                       status: 'in_progress',
                       note: `<div><font size="2">uptesthglihg</font></div>`,
@@ -330,25 +331,27 @@ export class InvoiceService {
       techniciansId: [],
       label: ['chneg3084mkah1'],
     };
-    return this.http.post<any>(`${this.baseURL}/Invoice`, body, { headers }).pipe(
-      map((response: any) => {
-        const mappedInvoices: Invoice[] = (response.value || []).map(
-          (apiInvoice: any) => ({
-            id: apiInvoice.id,
-            invoiceNumber: apiInvoice.reference,
-            clientName: apiInvoice.client,
-            date: new Date(apiInvoice.creationDate),
-            total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
-          })
-        );
-        return {
-          invoices: mappedInvoices,
-          totalItems: response.rowsCount || 0,
-          currentPage: response.currentPage || 1,
-          pagesCount: response.pagesCount || 0,
-        };
-      })
-    );
+    return this.http
+      .post<any>(`${this.baseURL}/Invoice`, body, { headers })
+      .pipe(
+        map((response: any) => {
+          const mappedInvoices: Invoice[] = (response.value || []).map(
+            (apiInvoice: any) => ({
+              id: apiInvoice.id,
+              invoiceNumber: apiInvoice.reference,
+              clientName: apiInvoice.client,
+              date: new Date(apiInvoice.creationDate),
+              total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
+            })
+          );
+          return {
+            invoices: mappedInvoices,
+            totalItems: response.rowsCount || 0,
+            currentPage: response.currentPage || 1,
+            pagesCount: response.pagesCount || 0,
+          };
+        })
+      );
   }
 
   getLatestInvoiceId(token: string): Observable<string | null> {
