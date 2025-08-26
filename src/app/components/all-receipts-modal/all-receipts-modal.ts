@@ -23,6 +23,7 @@ import {
   CreditCard,
   FileText,
   Search,
+  Printer,
 } from 'lucide-angular';
 import { Receipt as ReceiptIcon } from 'lucide-angular';
 import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
@@ -36,6 +37,7 @@ import {
 } from '../date-range-picker/date-range-picker';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 import { CustomSelectComponent, Option } from '../custom-select/custom-select';
+import { ConfigurationService } from '../../configuration.service';
 
 @Component({
   standalone: true,
@@ -63,9 +65,11 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   readonly CreditCard = CreditCard;
   readonly FileText = FileText;
   readonly Search = Search;
+  readonly Printer = Printer;
 
   private receiptService = inject(ReceiptService);
   private invoiceService = inject(InvoiceService);
+  private configurationService = inject(ConfigurationService);
   allReceipts = signal<Receipt[]>([]);
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
@@ -76,6 +80,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   selectedReceiptForInvoice = signal<Receipt | null>(null);
   userId = input.required<string>();
   token = input.required<string>();
+
+  // Company info for PDF
+  companyInfo = signal<any>(null);
+  logoUrl = signal<string | null>(null);
 
   // Filter signals
   commandNumberFilter = signal<string>('');
@@ -207,6 +215,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   ngOnInit() {
     this.loadReceipts();
+    this.loadCompanyInfo();
     this.customActions = [
       {
         icon: FileText,
@@ -221,6 +230,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         isVisible: (receipt: Receipt) =>
           receipt.status !== 'accepted' && receipt.status !== 'billed',
       },
+      {
+        icon: Printer,
+        label: 'Imprimer',
+        onClick: (receipt: Receipt) => this.onPrintReceipt(receipt),
+        isVisible: (receipt: Receipt) => true, // Always visible
+      },
     ];
   }
 
@@ -229,6 +244,23 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       total: this.totalColumnTemplate,
       date: this.dateColumnTemplate,
     };
+  }
+
+  loadCompanyInfo() {
+    this.configurationService.getPdfOptions().subscribe((options: any) => {
+      const parsedOptions =
+        typeof options === 'string' ? JSON.parse(options) : options;
+      if (parsedOptions && parsedOptions.header) {
+        this.companyInfo.set(parsedOptions.header);
+      }
+    });
+    this.configurationService
+      .getInvoiceConfiguration()
+      .subscribe((config: any) => {
+        if (config && config.images && config.images.logo) {
+          this.logoUrl.set(config.images.logo);
+        }
+      });
   }
 
   loadReceipts() {
@@ -389,6 +421,222 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   onCloseInvoiceDetails() {
     this.isInvoiceDetailsVisible.set(false);
     this.selectedInvoice.set(null);
+  }
+
+  onPrintReceipt(receipt: Receipt) {
+    // Get detailed receipt data first
+    if (receipt.id) {
+      this.receiptService
+        .getReceiptDetails(receipt.id, this.token())
+        .subscribe({
+          next: (detailedReceiptResponse) => {
+            const detailedReceipt = detailedReceiptResponse.value;
+            if (
+              detailedReceipt &&
+              detailedReceipt.orderDetails &&
+              detailedReceipt.orderDetails.lineItems
+            ) {
+              const lineItems = detailedReceipt.orderDetails.lineItems.map(
+                (item: any) => ({
+                  id: item.product.id,
+                  designation: item.product.designation,
+                  sellingPrice: item.product.sellingPrice,
+                  purchasePrice: item.product.purchasePrice || 0,
+                  totalTTC: item.totalTTC,
+                  tva: item.product.vat || 0,
+                  categoryId: item.product.categoryId,
+                  categoryLabel: item.product.categoryLabel,
+                  image: '',
+                  quantity: item.quantity,
+                  labels: item.product.labels || [],
+                })
+              );
+
+              const receiptToPrint = {
+                ...receipt,
+                items: lineItems,
+                total: parseFloat(detailedReceipt.totalTTC.toFixed(2)),
+              };
+
+              this.generatePDF(receiptToPrint);
+            }
+          },
+          error: (error) => {
+            console.error(
+              'Error fetching detailed receipt for printing:',
+              error
+            );
+          },
+        });
+    }
+  }
+
+  generatePDF(receipt: Receipt) {
+    // Create a new window with the receipt content styled like the modal
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const companyName = this.companyInfo()?.companyName || 'Restaurant';
+    const companyAddress = this.companyInfo()?.address?.street || '';
+    const companyCity = this.companyInfo()?.address?.city || '';
+    const companyPostalCode = this.companyInfo()?.address?.postalCode || '';
+    const logo = this.logoUrl();
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Receipt - ${receipt.orderNumber}</title>
+        <style>
+          body {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #1f2937;
+            margin: 0;
+            padding: 20px;
+            background: white;
+          }
+          .receipt {
+            max-width: 300px;
+            margin: 0 auto;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+            padding: 16px;
+            text-align: center;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+          }
+          .logo {
+            height: 64px;
+            width: auto;
+            margin: 0 auto 16px;
+            display: block;
+          }
+          .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+          }
+          .company-address {
+            font-size: 10px;
+            color: #6b7280;
+          }
+          .body {
+            padding: 16px;
+          }
+          .date-time {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px dashed #9ca3af;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #6b7280;
+          }
+          .items-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin: 16px 0 8px;
+            font-size: 10px;
+          }
+          .divider {
+            border-top: 1px dashed #9ca3af;
+          }
+          .item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 10px;
+          }
+          .totals {
+            margin-top: 16px;
+            padding-top: 8px;
+            border-top: 1px dashed #9ca3af;
+          }
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+            font-size: 10px;
+          }
+          .total-row.final {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 8px;
+          }
+          @media print {
+            body { margin: 0; }
+            .receipt { border: none; box-shadow: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt">
+          <div class="header">
+            ${logo ? `<img src="${logo}" alt="Logo" class="logo">` : ''}
+            <div class="company-name">${companyName}</div>
+            <div class="company-address">${companyAddress}</div>
+            <div class="company-address">${companyCity}, ${companyPostalCode}</div>
+          </div>
+          <div class="body">
+            <div class="date-time">
+              <span>${new Date(receipt.date).toLocaleDateString('en-US')}</span>
+              <span>${new Date(receipt.date).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}</span>
+            </div>
+            <div class="items-header">
+              <span>QTY</span>
+              <span>DESC</span>
+              <span>AMT</span>
+            </div>
+            <div class="divider"></div>
+            ${receipt.items
+              .map(
+                (item) => `
+              <div class="item">
+                <span>${item.quantity}</span>
+                <span>${item.designation}</span>
+                <span>${item.sellingPrice.toFixed(2)} €</span>
+              </div>
+            `
+              )
+              .join('')}
+            <div class="totals">
+              <div class="total-row">
+                <span>SUBTOTAL</span>
+                <span>${receipt.total.toFixed(2)} €</span>
+              </div>
+              <div class="total-row">
+                <span>TAX</span>
+                <span>0.00 €</span>
+              </div>
+              <div class="total-row final">
+                <span>TOTAL</span>
+                <span>${receipt.total.toFixed(2)} €</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          window.onload = function() {
+            window.print();
+            setTimeout(function() {
+              window.close();
+            }, 100);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
   }
 
   clearFilters() {
