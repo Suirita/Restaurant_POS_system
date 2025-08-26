@@ -140,13 +140,48 @@ export class AllInvoicesModalComponent implements AfterViewInit {
         this.currentPage.set(1);
       }
     });
+
+    // Debug: log whenever paginated invoices change
+    effect(() => {
+      const pageData = this.paginatedInvoices();
+      try {
+        console.log(
+          '[AllInvoicesModal] Paginated invoices count:',
+          pageData.length
+        );
+        console.log(
+          '[AllInvoicesModal] Paginated responsables:',
+          pageData.map((inv) => ({
+            invoiceNumber: inv.invoiceNumber,
+            responsable: (inv as any).responsable,
+          }))
+        );
+      } catch (err) {
+        console.warn(
+          '[AllInvoicesModal] Error logging paginated invoices',
+          err
+        );
+      }
+    });
   }
 
   close = output<void>();
 
   // Table configuration
-  tableColumns: string[] = ['Numéro de facture', 'Client', 'Date', 'Total'];
-  tableColumnKeys: string[] = ['invoiceNumber', 'clientName', 'date', 'total'];
+  tableColumns: string[] = [
+    'Numéro de facture',
+    'Client',
+    'Responsable',
+    'Date',
+    'Total',
+  ];
+  tableColumnKeys: string[] = [
+    'invoiceNumber',
+    'clientName',
+    'responsable',
+    'date',
+    'total',
+  ];
   customActions: TableAction[] = [];
 
   @ViewChild('totalColumnTemplate') totalColumnTemplate!: TemplateRef<any>;
@@ -199,6 +234,28 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     this.invoiceService
       .getAllInvoices(this.token(), 1, 10000)
       .subscribe((response) => {
+        try {
+          console.log('[AllInvoicesModal] Raw invoices response:', response);
+          const first = response?.invoices?.[0];
+          console.log(
+            '[AllInvoicesModal] First invoice keys:',
+            first ? Object.keys(first) : []
+          );
+          if (Array.isArray(response?.invoices)) {
+            console.log(
+              '[AllInvoicesModal] First 5 responsables:',
+              response.invoices.slice(0, 5).map((inv: any) => ({
+                invoiceNumber: inv.invoiceNumber,
+                responsable: inv.responsable,
+              }))
+            );
+          }
+        } catch (err) {
+          console.warn(
+            '[AllInvoicesModal] Error while inspecting invoices response',
+            err
+          );
+        }
         this.allInvoices.set(response.invoices);
         this.rowsCount.set(response.totalItems);
         this.isLoading.set(false);
@@ -219,6 +276,13 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   onInvoiceClick(invoice: Invoice) {
     if (invoice.id) {
+      try {
+        console.log('[AllInvoicesModal] Row clicked:', {
+          id: invoice.id,
+          invoiceNumber: invoice.invoiceNumber,
+          responsable: (invoice as any).responsable,
+        });
+      } catch {}
       this.invoiceService
         .getInvoiceDetails(invoice.id, this.token())
         .subscribe({

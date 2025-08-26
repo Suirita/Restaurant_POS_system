@@ -601,8 +601,11 @@ export class ReceiptService {
                   (quote.responsables && quote.responsables.length > 0
                     ? quote.responsables[0]
                     : null),
-                responsable:
-                  quote.responsable || quote.responsables?.[0] || null,
+                responsable: quote.responsables?.[0]
+                  ? typeof quote.responsables[0] === 'object'
+                    ? quote.responsables[0].id
+                    : quote.responsables[0]
+                  : null,
                 client: quote.client,
                 orderDetails: null,
                 status: quote.status,

@@ -98,6 +98,7 @@ export interface Invoice {
   clientAddress?: string;
   clientICE?: string;
   clientPhoneNumber?: string;
+  responsable?: string;
   companyPhoneNumber?: string;
   companyEmail?: string;
   companyWebsite?: string;

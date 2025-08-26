@@ -264,7 +264,14 @@ export class InvoiceService {
                     ajustementCalcul: [],
                   },
                   quotesIds: [receipt.id],
-                  responsables: [],
+                  responsables: (() => {
+                    const userString = localStorage.getItem('user');
+                    if (userString) {
+                      const user = JSON.parse(userString);
+                      return user.userId ? [user.userId] : [];
+                    }
+                    return [];
+                  })(),
                   addLabelTva: '',
                   contacts: [],
                   textAcompte: {
@@ -277,6 +284,13 @@ export class InvoiceService {
                   },
                   typeFinanciere: 0,
                 };
+                const userString = localStorage.getItem('user');
+                const currentUser = userString ? JSON.parse(userString) : null;
+                console.log('Current user ID:', currentUser?.userId);
+                console.log(
+                  'Responsables array:',
+                  currentUser?.userId ? [currentUser.userId] : []
+                );
                 console.log(JSON.stringify(body));
                 return this.http
                   .post(`${this.baseURL}/Invoice/Create`, body, { headers })
@@ -331,6 +345,10 @@ export class InvoiceService {
               clientName: apiInvoice.client,
               date: new Date(apiInvoice.creationDate),
               total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
+              responsable:
+                apiInvoice.responsables?.[0]?.id ||
+                apiInvoice.responsables?.[0] ||
+                null,
             })
           );
           return {
