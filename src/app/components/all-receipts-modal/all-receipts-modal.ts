@@ -142,6 +142,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     'Temps',
     'Total',
   ];
+
   tableColumnKeys: string[] = [
     'orderNumber',
     'tableName',
@@ -248,6 +249,20 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
     const userIds = responsable === 'all' ? [this.userId()] : [responsable];
 
+    const body = {
+      page: this.currentPage(),
+      pageSize: 10,
+      userIds,
+      status:
+        status === 'all'
+          ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
+          : [status],
+      orderNumber: commandNum,
+      dateRange: dateRangeParam,
+    };
+
+    console.log('Request body:', body);
+
     this.receiptService
       .getAllReceipts(
         this.token(),
@@ -261,6 +276,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         dateRangeParam
       )
       .subscribe((response) => {
+        console.log('Response:', response);
         this.allReceipts.set(response.receipts);
         this.rowsCount.set(response.totalItems);
         this.isLoading.set(false);
