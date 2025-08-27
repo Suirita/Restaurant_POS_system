@@ -90,7 +90,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   // Filter signals
   commandNumberFilter = signal<string>('');
-  serviceTypeFilter = signal<string>('all');
+  
   selectedDateRangeFilter = signal<DateRange>(
     (() => {
       const start = new Date();
@@ -112,11 +112,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     { value: 'billed', label: 'Facturé' },
   ];
 
-  serviceTypeOptions: Option[] = [
-    { value: 'all', label: 'Tous les services' },
-    { value: 'table', label: 'Table' },
-    { value: 'takeaway', label: 'À emporter' },
-  ];
+  
 
   responsableOptions = signal<Option[]>([]);
 
@@ -655,7 +651,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   clearFilters() {
     this.commandNumberFilter.set('');
-    this.serviceTypeFilter.set('all');
     this.selectedDateRangeFilter.set({});
     this.statusFilter.set('all');
     this.responsableFilter.set('all');

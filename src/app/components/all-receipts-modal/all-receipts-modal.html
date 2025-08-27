@@ -58,14 +58,7 @@
             </div>
           </form>
 
-          <div class="w-full">
-            <app-custom-select
-              [options]="serviceTypeOptions"
-              [value]="serviceTypeFilter()"
-              (valueChange)="serviceTypeFilter.set($event)"
-              placeholder="Tous les services"
-            ></app-custom-select>
-          </div>
+          
 
           <div class="w-full">
             <app-searchable-select
