@@ -36,6 +36,7 @@ import {
   DateRange,
 } from '../date-range-picker/date-range-picker';
 import { ConfigurationService } from '../../configuration.service';
+import { CustomSelectComponent, Option } from '../custom-select/custom-select';
 
 @Component({
   standalone: true,
@@ -50,6 +51,7 @@ import { ConfigurationService } from '../../configuration.service';
     PaginationComponent,
     TableSkeletonComponent,
     DateRangePickerComponent,
+    CustomSelectComponent,
   ],
 })
 export class AllInvoicesModalComponent implements AfterViewInit {
@@ -81,6 +83,19 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   invoiceNumberFilter = signal<string>('');
   clientNameFilter = signal<string>('');
   selectedDateRange = signal<DateRange>({});
+  responsableFilter = signal<string>('all');
+
+  responsableOptions = computed<Option[]>(() => {
+    const unique = Array.from(
+      new Set(
+        this.allInvoices()
+          .map((r) => r.responsable)
+          .filter((v): v is string => !!v && String(v).trim().length > 0)
+      )
+    );
+    const mapped = unique.map((r) => ({ value: r, label: r } as Option));
+    return [{ value: 'all', label: 'Tous les responsables' }, ...mapped];
+  });
 
   // Pagination
   currentPage = signal<number>(1);
@@ -121,6 +136,13 @@ export class AllInvoicesModalComponent implements AfterViewInit {
         const invDate = new Date(inv.date);
         return invDate >= fromDayStart && invDate <= fromDayEnd;
       });
+    }
+
+    const responsable = this.responsableFilter();
+    if (responsable !== 'all') {
+      filtered = filtered.filter(
+        (invoice) => (invoice.responsable || '').toString() === responsable
+      );
     }
 
     return filtered;
@@ -268,6 +290,13 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   onDateRangeChange(range: DateRange) {
     this.selectedDateRange.set(range);
+  }
+
+  clearFilters() {
+    this.invoiceNumberFilter.set('');
+    this.clientNameFilter.set('');
+    this.selectedDateRange.set({});
+    this.responsableFilter.set('all');
   }
 
   onClose() {
