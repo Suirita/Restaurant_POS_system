@@ -68,12 +68,12 @@
           </div>
 
           <div class="w-full">
-            <app-custom-select
+            <app-searchable-select
               [options]="responsableOptions()"
               [value]="responsableFilter()"
               (valueChange)="responsableFilter.set($event)"
-              placeholder="Tous les responsables"
-            ></app-custom-select>
+              placeholder="un responsable"
+            ></app-searchable-select>
           </div>
 
           <div class="w-full">
@@ -96,7 +96,7 @@
           <div class="w-full">
             <button
               (click)="clearFilters()"
-              class="bg-white border border-gray-200 shadow-xs rounded-lg text-sm px-5 py-2 text-center inline-flex items-center mb-2"
+              class="bg-white border border-gray-200 shadow-xs rounded-lg text-sm px-5 py-2 text-center inline-flex items-center"
             >
               Effacer les filtres
             </button>

@@ -4,14 +4,13 @@ import {
   inject,
   input,
   signal,
-  computed,
   ViewChild,
   TemplateRef,
   AfterViewInit,
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { Receipt, Invoice } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
 import { ReceiptService } from '../../receipt.service';
@@ -37,6 +36,7 @@ import {
 } from '../date-range-picker/date-range-picker';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 import { CustomSelectComponent, Option } from '../custom-select/custom-select';
+import { SearchableSelectComponent } from '../searchable-select/searchable-select';
 import { ConfigurationService } from '../../configuration.service';
 import { UserService } from '../../user.service';
 
@@ -46,7 +46,7 @@ import { UserService } from '../../user.service';
   templateUrl: './all-receipts-modal.html',
   imports: [
     CommonModule,
-    FormsModule, // Add FormsModule here
+    FormsModule,
     LucideAngularModule,
     ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
@@ -56,6 +56,7 @@ import { UserService } from '../../user.service';
     DateRangePickerComponent,
     TableSkeletonComponent,
     CustomSelectComponent,
+    SearchableSelectComponent,
   ],
 })
 export class AllReceiptsModalComponent implements AfterViewInit {
@@ -122,8 +123,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   // Pagination
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
-
-  
 
   constructor() {
     effect(() => {
