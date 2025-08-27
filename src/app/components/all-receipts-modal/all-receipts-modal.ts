@@ -237,11 +237,15 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   }
 
   loadReceipts() {
+    const dateRange = this.selectedDateRangeFilter();
+    if ((dateRange.from && !dateRange.to) || (!dateRange.from && dateRange.to)) {
+      return;
+    }
+
     this.isLoading.set(true);
     const commandNum = this.commandNumberFilter();
     const status = this.statusFilter();
     const responsable = this.responsableFilter();
-    const dateRange = this.selectedDateRangeFilter();
     let dateStart: string | undefined;
     let dateEnd: string | undefined;
 
