@@ -155,38 +155,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     return filtered.slice(start, end);
   });
 
-  constructor() {
-    effect(() => {
-      this.rowsCount.set(this.filteredInvoices().length);
-      if (this.currentPage() > Math.ceil(this.rowsCount() / 10)) {
-        this.currentPage.set(1);
-      }
-    });
-
-    // Debug: log whenever paginated invoices change
-    effect(() => {
-      const pageData = this.paginatedInvoices();
-      try {
-        console.log(
-          '[AllInvoicesModal] Paginated invoices count:',
-          pageData.length
-        );
-        console.log(
-          '[AllInvoicesModal] Paginated responsables:',
-          pageData.map((inv) => ({
-            invoiceNumber: inv.invoiceNumber,
-            responsable: (inv as any).responsable,
-          }))
-        );
-      } catch (err) {
-        console.warn(
-          '[AllInvoicesModal] Error logging paginated invoices',
-          err
-        );
-      }
-    });
-  }
-
   close = output<void>();
 
   // Table configuration
@@ -257,21 +225,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
       .getAllInvoices(this.token(), 1, 10000)
       .subscribe((response) => {
         try {
-          console.log('[AllInvoicesModal] Raw invoices response:', response);
-          const first = response?.invoices?.[0];
-          console.log(
-            '[AllInvoicesModal] First invoice keys:',
-            first ? Object.keys(first) : []
-          );
-          if (Array.isArray(response?.invoices)) {
-            console.log(
-              '[AllInvoicesModal] First 5 responsables:',
-              response.invoices.slice(0, 5).map((inv: any) => ({
-                invoiceNumber: inv.invoiceNumber,
-                responsable: inv.responsable,
-              }))
-            );
-          }
         } catch (err) {
           console.warn(
             '[AllInvoicesModal] Error while inspecting invoices response',
@@ -306,11 +259,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   onInvoiceClick(invoice: Invoice) {
     if (invoice.id) {
       try {
-        console.log('[AllInvoicesModal] Row clicked:', {
-          id: invoice.id,
-          invoiceNumber: invoice.invoiceNumber,
-          responsable: (invoice as any).responsable,
-        });
       } catch {}
       this.invoiceService
         .getInvoiceDetails(invoice.id, this.token())

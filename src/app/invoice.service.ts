@@ -284,14 +284,6 @@ export class InvoiceService {
                   },
                   typeFinanciere: 0,
                 };
-                const userString = localStorage.getItem('user');
-                const currentUser = userString ? JSON.parse(userString) : null;
-                console.log('Current user ID:', currentUser?.userId);
-                console.log(
-                  'Responsables array:',
-                  currentUser?.userId ? [currentUser.userId] : []
-                );
-                console.log(JSON.stringify(body));
                 return this.http
                   .post(`${this.baseURL}/Invoice/Create`, body, { headers })
                   .pipe(

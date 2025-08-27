@@ -264,8 +264,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       DateEnd: dateEnd,
     };
 
-    console.log('Request body:', body);
-
     this.receiptService
       .getAllReceipts(
         this.token(),
@@ -280,7 +278,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         dateEnd
       )
       .subscribe((response) => {
-        console.log('Response:', response);
         this.allReceipts.set(response.receipts);
         this.rowsCount.set(response.totalItems);
         this.isLoading.set(false);
