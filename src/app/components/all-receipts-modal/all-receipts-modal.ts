@@ -38,6 +38,7 @@ import {
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 import { CustomSelectComponent, Option } from '../custom-select/custom-select';
 import { ConfigurationService } from '../../configuration.service';
+import { UserService } from '../../user.service';
 
 @Component({
   standalone: true,
@@ -70,6 +71,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   private receiptService = inject(ReceiptService);
   private invoiceService = inject(InvoiceService);
   private configurationService = inject(ConfigurationService);
+  private userService = inject(UserService);
   allReceipts = signal<Receipt[]>([]);
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
@@ -115,99 +117,17 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     { value: 'takeaway', label: 'À emporter' },
   ];
 
-  responsableOptions = computed<Option[]>(() => {
-    const unique = Array.from(
-      new Set(
-        this.allReceipts()
-          .map((r) => r.responsable)
-          .filter((v): v is string => !!v && String(v).trim().length > 0)
-      )
-    );
-    const mapped = unique.map((r) => ({ value: r, label: r } as Option));
-    return [{ value: 'all', label: 'Tous les responsables' }, ...mapped];
-  });
+  responsableOptions = signal<Option[]>([]);
 
   // Pagination
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
 
-  filteredReceipts = computed(() => {
-    let filtered = this.allReceipts();
-
-    const commandNum = this.commandNumberFilter().toLowerCase();
-    if (commandNum) {
-      filtered = filtered.filter((receipt) =>
-        receipt.orderNumber.toLowerCase().includes(commandNum)
-      );
-    }
-
-    const serviceType = this.serviceTypeFilter();
-    if (serviceType !== 'all') {
-      filtered = filtered.filter((receipt) => {
-        if (serviceType === 'table') {
-          return (
-            receipt.tableName && receipt.tableName.toLowerCase() !== 'take away'
-          );
-        } else if (serviceType === 'takeaway') {
-          return (
-            receipt.tableName && receipt.tableName.toLowerCase() === 'take away'
-          );
-        }
-        return true;
-      });
-    }
-
-    const selectedDateRange = this.selectedDateRangeFilter();
-    if (selectedDateRange.from && selectedDateRange.to) {
-      const from = new Date(selectedDateRange.from);
-      from.setHours(0, 0, 0, 0);
-      const to = new Date(selectedDateRange.to);
-      to.setHours(23, 59, 59, 999);
-
-      filtered = filtered.filter((receipt) => {
-        const receiptDate = new Date(receipt.date);
-        return receiptDate >= from && receiptDate <= to;
-      });
-    } else if (selectedDateRange.from) {
-      const fromDayStart = new Date(selectedDateRange.from);
-      fromDayStart.setHours(0, 0, 0, 0);
-      const fromDayEnd = new Date(selectedDateRange.from);
-      fromDayEnd.setHours(23, 59, 59, 999);
-
-      filtered = filtered.filter((receipt) => {
-        const receiptDate = new Date(receipt.date);
-        return receiptDate >= fromDayStart && receiptDate <= fromDayEnd;
-      });
-    }
-
-    const status = this.statusFilter();
-    if (status !== 'all') {
-      filtered = filtered.filter((receipt) => receipt.status === status);
-    }
-
-    const responsable = this.responsableFilter();
-    if (responsable !== 'all') {
-      filtered = filtered.filter(
-        (receipt) => (receipt.responsable || '').toString() === responsable
-      );
-    }
-
-    return filtered;
-  });
-
-  paginatedReceipts = computed(() => {
-    const filtered = this.filteredReceipts();
-    const start = (this.currentPage() - 1) * 10;
-    const end = start + 10;
-    return filtered.slice(start, end);
-  });
+  
 
   constructor() {
     effect(() => {
-      this.rowsCount.set(this.filteredReceipts().length);
-      if (this.currentPage() > Math.ceil(this.rowsCount() / 10)) {
-        this.currentPage.set(1);
-      }
+      this.loadReceipts();
     });
   }
 
@@ -254,7 +174,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    this.loadReceipts();
+    this.loadResponsables();
     this.loadCompanyInfo();
     this.customActions = [
       {
@@ -287,6 +207,18 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     };
   }
 
+  loadResponsables() {
+    this.userService.getUsers().subscribe((users) => {
+      const options = users.map(
+        (user) => ({ value: user.userId, label: user.fullName } as Option)
+      );
+      this.responsableOptions.set([
+        { value: 'all', label: 'Tous les responsables' },
+        ...options,
+      ]);
+    });
+  }
+
   loadCompanyInfo() {
     this.configurationService.getPdfOptions().subscribe((options: any) => {
       const parsedOptions =
@@ -306,13 +238,28 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   loadReceipts() {
     this.isLoading.set(true);
+    const commandNum = this.commandNumberFilter();
+    const status = this.statusFilter();
+    const responsable = this.responsableFilter();
+    const dateRange = this.selectedDateRangeFilter();
+    let dateRangeParam: { from: Date; to: Date } | undefined;
+    if (dateRange.from && dateRange.to) {
+      dateRangeParam = { from: dateRange.from, to: dateRange.to };
+    }
+
+    const userIds = responsable === 'all' ? [this.userId()] : [responsable];
+
     this.receiptService
       .getAllReceipts(
         this.token(),
-        1,
-        10000,
-        [this.userId()],
-        ['in_progress', 'refused', 'late', 'accepted', 'billed']
+        this.currentPage(),
+        10,
+        userIds,
+        status === 'all'
+          ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
+          : [status],
+        commandNum,
+        dateRangeParam
       )
       .subscribe((response) => {
         this.allReceipts.set(response.receipts);
