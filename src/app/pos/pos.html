@@ -119,6 +119,7 @@
             [tableNumber]="tableNumber()"
             [tables]="tables()"
             [isTableOccupied]="isTableOccupied()"
+            [userId]="currentUser()?.userId ?? ''"
             (itemSelected)="onCartItemSelected($event)"
             (itemRemoved)="onCartItemRemoved($event)"
             (cartCleared)="onCartCleared()"
