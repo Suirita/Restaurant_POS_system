@@ -345,10 +345,7 @@ export class InvoiceService {
               clientName: apiInvoice.client,
               date: new Date(apiInvoice.creationDate),
               total: parseFloat(apiInvoice.totalTTC.toFixed(2)),
-              responsable:
-                apiInvoice.responsables?.[0]?.id ||
-                apiInvoice.responsables?.[0] ||
-                null,
+              responsable: apiInvoice.responsable || null,
             })
           );
           return {

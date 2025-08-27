@@ -128,15 +128,15 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   paginatedInvoices = computed(() => {
     const filtered = this.filteredInvoices();
-    const start = (this.currentPage() - 1) * 9;
-    const end = start + 9;
+    const start = (this.currentPage() - 1) * 10;
+    const end = start + 10;
     return filtered.slice(start, end);
   });
 
   constructor() {
     effect(() => {
       this.rowsCount.set(this.filteredInvoices().length);
-      if (this.currentPage() > Math.ceil(this.rowsCount() / 9)) {
+      if (this.currentPage() > Math.ceil(this.rowsCount() / 10)) {
         this.currentPage.set(1);
       }
     });
