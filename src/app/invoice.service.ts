@@ -313,7 +313,7 @@ export class InvoiceService {
     token: string,
     page: number,
     pageSize: number,
-    userIds?: string[],
+    techniciansId?: string[],
     searchQuery?: string,
     dateStart?: string,
     dateEnd?: string
@@ -330,8 +330,8 @@ export class InvoiceService {
       label: ['chneg3084mkah1'],
     };
 
-    if (userIds && userIds.length > 0) {
-      body.techniciansId = userIds;
+    if (techniciansId && techniciansId.length > 0) {
+      body.techniciansId = techniciansId;
     }
     if (searchQuery) {
       body.SearchQuery = searchQuery;

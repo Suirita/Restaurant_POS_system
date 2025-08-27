@@ -182,7 +182,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     this.isLoading.set(true);
     const page = this.currentPage();
     const pageSize = 10;
-    const userIds = this.responsableFilter() === 'all' ? undefined : [this.responsableFilter()];
+    const techniciansId = this.responsableFilter() === 'all' ? undefined : [this.responsableFilter()];
     const searchQuery = this.searchQuery();
     let dateStart: string | undefined;
     let dateEnd: string | undefined;
@@ -199,7 +199,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
         this.token(),
         page,
         pageSize,
-        userIds,
+        techniciansId,
         searchQuery,
         dateStart,
         dateEnd
