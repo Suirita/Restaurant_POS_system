@@ -36,7 +36,7 @@ import {
   DateRange,
 } from '../date-range-picker/date-range-picker';
 import { ConfigurationService } from '../../configuration.service';
-import { CustomSelectComponent, Option } from '../custom-select/custom-select';
+import { SearchableSelectComponent, Option } from '../searchable-select/searchable-select';
 
 @Component({
   standalone: true,
@@ -51,7 +51,7 @@ import { CustomSelectComponent, Option } from '../custom-select/custom-select';
     PaginationComponent,
     TableSkeletonComponent,
     DateRangePickerComponent,
-    CustomSelectComponent,
+    SearchableSelectComponent,
   ],
 })
 export class AllInvoicesModalComponent implements AfterViewInit {

@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Search, ChevronDown } from 'lucide-angular';
 
-interface Option {
+export interface Option {
   value: string;
   label: string;
 }
