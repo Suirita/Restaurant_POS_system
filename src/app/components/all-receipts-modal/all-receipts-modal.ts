@@ -242,9 +242,14 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     const status = this.statusFilter();
     const responsable = this.responsableFilter();
     const dateRange = this.selectedDateRangeFilter();
-    let dateRangeParam: { from: Date; to: Date } | undefined;
+    let dateStart: string | undefined;
+    let dateEnd: string | undefined;
+
     if (dateRange.from && dateRange.to) {
-      dateRangeParam = { from: dateRange.from, to: dateRange.to };
+      const from = dateRange.from;
+      dateStart = `${from.getFullYear()}-${(from.getMonth() + 1).toString().padStart(2, '0')}-${from.getDate().toString().padStart(2, '0')}T${from.getHours().toString().padStart(2, '0')}:${from.getMinutes().toString().padStart(2, '0')}`;
+      const to = dateRange.to;
+      dateEnd = `${to.getFullYear()}-${(to.getMonth() + 1).toString().padStart(2, '0')}-${to.getDate().toString().padStart(2, '0')}T${to.getHours().toString().padStart(2, '0')}:${to.getMinutes().toString().padStart(2, '0')}`;
     }
 
     const userIds = responsable === 'all' ? [this.userId()] : [responsable];
@@ -258,7 +263,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
           : [status],
       orderNumber: commandNum,
-      dateRange: dateRangeParam,
+      DateStart: dateStart,
+      DateEnd: dateEnd,
     };
 
     console.log('Request body:', body);
@@ -273,7 +279,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
           : [status],
         commandNum,
-        dateRangeParam
+        dateStart,
+        dateEnd
       )
       .subscribe((response) => {
         console.log('Response:', response);

@@ -568,7 +568,8 @@ export class ReceiptService {
     userIds?: string[],
     status?: string[],
     commandNumber?: string,
-    dateRange?: { from: Date; to: Date }
+    dateStart?: string,
+    dateEnd?: string
   ): Observable<{
     receipts: Receipt[];
     totalItems: number;
@@ -587,9 +588,11 @@ export class ReceiptService {
     if (commandNumber) {
       body.reference = commandNumber;
     }
-    if (dateRange && dateRange.from && dateRange.to) {
-      body.creationDateFrom = dateRange.from.toISOString().split('T')[0];
-      body.creationDateTo = dateRange.to.toISOString().split('T')[0];
+    if (dateStart) {
+      body.DateStart = dateStart;
+    }
+    if (dateEnd) {
+      body.DateEnd = dateEnd;
     }
 
     return this.http.post<any>(`${this.baseUrl}/Quote`, body, { headers }).pipe(
