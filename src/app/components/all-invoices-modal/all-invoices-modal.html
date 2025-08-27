@@ -9,7 +9,7 @@
 
   <!-- All Invoices Modal -->
   <div
-    class="bg-gray-100 rounded-xl shadow-2xl w-full max-w-7xl min-h-[90vh] overflow-hidden relative"
+    class="bg-gray-100 rounded-xl shadow-2xl w-7xl h-[93vh] overflow-hidden relative"
     (click)="$event.stopPropagation()"
   >
     <!-- Card Header -->
@@ -80,16 +80,6 @@
             </div>
           </form>
 
-          <!-- Filter by date -->
-          <div class="w-full">
-            <app-date-range-picker
-              [value]="selectedDateRange()"
-              (valueChange)="onDateRangeChange($event)"
-              placeholder="Filtrer par date"
-              className="w-full"
-            ></app-date-range-picker>
-          </div>
-
           <!-- Filter by responsable -->
           <div class="w-full">
             <app-custom-select
@@ -98,6 +88,16 @@
               (valueChange)="responsableFilter.set($event)"
               placeholder="Tous les responsables"
             ></app-custom-select>
+          </div>
+
+          <!-- Filter by date -->
+          <div class="w-full">
+            <app-date-range-picker
+              [value]="selectedDateRange()"
+              (valueChange)="onDateRangeChange($event)"
+              placeholder="Filtrer par date"
+              className="w-full"
+            ></app-date-range-picker>
           </div>
 
           <!-- Clear filters button -->
@@ -151,7 +151,7 @@
 
       <!-- Pagination -->
       <app-pagination
-        *ngIf="rowsCount() > 9"
+        *ngIf="rowsCount() > 10"
         [totalItems]="rowsCount()"
         [currentPage]="currentPage()"
         (pageChange)="onPageChange($event)"
