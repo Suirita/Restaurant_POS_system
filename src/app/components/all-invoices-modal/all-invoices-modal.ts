@@ -4,7 +4,6 @@ import {
   inject,
   input,
   signal,
-  computed,
   ViewChild,
   TemplateRef,
   AfterViewInit,
@@ -14,7 +13,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Invoice, CartItem, Client } from '../../types/pos.types';
 import { InvoiceService } from '../../invoice.service';
-import { ClientService } from '../../client.service';
 import {
   LucideAngularModule,
   ReceiptText,
@@ -37,6 +35,8 @@ import {
 } from '../date-range-picker/date-range-picker';
 import { ConfigurationService } from '../../configuration.service';
 import { SearchableSelectComponent, Option } from '../searchable-select/searchable-select';
+import { UserService } from '../../user.service';
+import { ClientService } from '../../client.service';
 
 @Component({
   standalone: true,
@@ -68,6 +68,8 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   private invoiceService = inject(InvoiceService);
   private clientService = inject(ClientService);
   private configurationService = inject(ConfigurationService);
+  private userService = inject(UserService);
+
   allInvoices = signal<Invoice[]>([]);
   isLoading = signal<boolean>(false);
   token = input.required<string>();
@@ -80,80 +82,20 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   logoUrl = signal<string | null>(null);
 
   // Filters
-  invoiceNumberFilter = signal<string>('');
-  clientNameFilter = signal<string>('');
-  selectedDateRange = signal<DateRange>({});
+  searchQuery = signal<string>('');
+  selectedDateRangeFilter = signal<DateRange>({});
   responsableFilter = signal<string>('all');
-
-  responsableOptions = computed<Option[]>(() => {
-    const unique = Array.from(
-      new Set(
-        this.allInvoices()
-          .map((r) => r.responsable)
-          .filter((v): v is string => !!v && String(v).trim().length > 0)
-      )
-    );
-    const mapped = unique.map((r) => ({ value: r, label: r } as Option));
-    return [{ value: 'all', label: 'Tous les responsables' }, ...mapped];
-  });
+  responsableOptions = signal<Option[]>([]);
 
   // Pagination
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
 
-  filteredInvoices = computed(() => {
-    let filtered = this.allInvoices();
-
-    const invoiceTerm = this.invoiceNumberFilter().trim().toLowerCase();
-    if (invoiceTerm) {
-      filtered = filtered.filter((inv) =>
-        inv.invoiceNumber?.toLowerCase().includes(invoiceTerm)
-      );
-    }
-
-    const clientTerm = this.clientNameFilter().trim().toLowerCase();
-    if (clientTerm) {
-      filtered = filtered.filter((inv) =>
-        inv.clientName?.toLowerCase().includes(clientTerm)
-      );
-    }
-
-    const { from, to } = this.selectedDateRange();
-    if (from && to) {
-      const toDate = new Date(to);
-      toDate.setHours(23, 59, 59, 999);
-      filtered = filtered.filter((inv) => {
-        const invDate = new Date(inv.date);
-        return invDate >= from && invDate <= toDate;
-      });
-    } else if (from) {
-      const fromDayStart = new Date(from);
-      fromDayStart.setHours(0, 0, 0, 0);
-      const fromDayEnd = new Date(from);
-      fromDayEnd.setHours(23, 59, 59, 999);
-
-      filtered = filtered.filter((inv) => {
-        const invDate = new Date(inv.date);
-        return invDate >= fromDayStart && invDate <= fromDayEnd;
-      });
-    }
-
-    const responsable = this.responsableFilter();
-    if (responsable !== 'all') {
-      filtered = filtered.filter(
-        (invoice) => (invoice.responsable || '').toString() === responsable
-      );
-    }
-
-    return filtered;
-  });
-
-  paginatedInvoices = computed(() => {
-    const filtered = this.filteredInvoices();
-    const start = (this.currentPage() - 1) * 10;
-    const end = start + 10;
-    return filtered.slice(start, end);
-  });
+  constructor() {
+    effect(() => {
+      this.loadInvoices();
+    });
+  }
 
   close = output<void>();
 
@@ -179,7 +121,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   columnTemplates: { [key: string]: TemplateRef<any> } = {};
 
   ngOnInit() {
-    this.loadInvoices();
+    this.loadResponsables();
     this.loadCompanyInfo();
     this.customActions = [
       {
@@ -219,18 +161,50 @@ export class AllInvoicesModalComponent implements AfterViewInit {
       });
   }
 
+  loadResponsables() {
+    this.userService.getUsers().subscribe((users) => {
+      const options = users.map(
+        (user) => ({ value: user.userId, label: user.fullName } as Option)
+      );
+      this.responsableOptions.set([
+        { value: 'all', label: 'Tous les responsables' },
+        ...options,
+      ]);
+    });
+  }
+
   loadInvoices() {
+    const dateRange = this.selectedDateRangeFilter();
+    if ((dateRange.from && !dateRange.to) || (!dateRange.from && dateRange.to)) {
+      return;
+    }
+
     this.isLoading.set(true);
+    const page = this.currentPage();
+    const pageSize = 10;
+    const userIds = this.responsableFilter() === 'all' ? undefined : [this.responsableFilter()];
+    const searchQuery = this.searchQuery();
+    let dateStart: string | undefined;
+    let dateEnd: string | undefined;
+
+    if (dateRange.from && dateRange.to) {
+      const from = dateRange.from;
+      dateStart = `${from.getFullYear()}-${(from.getMonth() + 1).toString().padStart(2, '0')}-${from.getDate().toString().padStart(2, '0')}T${from.getHours().toString().padStart(2, '0')}:${from.getMinutes().toString().padStart(2, '0')}`;
+      const to = dateRange.to;
+      dateEnd = `${to.getFullYear()}-${(to.getMonth() + 1).toString().padStart(2, '0')}-${to.getDate().toString().padStart(2, '0')}T${to.getHours().toString().padStart(2, '0')}:${to.getMinutes().toString().padStart(2, '0')}`;
+    }
+
     this.invoiceService
-      .getAllInvoices(this.token(), 1, 10000)
+      .getAllInvoices(
+        this.token(),
+        page,
+        pageSize,
+        userIds,
+        searchQuery,
+        dateStart,
+        dateEnd
+      )
       .subscribe((response) => {
-        try {
-        } catch (err) {
-          console.warn(
-            '[AllInvoicesModal] Error while inspecting invoices response',
-            err
-          );
-        }
         this.allInvoices.set(response.invoices);
         this.rowsCount.set(response.totalItems);
         this.isLoading.set(false);
@@ -241,14 +215,9 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     this.currentPage.set(page);
   }
 
-  onDateRangeChange(range: DateRange) {
-    this.selectedDateRange.set(range);
-  }
-
   clearFilters() {
-    this.invoiceNumberFilter.set('');
-    this.clientNameFilter.set('');
-    this.selectedDateRange.set({});
+    this.searchQuery.set('');
+    this.selectedDateRangeFilter.set({});
     this.responsableFilter.set('all');
   }
 
@@ -258,8 +227,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
 
   onInvoiceClick(invoice: Invoice) {
     if (invoice.id) {
-      try {
-      } catch {}
       this.invoiceService
         .getInvoiceDetails(invoice.id, this.token())
         .subscribe({
@@ -508,11 +475,7 @@ export class AllInvoicesModalComponent implements AfterViewInit {
         );
 
         if (client && client.mobile) {
-          const message = `Bonjour ${invoice.clientName},
-
-Voici les détails de votre facture ${invoice.invoiceNumber}:
-Total: ${invoice.total.toFixed(2)} EUR
-Date: ${new Date(invoice.date).toLocaleDateString()}`;
+          const message = `Bonjour ${invoice.clientName},nnVoici les détails de votre facture ${invoice.invoiceNumber}:nTotal: ${invoice.total.toFixed(2)} EURnDate: ${new Date(invoice.date).toLocaleDateString()}`;
           const whatsappUrl = `https://wa.me/${
             client.mobile
           }?text=${encodeURIComponent(message)}`;

@@ -30,13 +30,13 @@
       <!-- Filter Controls -->
       <div class="w-full flex justify-between mb-3">
         <div class="w-full flex gap-3">
-          <!-- Search by invoice number -->
+          <!-- Search by invoice number or client name -->
           <form class="w-full">
             <label
               for="search-invoice"
               class="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
-              Rechercher par facture
+              Rechercher
             </label>
             <div class="relative w-full">
               <div
@@ -47,34 +47,10 @@
               <input
                 type="search"
                 id="search-invoice"
-                placeholder=" Rechercher par Numéro de facture ..."
-                [(ngModel)]="invoiceNumberFilter"
-                name="invoiceNumberFilter"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
-              />
-            </div>
-          </form>
-
-          <!-- Search by client name -->
-          <form class="w-full">
-            <label
-              for="search-client"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only"
-            >
-              Rechercher par client
-            </label>
-            <div class="relative w-full">
-              <div
-                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
-              >
-                <i-lucide [img]="Search" [size]="16"></i-lucide>
-              </div>
-              <input
-                type="search"
-                id="search-client"
-                placeholder=" Rechercher par Nom du client ..."
-                [(ngModel)]="clientNameFilter"
-                name="clientNameFilter"
+                placeholder="Rechercher par N° de facture ou Nom du client..."
+                [ngModel]="searchQuery()"
+                (ngModelChange)="searchQuery.set($event)"
+                name="searchQuery"
                 class="block w-full p-2 ps-10 text-sm text-gray-900 bg-white placeholder-gray-400 border border-gray-200 shadow-xs rounded-lg focus:outline-none focus:shadow-sm"
               />
             </div>
@@ -93,8 +69,8 @@
           <!-- Filter by date -->
           <div class="w-full">
             <app-date-range-picker
-              [value]="selectedDateRange()"
-              (valueChange)="onDateRangeChange($event)"
+              [value]="selectedDateRangeFilter()"
+              (valueChange)="selectedDateRangeFilter.set($event)"
               placeholder="Filtrer par date"
               className="w-full"
             ></app-date-range-picker>
@@ -142,7 +118,7 @@
       <app-reusable-table
         [columns]="tableColumns"
         [columnKeys]="tableColumnKeys"
-        [data]="paginatedInvoices()"
+        [data]="allInvoices()"
         [customActions]="customActions"
         [columnTemplates]="columnTemplates"
         (onRowClick)="onInvoiceClick($event)"

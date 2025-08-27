@@ -312,7 +312,11 @@ export class InvoiceService {
   getAllInvoices(
     token: string,
     page: number,
-    pageSize: number
+    pageSize: number,
+    userIds?: string[],
+    searchQuery?: string,
+    dateStart?: string,
+    dateEnd?: string
   ): Observable<{
     invoices: Invoice[];
     totalItems: number;
@@ -320,12 +324,25 @@ export class InvoiceService {
     pagesCount: number;
   }> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = {
+    const body: any = {
       Page: page,
       PageSize: pageSize,
-      techniciansId: [],
       label: ['chneg3084mkah1'],
     };
+
+    if (userIds && userIds.length > 0) {
+      body.techniciansId = userIds;
+    }
+    if (searchQuery) {
+      body.SearchQuery = searchQuery;
+    }
+    if (dateStart) {
+      body.DateStart = dateStart;
+    }
+    if (dateEnd) {
+      body.DateEnd = dateEnd;
+    }
+
     return this.http
       .post<any>(`${this.baseURL}/Invoice`, body, { headers })
       .pipe(
