@@ -259,7 +259,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         status === 'all'
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
           : [status],
-      orderNumber: commandNum,
+      SearchQuery: commandNum,
       DateStart: dateStart,
       DateEnd: dateEnd,
     };

@@ -567,7 +567,7 @@ export class ReceiptService {
     pageSize: number,
     userIds?: string[],
     status?: string[],
-    commandNumber?: string,
+    searchQuery?: string,
     dateStart?: string,
     dateEnd?: string
   ): Observable<{
@@ -585,8 +585,8 @@ export class ReceiptService {
     if (userIds && userIds.length > 0) {
       body.techniciansId = userIds;
     }
-    if (commandNumber) {
-      body.reference = commandNumber;
+    if (searchQuery) {
+      body.SearchQuery = searchQuery;
     }
     if (dateStart) {
       body.DateStart = dateStart;
