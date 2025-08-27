@@ -9,8 +9,9 @@ import {
   ShoppingBag,
   Armchair,
   Receipt,
-  Replace,
   CreditCard,
+  Replace,
+  Printer,
 } from 'lucide-angular';
 import { CartItem, Table } from '../../types/pos.types';
 import { ServiceSelectionComponent } from '../service-selection/service-selection';
@@ -29,8 +30,9 @@ export class CartComponent {
   readonly ShoppingBagIcon = ShoppingBag;
   readonly Armchair = Armchair;
   readonly Receipt = Receipt;
-  readonly Replace = Replace;
   readonly CreditCard = CreditCard;
+  readonly Replace = Replace;
+  readonly Printer = Printer;
 
   cartItems = input.required<CartItem[]>();
   selectedCartItemId = input<string | null>(null);

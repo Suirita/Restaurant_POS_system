@@ -114,53 +114,66 @@
   <!-- Cart Total & Actions -->
   <div
     *ngIf="cartItems().length > 0"
-    class="flex-shrink-0 p-3 pt-1 border-t border-gray-200 bg-white"
+    class="flex-shrink-0 px-3 pt-1 border-t border-gray-200 bg-white"
   >
     <div class="flex justify-between items-center">
       <span class="text-lg font-medium text-gray-700">Total :</span>
       <span class="text-lg font-medium text-gray-900">
-        {{ total().toFixed(2) }} €
+        {{ total().toFixed(2) }}
       </span>
     </div>
 
-    <div class="flex justify-around items-center gap-2">
-      <button
-        class="border border-green-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
-        [class]="
+    <div>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          class="border border-green-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
+          [class]="
           canAddToCart()
             ? ' bg-green-400 text-white'
             : 'bg-gray-300 text-gray-500'
         "
-        [disabled]="!canAddToCart()"
-        (click)="onCompleteOrder()"
-      >
-        <i-lucide
-          *ngIf="canAddToCart()"
-          [img]="Receipt"
-          [size]="16"
-          class="w-4 h-4 me-2"
-        ></i-lucide>
-        {{ canAddToCart() ? "Enregistrer" : "Configuration requise" }}
-      </button>
-      <button
-        *ngIf="isTableOccupied()"
-        (click)="onTransfer()"
-        class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
-      >
-        <i-lucide [img]="Replace" [size]="16" class="w-4 h-4 me-2"></i-lucide>
-        Transférer
-      </button>
-      <button
-        (click)="onPay()"
-        class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
-      >
-        <i-lucide
-          [img]="CreditCard"
-          [size]="16"
-          class="w-4 h-4 me-2"
-        ></i-lucide>
-        Payer
-      </button>
+          [disabled]="!canAddToCart()"
+          (click)="onCompleteOrder()"
+        >
+          <i-lucide
+            *ngIf="canAddToCart()"
+            [img]="Receipt"
+            [size]="16"
+            class="w-4 h-4 me-2"
+          ></i-lucide>
+          {{ canAddToCart() ? "Enregistrer" : "Configuration requise" }}
+        </button>
+
+        <button
+          (click)="onPay()"
+          class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
+        >
+          <i-lucide
+            [img]="CreditCard"
+            [size]="16"
+            class="w-4 h-4 me-2"
+          ></i-lucide>
+          Payer
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          *ngIf="isTableOccupied()"
+          (click)="onTransfer()"
+          class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
+        >
+          <i-lucide [img]="Replace" [size]="16" class="w-4 h-4 me-2"></i-lucide>
+          Transférer
+        </button>
+        <button
+          *ngIf="isTableOccupied()"
+          (click)="onTransfer()"
+          class="bg-white border border-gray-200 shadow font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2 w-full"
+        >
+          <i-lucide [img]="Printer" [size]="16" class="w-4 h-4 me-2"></i-lucide>
+          Printer
+        </button>
+      </div>
     </div>
   </div>
 </div>
