@@ -90,7 +90,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   // Filter signals
   commandNumberFilter = signal<string>('');
-  
+
   selectedDateRangeFilter = signal<DateRange>(
     (() => {
       const start = new Date();
@@ -112,11 +112,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     { value: 'billed', label: 'Facturé' },
   ];
 
-  
-
   responsableOptions = signal<Option[]>([]);
 
-  // Pagination
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
 
