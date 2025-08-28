@@ -17,7 +17,7 @@ headers = {
 
 # List of products with their categories
 products = [
-    # Dessert (24)
+    # Dessert
     {"designation": "Crème Brûlée", "categoryId": "443018c5-a9a5-43a9-ac89-f0f325f52b87"},
     {"designation": "Tarte Tatin", "categoryId": "443018c5-a9a5-43a9-ac89-f0f325f52b87"},
     {"designation": "Macarons", "categoryId": "443018c5-a9a5-43a9-ac89-f0f325f52b87"},
@@ -55,7 +55,7 @@ products = [
     {"designation": "Tartelettes aux Fruits",
      "categoryId": "443018c5-a9a5-43a9-ac89-f0f325f52b87"},
     {"designation": "Kouign-amann", "categoryId": "443018c5-a9a5-43a9-ac89-f0f325f52b87"},
-    # Fruits de Mer (24)
+    # Fruits de Mer
     {"designation": "Bouillabaisse",
      "categoryId": "28f16bb9-ecd8-4dcb-8c83-454a9b424d95"},
     {"designation": "Plateau de Fruits de Mer",
@@ -102,7 +102,7 @@ products = [
      "categoryId": "28f16bb9-ecd8-4dcb-8c83-454a9b424d95"},
     {"designation": "Fricassée de Fruits de Mer",
      "categoryId": "28f16bb9-ecd8-4dcb-8c83-454a9b424d95"},
-    # Bœuf (24)
+    # Bœuf
     {"designation": "Bœuf Bourguignon",
      "categoryId": "3484710e-40ca-4a91-8dc4-2addf5ca8170"},
     {"designation": "Entrecôte Grillée",
@@ -147,7 +147,7 @@ products = [
      "categoryId": "3484710e-40ca-4a91-8dc4-2addf5ca8170"},
     {"designation": "Bœuf Braisé aux Légumes",
      "categoryId": "3484710e-40ca-4a91-8dc4-2addf5ca8170"},
-    # Poulet (24)
+    # Poulet
     {"designation": "Coq au Vin", "categoryId": "302431b7-5692-45e6-964c-82ae719c9bde"},
     {"designation": "Poulet Rôti", "categoryId": "302431b7-5692-45e6-964c-82ae719c9bde"},
     {"designation": "Poulet à la Crème",
@@ -193,7 +193,7 @@ products = [
      "categoryId": "302431b7-5692-45e6-964c-82ae719c9bde"},
     {"designation": "Poulet Sauté aux Légumes",
      "categoryId": "302431b7-5692-45e6-964c-82ae719c9bde"},
-    # Agneau (24)
+    # Agneau
     {"designation": "Gigot d'Agneau",
      "categoryId": "e298fc15-da94-4ead-9687-9f77395773a0"},
     {"designation": "Carré d'Agneau",
@@ -239,7 +239,7 @@ products = [
      "categoryId": "e298fc15-da94-4ead-9687-9f77395773a0"},
     {"designation": "Agneau Mariné",
      "categoryId": "e298fc15-da94-4ead-9687-9f77395773a0"},
-    # Pâtes (24)
+    # Pâtes
     {"designation": "Spaghetti Carbonara",
      "categoryId": "64c6e21c-2edf-4aad-95df-0f81cf325e3d"},
     {"designation": "Fettuccine Alfredo",
@@ -278,7 +278,7 @@ products = [
      "categoryId": "64c6e21c-2edf-4aad-95df-0f81cf325e3d"},
     {"designation": "Crozets de Savoie",
      "categoryId": "64c6e21c-2edf-4aad-95df-0f81cf325e3d"},
-    # Accompagnement (24)
+    # Accompagnement
     {"designation": "Gratin Dauphinois",
      "categoryId": "6b35c700-c476-455d-98fd-3a3a020be8cc"},
     {"designation": "Ratatouille", "categoryId": "6b35c700-c476-455d-98fd-3a3a020be8cc"},
@@ -322,7 +322,7 @@ products = [
      "categoryId": "6b35c700-c476-455d-98fd-3a3a020be8cc"},
     {"designation": "Tian de Légumes",
      "categoryId": "6b35c700-c476-455d-98fd-3a3a020be8cc"},
-    # Végétalien (24)
+    # Végétalien
     {"designation": "Ratatouille Niçoise",
      "categoryId": "60849c85-d335-4637-afa8-7307885bf291"},
     {"designation": "Salade de Quinoa",
@@ -363,7 +363,7 @@ products = [
      "categoryId": "60849c85-d335-4637-afa8-7307885bf291"},
     {"designation": "Salade Composée",
      "categoryId": "60849c85-d335-4637-afa8-7307885bf291"},
-    # Boisson (24)
+    # Boisson
     {"designation": "Eau Pétillante",
      "categoryId": "f4726486-2d78-4aa3-b29a-b2601a25fc9b"},
     {"designation": "Limonade Maison",
@@ -414,9 +414,9 @@ products = [
 
 # Send POST for each product
 for prod in products:
-  selling_price = round(random.uniform(10, 100))
-  purchase_price = round(selling_price - 5)
-  total_ht = round(selling_price / 2)
+  purchase_price = round(random.uniform(15, 250))
+  total_ht = purchase_price + 5
+  selling_price = round(total_ht + (total_ht * 0.2))
   total_ttc = selling_price
 
   payload = {
