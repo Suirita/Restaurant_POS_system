@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
+import { forkJoin } from 'rxjs';
 import { ReceiptService } from '../../../receipt.service';
 import { InvoiceService } from '../../../invoice.service';
 import { UserService } from '../../../user.service';
@@ -96,13 +97,65 @@ export class DashboardComponent implements OnInit {
             'accepted',
             'late',
             'refused',
+            'billed',
           ])
-          .subscribe((response) => {
-            this.allReceipts = response.receipts;
-            this.invoiceService.getAllInvoices(token, 1, 10000).subscribe((response) => {
-              this.allInvoices = response.invoices;
-              this.processData();
-            });
+          .subscribe((receiptsResponse) => {
+            const receiptsWithoutDetails = receiptsResponse.receipts;
+            if (receiptsWithoutDetails.length === 0) {
+              this.allReceipts = [];
+              this.invoiceService
+                .getAllInvoices(token, 1, 10000)
+                .subscribe((invoicesResponse) => {
+                  this.allInvoices = invoicesResponse.invoices;
+                  this.processData();
+                });
+              return;
+            }
+
+            const receiptDetailsRequests = receiptsWithoutDetails.map((receipt) =>
+              this.receiptService.getReceiptDetails(receipt.id, token)
+            );
+
+            forkJoin(receiptDetailsRequests).subscribe(
+              (detailedReceiptsResponses: any) => {
+                this.allReceipts = detailedReceiptsResponses.map(
+                  (res: any, index: number) => {
+                    const detailedReceipt = res.value;
+                    const originalReceipt = receiptsWithoutDetails[index];
+                    if (!detailedReceipt.orderDetails) {
+                      return { ...originalReceipt, items: [] };
+                    }
+                    return {
+                      ...originalReceipt,
+                      ...detailedReceipt,
+                      items: detailedReceipt.orderDetails.lineItems.map(
+                        (item: any) => ({
+                          id: item.product.id,
+                          designation: item.product.designation,
+                          sellingPrice: item.product.sellingPrice,
+                          purchasePrice: item.product.purchasePrice || 0,
+                          totalTTC: item.totalTTC,
+                          tva: item.product.vat || 0,
+                          categoryId: item.product.categoryId,
+                          categoryLabel: item.product.categoryLabel,
+                          image: '',
+                          quantity: item.quantity,
+                          labels: item.product.labels || [],
+                        })
+                      ),
+                      total: parseFloat(detailedReceipt.totalTTC.toFixed(2)),
+                    };
+                  }
+                );
+
+                this.invoiceService
+                  .getAllInvoices(token, 1, 10000)
+                  .subscribe((invoicesResponse) => {
+                    this.allInvoices = invoicesResponse.invoices;
+                    this.processData();
+                  });
+              }
+            );
           });
       });
     }
