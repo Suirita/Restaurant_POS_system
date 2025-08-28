@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Retrieve values
-endpoint = os.getenv("API_ENDPOINT")
+endpoint = os.getenv("API_ENDPOINT") + "/Product/Create"
 token = os.getenv("API_TOKEN")
 
 # Prepare headers

@@ -25,7 +25,7 @@ export class UserService {
       Page: 1,
       PageSize: 1000,
       showAllUsers: true,
-      label: ['chneg3084mjkr1'],
+      label: ['chnej8fr9mn4p1'],
     };
     return this.http.post<any>(this.apiUrl, body, { headers }).pipe(
       map((response) =>
@@ -89,7 +89,7 @@ export class UserService {
       phoneNumber: user.phoneNumber || '',
       memorySize: 0,
       roleId: roleId,
-      labels: [{ value: 'POS', id: 'chneg3084mjkr1', id_html: 'POS' }],
+      labels: [{ value: 'POS', id: 'chnej8fr9mn4p1', id_html: 'POS' }],
       image: user.image ? { fileId: user.image.fileId } : null,
       typeUser: 'Normal',
       licenceUser: 0,
@@ -129,7 +129,7 @@ export class UserService {
       phoneNumber: user.phoneNumber || '',
       memorySize: 0,
       roleId: roleId,
-      labels: [{ value: 'POS', id: 'chneg3084mjkr1', id_html: 'POS' }],
+      labels: [{ value: 'POS', id: 'chnej8fr9mn4p1', id_html: 'POS' }],
       image: user.image ? { fileId: user.image.fileId } : null,
       typeUser: 'Normal',
       licenceUser: 0,
