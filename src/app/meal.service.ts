@@ -58,7 +58,7 @@ export class MealService {
       IgnorePagination: false,
       isArchived: false,
       showTarifeo: false,
-      TypeProductId: 'Foliatech88',
+      TypeProductId: 'Foliatech5',
       ProdcutCategoryId: categoryId,
     };
     return this.http
@@ -87,7 +87,7 @@ export class MealService {
       PageSize: 1000,
       OrderBy: 'reference',
       SortDirection: 1,
-      TypeProductId: 'Foliatech88',
+      TypeProductId: 'Foliatech5',
     };
     return this.http
       .post<any>(`${this.baseUrl}/Product`, body, { headers })
@@ -123,13 +123,13 @@ export class MealService {
       coefficient: 1.3,
       sellingPrice: meal.sellingPrice,
       productCategoryType: {
-        id: 'Foliatech88',
+        id: 'Foliatech5',
         label: 'Repas',
         description: 'Repas',
-        type: 5 ,
+        type: 5,
         id_html: 'Repas',
       },
-      productCategoryTypeId: 'Foliatech88',
+      productCategoryTypeId: 'Foliatech5',
       tauxMarge: 0,
       disableSellingPrice: false,
       totalHT: meal.sellingPrice,
@@ -156,13 +156,13 @@ export class MealService {
       coefficient: 1.3,
       sellingPrice: meal.sellingPrice,
       productCategoryType: {
-        id: 'Foliatech88',
+        id: 'Foliatech5',
         label: 'Repas',
         description: 'Repas',
         type: 5,
         id_html: 'Repas',
       },
-      productCategoryTypeId: 'Foliatech88',
+      productCategoryTypeId: 'Foliatech5',
       tauxMarge: 0,
       disableSellingPrice: false,
       totalHT: meal.sellingPrice,

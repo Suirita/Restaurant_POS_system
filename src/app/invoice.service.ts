@@ -175,7 +175,7 @@ export class InvoiceService {
                           position: null,
                           isArchived: false,
                           productCategoryType: {
-                            id: 'Foliatech88',
+                            id: 'Foliatech5',
                             label: 'Repas',
                             description: 'Repas',
                             type: 5,

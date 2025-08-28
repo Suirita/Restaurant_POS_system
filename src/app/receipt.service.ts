@@ -79,7 +79,7 @@ export class ReceiptService {
             position: null,
             isArchived: false,
             productCategoryType: {
-              id: 'Foliatech88',
+              id: 'Foliatech5',
               label: 'Repas',
               description: 'Repas',
               type: 5,
@@ -379,7 +379,7 @@ export class ReceiptService {
                 position: null,
                 isArchived: false,
                 productCategoryType: {
-                  id: 'Foliatech88',
+                  id: 'Foliatech5',
                   label: 'Repas',
                   description: 'Repas',
                   type: 5,
@@ -636,16 +636,21 @@ export class ReceiptService {
     );
   }
 
-  getRevenueByCategory(token: string, dateStart?: string, dateEnd?: string, techniciansId?: string[]): Observable<any> {
+  getRevenueByCategory(
+    token: string,
+    dateStart?: string,
+    dateEnd?: string,
+    techniciansId?: string[]
+  ): Observable<any> {
     const url = `${this.baseUrl}/AnalysesVentes/RepartitionParSousCategorie`;
     const body = {
-        dateStart,
-        dateEnd,
-        techniciansId: techniciansId || []
+      dateStart,
+      dateEnd,
+      techniciansId: techniciansId || [],
     };
     const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     });
     return this.http.post(url, body, { headers });
   }
