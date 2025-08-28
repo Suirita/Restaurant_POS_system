@@ -116,7 +116,9 @@ export class DashboardComponent implements OnInit {
     let dateEnd: string | undefined;
 
     if (this.startDate && this.endDate) {
-      dateStart = `${this.startDate.getFullYear()}-${(this.startDate.getMonth() + 1)
+      dateStart = `${this.startDate.getFullYear()}-${(
+        this.startDate.getMonth() + 1
+      )
         .toString()
         .padStart(2, '0')}-${this.startDate
         .getDate()
@@ -124,7 +126,10 @@ export class DashboardComponent implements OnInit {
         .padStart(2, '0')}T00:00:00`;
       dateEnd = `${this.endDate.getFullYear()}-${(this.endDate.getMonth() + 1)
         .toString()
-        .padStart(2, '0')}-${this.endDate.getDate().toString().padStart(2, '0')}T23:59:59`;
+        .padStart(2, '0')}-${this.endDate
+        .getDate()
+        .toString()
+        .padStart(2, '0')}T23:59:59`;
     }
 
     const techniciansToFilter =
@@ -140,6 +145,7 @@ export class DashboardComponent implements OnInit {
       dateStart,
       dateEnd
     );
+
     const invoicesRequest = this.invoiceService.getAllInvoices(
       token,
       1,
@@ -149,13 +155,13 @@ export class DashboardComponent implements OnInit {
       dateStart,
       dateEnd
     );
-    const revenueByCategoryRequest =
-      this.receiptService.getRevenueByCategory(
-        token,
-        dateStart,
-        dateEnd,
-        techniciansToFilter
-      );
+
+    const revenueByCategoryRequest = this.receiptService.getRevenueByCategory(
+      token,
+      dateStart,
+      dateEnd,
+      techniciansToFilter
+    );
 
     forkJoin({
       receiptsResponse: receiptsRequest,
@@ -169,6 +175,7 @@ export class DashboardComponent implements OnInit {
         const repasCategory = revenueByCategoryResponse.value.data.find(
           (cat: any) => cat.label === 'Repas'
         );
+
         const revenueByCategory = repasCategory
           ? repasCategory.subcategories
           : [];
@@ -395,9 +402,11 @@ export class DashboardComponent implements OnInit {
     });
 
     const sortedDates = [...salesByDate.keys()].sort();
+
     const chartLabels = sortedDates.map((date) =>
       new Date(date).toLocaleDateString('fr-FR')
     );
+
     const chartDataValues = sortedDates.map((date) => salesByDate.get(date)!);
 
     const chartData = {
@@ -452,14 +461,18 @@ export class DashboardComponent implements OnInit {
     }
 
     const doc = new jsPDF();
+
     const canvas = chart.canvas;
+
     const chartDataURL = canvas.toDataURL('image/png');
 
     doc.setFontSize(18);
     doc.text(chart.data.datasets[0].label || 'Chart', 14, 22);
 
     const imgProps = doc.getImageProperties(chartDataURL);
+
     const pdfWidth = doc.internal.pageSize.getWidth();
+
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
     doc.addImage(chartDataURL, 'PNG', 10, 30, pdfWidth - 20, pdfHeight);
 
