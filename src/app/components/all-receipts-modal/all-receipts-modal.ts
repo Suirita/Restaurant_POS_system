@@ -249,12 +249,13 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       dateEnd = `${to.getFullYear()}-${(to.getMonth() + 1).toString().padStart(2, '0')}-${to.getDate().toString().padStart(2, '0')}T${to.getHours().toString().padStart(2, '0')}:${to.getMinutes().toString().padStart(2, '0')}`;
     }
 
-    const userIds = responsable === 'all' ? [this.userId()] : [responsable];
+    const techniciansId =
+      responsable === 'all' ? undefined : [responsable];
 
     const body = {
       page: this.currentPage(),
       pageSize: 10,
-      userIds,
+      techniciansId,
       status:
         status === 'all'
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
@@ -264,12 +265,14 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       DateEnd: dateEnd,
     };
 
+    console.log(body);
+
     this.receiptService
       .getAllReceipts(
         this.token(),
         this.currentPage(),
         10,
-        userIds,
+        techniciansId,
         status === 'all'
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
           : [status],
