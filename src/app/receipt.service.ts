@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Receipt, CartItem } from './types/pos.types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ConfigurationService } from './configuration.service';
 
@@ -1031,7 +1031,8 @@ export class ReceiptService {
     const body: any = {
       Page: page,
       PageSize: pageSize,
-      status: status || ['refused', 'accepted', 'in_progress'],
+      label: ['chnej8fr9mo7h1'],
+      status: status || [],
     };
     if (userIds && userIds.length > 0) {
       body.techniciansId = userIds;
