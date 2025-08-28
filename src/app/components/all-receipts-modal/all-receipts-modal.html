@@ -94,6 +94,27 @@
           </div>
         </div>
       </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading()">
+        <app-table-skeleton
+          [columns]="tableColumns"
+          [rowCount]="10"
+        ></app-table-skeleton>
+      </div>
+
+      <!-- No receipts found -->
+      <div
+        *ngIf="!isLoading() && allReceipts().length === 0"
+        class="text-center py-12"
+      >
+        <p class="text-gray-700 text-xl font-medium mb-1">
+          Aucun reçu trouvé
+        </p>
+        <p class="text-gray-500">
+          Créez des reçus à partir de l'écran de point de vente
+        </p>
+      </div>
     </div>
 
     <!-- Card Body -->
@@ -118,14 +139,6 @@
         (pageChange)="onPageChange($event)"
       >
       </app-pagination>
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="isLoading()">
-      <app-table-skeleton
-        [columns]="tableColumns"
-        [rowCount]="10"
-      ></app-table-skeleton>
     </div>
 
     <ng-template #totalColumnTemplate let-item="item">
