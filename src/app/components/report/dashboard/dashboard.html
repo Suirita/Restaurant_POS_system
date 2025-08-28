@@ -13,6 +13,13 @@
             placeholder="Sélectionnez une plage de dates"
           ></app-date-range-picker>
         </div>
+        <app-searchable-select
+          [options]="responsableOptions()"
+          [value]="responsableFilter()"
+          (valueChange)="onResponsableChange($event)"
+          placeholder="Tous les responsables"
+          className="w-48"
+        ></app-searchable-select>
         <app-custom-select
           [options]="periodOptions"
           [value]="selectedPeriod()"

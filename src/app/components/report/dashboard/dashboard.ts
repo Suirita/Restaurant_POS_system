@@ -10,6 +10,7 @@ import {
   CustomSelectComponent,
   Option,
 } from '../../custom-select/custom-select';
+import { SearchableSelectComponent } from '../../searchable-select/searchable-select';
 import {
   DateRangePickerComponent,
   DateRange,
@@ -46,7 +47,13 @@ Chart.register(...registerables, centerTextPlugin);
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule, CustomSelectComponent, DateRangePickerComponent, LucideAngularModule],
+  imports: [
+    CommonModule,
+    CustomSelectComponent,
+    DateRangePickerComponent,
+    LucideAngularModule,
+    SearchableSelectComponent,
+  ],
   templateUrl: './dashboard.html',
 })
 export class DashboardComponent implements OnInit {
@@ -62,6 +69,8 @@ export class DashboardComponent implements OnInit {
   totalInvoicesRevenue = signal<number>(0);
 
   selectedPeriod = signal('this_month');
+  responsableFilter = signal<string>('all');
+  responsableOptions = signal<Option[]>([]);
   startDate: Date | null = null;
   endDate: Date | null = null;
   dateRange: DateRange = {};
@@ -83,92 +92,97 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.setPeriod(this.selectedPeriod());
+    this.loadResponsables();
     this.fetchData();
+  }
+
+  loadResponsables() {
+    this.userService.getUsers().subscribe((users) => {
+      const options = users.map(
+        (user) => ({ value: user.userId, label: user.fullName } as Option)
+      );
+      this.responsableOptions.set([
+        { value: 'all', label: 'Tous les responsables' },
+        ...options,
+      ]);
+    });
   }
 
   fetchData() {
     const token = JSON.parse(localStorage.getItem('user') || '{}').token;
-    if (token) {
-      this.userService.getUsers().subscribe((users) => {
-        const userIds = users.map((user) => user.userId);
-        this.receiptService
-          .getAllReceipts(token, 1, 10000, userIds, [
-            'in_progress',
-            'accepted',
-            'late',
-            'refused',
-            'billed',
-          ])
-          .subscribe((receiptsResponse) => {
-            const receiptsWithoutDetails = receiptsResponse.receipts;
-            if (receiptsWithoutDetails.length === 0) {
-              this.allReceipts = [];
-              this.invoiceService
-                .getAllInvoices(token, 1, 10000)
-                .subscribe((invoicesResponse) => {
-                  this.allInvoices = invoicesResponse.invoices;
-                  this.processData();
-                });
-              return;
-            }
+    if (!token) return;
 
-            const receiptDetailsRequests = receiptsWithoutDetails.map((receipt) =>
-              this.receiptService.getReceiptDetails(receipt.id, token)
-            );
+    let dateStart: string | undefined;
+    let dateEnd: string | undefined;
 
-            forkJoin(receiptDetailsRequests).subscribe(
-              (detailedReceiptsResponses: any) => {
-                this.allReceipts = detailedReceiptsResponses.map(
-                  (res: any, index: number) => {
-                    const detailedReceipt = res.value;
-                    const originalReceipt = receiptsWithoutDetails[index];
-                    if (!detailedReceipt.orderDetails) {
-                      return { ...originalReceipt, items: [] };
-                    }
-                    return {
-                      ...originalReceipt,
-                      ...detailedReceipt,
-                      items: detailedReceipt.orderDetails.lineItems.map(
-                        (item: any) => ({
-                          id: item.product.id,
-                          designation: item.product.designation,
-                          sellingPrice: item.product.sellingPrice,
-                          purchasePrice: item.product.purchasePrice || 0,
-                          totalTTC: item.totalTTC,
-                          tva: item.product.vat || 0,
-                          categoryId: item.product.categoryId,
-                          categoryLabel: item.product.categoryLabel,
-                          image: '',
-                          quantity: item.quantity,
-                          labels: item.product.labels || [],
-                        })
-                      ),
-                      total: parseFloat(detailedReceipt.totalTTC.toFixed(2)),
-                    };
-                  }
-                );
-
-                this.invoiceService
-                  .getAllInvoices(token, 1, 10000)
-                  .subscribe((invoicesResponse) => {
-                    this.allInvoices = invoicesResponse.invoices;
-                    this.processData();
-                  });
-              }
-            );
-          });
-      });
+    if (this.startDate && this.endDate) {
+      dateStart = `${this.startDate.getFullYear()}-${(this.startDate.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${this.startDate
+        .getDate()
+        .toString()
+        .padStart(2, '0')}T00:00:00`;
+      dateEnd = `${this.endDate.getFullYear()}-${(this.endDate.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${this.endDate.getDate().toString().padStart(2, '0')}T23:59:59`;
     }
+
+    const techniciansToFilter =
+      this.responsableFilter() === 'all' ? [] : [this.responsableFilter()];
+
+    const receiptsRequest = this.receiptService.getAllReceipts(
+      token,
+      1,
+      10000,
+      techniciansToFilter,
+      ['in_progress', 'accepted', 'late', 'refused', 'billed'],
+      '',
+      dateStart,
+      dateEnd
+    );
+    const invoicesRequest = this.invoiceService.getAllInvoices(
+      token,
+      1,
+      10000,
+      techniciansToFilter,
+      '',
+      dateStart,
+      dateEnd
+    );
+    const revenueByCategoryRequest =
+      this.receiptService.getRevenueByCategory(
+        token,
+        dateStart,
+        dateEnd,
+        techniciansToFilter
+      );
+
+    forkJoin({
+      receiptsResponse: receiptsRequest,
+      invoicesResponse: invoicesRequest,
+      revenueByCategoryResponse: revenueByCategoryRequest,
+    }).subscribe(
+      ({ receiptsResponse, invoicesResponse, revenueByCategoryResponse }) => {
+        this.allReceipts = receiptsResponse.receipts;
+        this.allInvoices = invoicesResponse.invoices;
+
+        const repasCategory = revenueByCategoryResponse.value.data.find(
+          (cat: any) => cat.label === 'Repas'
+        );
+        const revenueByCategory = repasCategory
+          ? repasCategory.subcategories
+          : [];
+
+        this.processData(revenueByCategory);
+      }
+    );
   }
 
-  processData() {
-    const filteredReceipts = this.filterReceiptsByDate(this.allReceipts);
-    this.calculateTotalRevenue(filteredReceipts);
-    this.updateSalesByCategoryChart(filteredReceipts);
-    this.updateSalesOverTimeChart(filteredReceipts);
-
-    const filteredInvoices = this.filterInvoicesByDate(this.allInvoices);
-    this.calculateTotalInvoices(filteredInvoices);
+  processData(revenueByCategory: any[] = []) {
+    this.calculateTotalRevenue(this.allReceipts);
+    this.updateSalesOverTimeChart(this.allReceipts);
+    this.calculateTotalInvoices(this.allInvoices);
+    this.updateSalesByCategoryChart(revenueByCategory);
   }
 
   setPeriod(period: string) {
@@ -257,7 +271,7 @@ export class DashboardComponent implements OnInit {
   onPeriodChange(period: string) {
     this.setPeriod(period);
     if (period !== 'custom') {
-      this.processData();
+      this.fetchData();
     }
   }
 
@@ -266,28 +280,13 @@ export class DashboardComponent implements OnInit {
     if (dateRange.from && dateRange.to) {
       this.startDate = dateRange.from;
       this.endDate = dateRange.to;
-      this.processData();
+      this.fetchData();
     }
   }
 
-  filterReceiptsByDate(receipts: Receipt[]): Receipt[] {
-    if (!this.startDate || !this.endDate) {
-      return receipts;
-    }
-    return receipts.filter((receipt) => {
-      const receiptDate = new Date(receipt.date);
-      return receiptDate >= this.startDate! && receiptDate <= this.endDate!;
-    });
-  }
-
-  filterInvoicesByDate(invoices: Invoice[]): Invoice[] {
-    if (!this.startDate || !this.endDate) {
-      return invoices;
-    }
-    return invoices.filter((invoice: any) => {
-      const invoiceDate = new Date(invoice.date);
-      return invoiceDate >= this.startDate! && invoiceDate <= this.endDate!;
-    });
+  onResponsableChange(responsableId: string) {
+    this.responsableFilter.set(responsableId);
+    this.fetchData();
   }
 
   calculateTotalRevenue(receipts: Receipt[]) {
@@ -311,16 +310,10 @@ export class DashboardComponent implements OnInit {
     this.totalInvoices.set(invoices.length);
   }
 
-  updateSalesByCategoryChart(receipts: Receipt[]) {
+  updateSalesByCategoryChart(revenueData: any[]) {
     const categorySales = new Map<string, number>();
-    receipts.forEach((receipt) => {
-      receipt.items.forEach((item) => {
-        categorySales.set(
-          item.categoryLabel,
-          (categorySales.get(item.categoryLabel) || 0) +
-            item.sellingPrice * item.quantity
-        );
-      });
+    revenueData.forEach((item: any) => {
+      categorySales.set(item.label, item.count);
     });
 
     const totalSales = [...categorySales.values()].reduce(
@@ -333,7 +326,9 @@ export class DashboardComponent implements OnInit {
       datasets: [
         {
           label: 'Ventes par Catégorie',
-          data: [...categorySales.values()].map((v) => parseFloat(v.toFixed(2))),
+          data: [...categorySales.values()].map((v) =>
+            parseFloat(v.toFixed(2))
+          ),
           backgroundColor: [
             '#F87171',
             '#60A5FA',
@@ -448,7 +443,10 @@ export class DashboardComponent implements OnInit {
   }
 
   exportToPDF(chartId: string) {
-    const chart = chartId === 'salesByCategoryChart' ? this.salesByCategoryChart : this.salesOverTimeChart;
+    const chart =
+      chartId === 'salesByCategoryChart'
+        ? this.salesByCategoryChart
+        : this.salesOverTimeChart;
     if (!chart) {
       return;
     }

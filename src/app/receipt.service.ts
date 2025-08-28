@@ -636,6 +636,20 @@ export class ReceiptService {
     );
   }
 
+  getRevenueByCategory(token: string, dateStart?: string, dateEnd?: string, techniciansId?: string[]): Observable<any> {
+    const url = `${this.baseUrl}/AnalysesVentes/RepartitionParSousCategorie`;
+    const body = {
+        dateStart,
+        dateEnd,
+        techniciansId: techniciansId || []
+    };
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    });
+    return this.http.post(url, body, { headers });
+  }
+
   updateQuote(quote: any, token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     if (Array.isArray(quote.responsables)) {
