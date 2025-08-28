@@ -285,7 +285,7 @@ export class DashboardComponent implements OnInit {
       return invoices;
     }
     return invoices.filter((invoice: any) => {
-      const invoiceDate = new Date(invoice.creationDate);
+      const invoiceDate = new Date(invoice.date);
       return invoiceDate >= this.startDate! && invoiceDate <= this.endDate!;
     });
   }
