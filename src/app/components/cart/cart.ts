@@ -1,4 +1,12 @@
-import { Component, input, output, computed, inject, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  computed,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   LucideAngularModule,
@@ -148,13 +156,17 @@ export class CartComponent implements OnInit {
   print() {
     const receiptToPrint: ReceiptType = {
       id: '', // Not needed for printing from cart
-      orderNumber: this.tableNumber() ? `Table ${this.tableNumber()}` : 'A emporter',
+      orderNumber: this.tableNumber()
+        ? `Table ${this.tableNumber()}`
+        : 'À emporter',
       date: new Date(),
       total: this.total(),
       items: this.cartItems(),
       responsable: '', // Not available in cart, can be left empty
       status: 'in_progress',
-      tableName: this.tableNumber() ? `Table ${this.tableNumber()}` : 'A emporter',
+      tableName: this.tableNumber()
+        ? `Table ${this.tableNumber()}`
+        : 'À emporter',
       paymentMethod: '', // Not available in cart, can be empty
       userId: this.userId(),
       client: null, // Not available in cart

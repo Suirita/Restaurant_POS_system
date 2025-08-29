@@ -580,7 +580,9 @@ export class PosComponent implements OnInit {
 
     const total = this.total();
     const tableName =
-      this.orderType() === 'à emporter' ? 'A emporter' : 'T' + this.tableNumber();
+      this.orderType() === 'à emporter'
+        ? 'À emporter'
+        : 'T' + this.tableNumber();
 
     const existingReceipt = this.currentReceipt();
 
@@ -726,7 +728,7 @@ export class PosComponent implements OnInit {
 
         this.cart.set(items);
         this.orderType.set(
-          receipt.tableName === 'A emporter' ? 'à emporter' : 'table'
+          receipt.tableName === 'À emporter' ? 'à emporter' : 'table'
         );
         if (receipt.tableName.startsWith('T')) {
           this.tableNumber.set(receipt.tableName.replace('T', ''));
@@ -750,7 +752,9 @@ export class PosComponent implements OnInit {
 
     const total = this.total();
     const tableName =
-      this.orderType() === 'à emporter' ? 'A emporter' : 'T' + this.tableNumber();
+      this.orderType() === 'à emporter'
+        ? 'À emporter'
+        : 'T' + this.tableNumber();
 
     this.receiptService
       .getReceiptByTable(tableName, this.currentUser()!.token)
