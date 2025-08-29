@@ -43,6 +43,7 @@ export class ClientService {
               postalCode: item.billingAddress.postalCode,
               city: item.billingAddress.city,
               country: item.billingAddress.countryCode,
+              reference: item.reference,
             }));
           }
           return [];
@@ -102,6 +103,7 @@ export class ClientService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
       firstName: client.name,
+      reference: client.reference,
       phoneNumber: client.mobile,
       email: client.email,
       siret: client.ice,

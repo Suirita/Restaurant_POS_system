@@ -8,6 +8,7 @@ export interface Client {
   postalCode: string;
   city: string;
   country: string;
+  reference?: string;
 }
 
 export interface Meal {
