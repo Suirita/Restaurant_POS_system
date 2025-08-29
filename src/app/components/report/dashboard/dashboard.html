@@ -3,16 +3,6 @@
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold">Tableau de bord analytique</h1>
       <div class="flex items-center space-x-4">
-        <div
-          *ngIf="selectedPeriod() === 'custom'"
-          class="flex items-center space-x-2"
-        >
-          <app-date-range-picker
-            [value]="dateRange"
-            (valueChange)="onDateRangeChange($event)"
-            placeholder="Sélectionnez une plage de dates"
-          ></app-date-range-picker>
-        </div>
         <app-searchable-select
           [options]="responsableOptions()"
           [value]="responsableFilter()"
@@ -20,6 +10,16 @@
           placeholder="Tous les responsables"
           className="w-48"
         ></app-searchable-select>
+        <div
+          *ngIf="selectedPeriod() === 'custom'"
+          class="flex items-center space-x-2"
+        >
+          <app-date-range-picker
+            [value]="dateRange"
+            (valueChange)="onDateRangeChange($event)"
+            placeholder="Choisir dates"
+          ></app-date-range-picker>
+        </div>
         <app-custom-select
           [options]="periodOptions"
           [value]="selectedPeriod()"
