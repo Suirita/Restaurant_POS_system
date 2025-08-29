@@ -79,7 +79,7 @@
           <div class="w-full">
             <app-date-range-picker
               [value]="selectedDateRangeFilter()"
-              (valueChange)="selectedDateRangeFilter.set($event)"
+              (valueChange)="onDateRangeChange($event)"
               placeholder="Select a date range"
             ></app-date-range-picker>
           </div>

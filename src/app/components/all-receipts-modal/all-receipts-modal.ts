@@ -7,7 +7,6 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
-  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -117,12 +116,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
 
-  constructor() {
-    effect(() => {
-      this.loadReceipts();
-    });
-  }
-
   close = output<void>();
   pay = output<string>();
   receiptSelected = output<Receipt>();
@@ -167,6 +160,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   }
 
   ngOnInit() {
+    this.loadReceipts();
     this.loadResponsables();
     this.loadCompanyInfo();
     this.customActions = [
@@ -286,6 +280,27 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   onPageChange(page: number) {
     this.currentPage.set(page);
+    this.loadReceipts();
+  }
+
+  onCommandNumberChange(value: string) {
+    this.commandNumberFilter.set(value);
+    this.loadReceipts();
+  }
+
+  onResponsableChange(value: string) {
+    this.responsableFilter.set(value);
+    this.loadReceipts();
+  }
+
+  onStatusChange(value: string) {
+    this.statusFilter.set(value);
+    this.loadReceipts();
+  }
+
+  onDateRangeChange(value: DateRange) {
+    this.selectedDateRangeFilter.set(value);
+    this.loadReceipts();
   }
 
   onClose() {
@@ -648,5 +663,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.selectedDateRangeFilter.set({});
     this.statusFilter.set('all');
     this.responsableFilter.set('all');
+    this.loadReceipts();
   }
 }
