@@ -44,34 +44,17 @@ export class InvoiceService {
             return this.configService.getUniqueReference(token, 6).pipe(
               switchMap((reference): Observable<string | null> => {
                 const body = {
-                  isPrincipale: true,
                   reference: reference,
                   status: 'in_progress',
-                  note: `<div><font size="2">uptesthglihg</font></div>`,
-                  purpose: `Acompte N° 1 sur devis DEVIS n°${Math.floor(
-                    Math.random() * 1000000
-                  )} au ${new Date().toLocaleDateString('fr-FR')}`,
-                  paymentCondition: `<font size="2">Le client reconnait avoir reçu, lu, et accepté nos Conditions Générales de Ventes (CGV) lors
-</font><div><font size="2">de la signature du devis.
-</font></div><div><font size="2">Ces Conditions Générales de Ventes (CGV) sont jointes à chaque devis, et font partie
-</font></div><div><font size="2">intégrante du devis.
-</font></div><div><font size="2">____________________________________________________________________________________________________
-</font></div><div><font size="2">IBAN : FR76 1460 7003 4370 1212 1241 158
-</font></div><div><font size="2">BIC/SWIFT : CCBPFRPPMAR
-</font></div><div><font size="2">BANQUE POPULAIRE MEDITERRANEE
-</font></div><div><font size="2">Paiement chèque ou virement sous 30 jours date de facturation pour les professionnels, dès
-</font></div><div><font size="2">la fin de la prestation pour les particuliers.
-</font></div><div><font size="2">En vertu de la loi LME du 4 Aout 2008 qui modifie l'article441-6 du Code du Commerce, les
-</font></div><div><font size="2">délais de paiement convenus ne peuvent EN AUCUN CAS dépasser 30 jours à compter de la
-</font></div><div><font size="2">date d'émission de la facture. En cas de non respect de ces délais, des pénalités de retard
-</font></div><div><font size="2">sont dues. Le taux d'intérêt est celui appliqué par la BCE à son opération de refinancement
-</font></div><div><font size="2">la plus récente négociée de 10 points de pourcentage auxquels s'ajoutent une indemnité
-</font></div><div><font size="2">forfaitaire pour frais de recouvrement de 40€. Pas d'escompte en cas de paiement anticipé.
-</font></div><div><font size="2"><br></font></div>`,
+                  note: '',
+                  purpose: `Acompte N° 1 sur devis DEVIS n°${
+                    receipt.id
+                  } au ${new Date().toLocaleDateString('fr-FR')}`,
+                  paymentCondition: '',
                   workshopId: null,
                   labels: [
                     {
-                      id: 'chneg3084mkah1',
+                      id: 'chnej8fr9n5921',
                       value: 'POS',
                       id_html: 'POS',
                     },
@@ -102,16 +85,68 @@ export class InvoiceService {
                   },
                   clientId: client.id,
                   client: {
-                    ...client,
+                    code: null,
+                    type: 'particular',
+                    isProspect: 0,
+                    civility: null,
+                    responsableId: null,
+                    name: client.name,
+                    addresses: [
+                      {
+                        designation: '',
+                        department: '',
+                        street: client.address,
+                        complement: '',
+                        city: client.city,
+                        postalCode: client.postalCode,
+                        countryCode: client.country,
+                        note: null,
+                        isDefault: true,
+                      },
+                    ],
+                    memos: [],
+                    contactInformations: [
+                      {
+                        civility: '',
+                        lastName: client.name.split(' ')[0],
+                        firstName: client.name.split(' ')[1],
+                        function: '',
+                        email: client.email,
+                        phoneNumber: client.phone,
+                        fix: null,
+                        landLine: '',
+                        comment: '',
+                      },
+                    ],
                     billingAddress: {
+                      designation: '',
+                      department: '',
                       street: client.address,
+                      complement: '',
                       city: client.city,
                       postalCode: client.postalCode,
                       countryCode: client.country,
+                      note: null,
+                      isDefault: true,
                     },
+                    id: client.id,
+                    reference: client.reference,
+                    lastName: client.name.split(' ')[0],
+                    firstName: client.name.split(' ')[1],
+                    phoneNumber: client.phone,
+                    fix: null,
+                    landLine: null,
+                    email: client.email,
+                    website: null,
+                    siret: client.ice,
+                    intraCommunityVAT: null,
+                    accountingCode: '411',
+                    note: null,
+                    paymentCondition: null,
+                    remise: 5,
                   },
-                  typeInvoice: 2,
-                  situation: 10,
+                  typeInvoice: 1,
+                  situation: 100,
                   workshopName: '',
                   workshopReference: '',
                   orderDetails: {
@@ -162,14 +197,14 @@ export class InvoiceService {
                         product: {
                           id: item.product.id,
                           designation: item.product.designation,
-                          description: '',
-                          reference: '',
+                          description: null,
+                          reference: null,
                           sellingPrice: item.product.sellingPrice,
                           purchasePrice: item.product.purchasePrice,
                           totalHT: item.product.sellingPrice * item.quantity,
-                          taxValue: 0,
-                          totalTTC: item.product.sellingPrice * item.quantity,
-                          vat: 0,
+                          taxValue: 20,
+                          totalTTC: item.product.totalTTC * item.quantity,
+                          vat: 20,
                           unite: 'U',
                           coefficient: 0,
                           position: null,
@@ -182,13 +217,12 @@ export class InvoiceService {
                           },
                           category: {
                             id: item.product.categoryId,
-                            type: 1,
                             label: item.product.categoryLabel,
                             description: item.product.categoryLabel,
                             categoryType: -1,
                             isDefault: false,
                             chartAccountItem: {
-                              id: '2FhdckGHLkunUFuXjV6LVw',
+                              id: 'N5mMiVKZkGMqhDWTZJhtw',
                               label: 'Repas',
                               type: 5,
                               categoryType: 0,
@@ -222,12 +256,11 @@ export class InvoiceService {
                           ouvrages: [],
                           stockIconSrc: './assets/app/imgs/stock_out.svg',
                           stockTextColor: '#C51111',
-                          id_html: item.product.designation.replace(/\s/g, '_'),
+                          id_html: item.product.designation,
                           discount: {
                             type: 2,
                             value: 0,
                           },
-                          categoryId: item.product.categoryId,
                           totalFG: 0,
                           prixRevient: 0,
                           totalHtNotArrondi:
@@ -236,11 +269,12 @@ export class InvoiceService {
                             item.product.sellingPrice * item.quantity,
                           margin: 100,
                           articleId: `article_${index}`,
-                          situation: 10,
+                          situation: 100,
                         },
-                        situationProduct: 10,
+                        situationProduct: 100,
                         totalHT: item.product.sellingPrice * item.quantity,
                         totalTTC: item.product.sellingPrice * item.quantity,
+                        isValid: true,
                         comment: null,
                         totalHTArrondi:
                           item.product.sellingPrice * item.quantity,
@@ -275,12 +309,8 @@ export class InvoiceService {
                   addLabelTva: '',
                   contacts: [],
                   textAcompte: {
-                    designation: `Acompte de réalisation de 10.00% sur le devis DEVIS n°${Math.floor(
-                      Math.random() * 1000000
-                    )}`,
-                    description: `Rappel total TTC Devis : ${receipt.total.toFixed(
-                      2
-                    )} € Total avancement de facturation : 10 % `,
+                    designation: '',
+                    description: '',
                   },
                   typeFinanciere: 0,
                 };
@@ -327,7 +357,7 @@ export class InvoiceService {
     const body: any = {
       Page: page,
       PageSize: pageSize,
-      label: ['chneg3084mkah1'],
+      label: ['chnej8fr9n5921'],
     };
 
     if (techniciansId && techniciansId.length > 0) {
@@ -373,7 +403,7 @@ export class InvoiceService {
       Page: 1,
       PageSize: 1,
       techniciansId: [],
-      label: ['chneg3084mkah1'],
+      label: ['chnej8fr9n5921'],
       OrderBy: 'creationDate',
       SortDirection: 1,
     } as any;
