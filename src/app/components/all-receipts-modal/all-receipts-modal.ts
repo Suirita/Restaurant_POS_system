@@ -231,7 +231,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   loadReceipts() {
     const dateRange = this.selectedDateRangeFilter();
-    if ((dateRange.from && !dateRange.to) || (!dateRange.from && dateRange.to)) {
+    if (
+      (dateRange.from && !dateRange.to) ||
+      (!dateRange.from && dateRange.to)
+    ) {
       return;
     }
 
@@ -244,26 +247,22 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
     if (dateRange.from && dateRange.to) {
       const from = dateRange.from;
-      dateStart = `${from.getFullYear()}-${(from.getMonth() + 1).toString().padStart(2, '0')}-${from.getDate().toString().padStart(2, '0')}T${from.getHours().toString().padStart(2, '0')}:${from.getMinutes().toString().padStart(2, '0')}`;
+      dateStart = `${from.getFullYear()}-${(from.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${from.getDate().toString().padStart(2, '0')}T${from
+        .getHours()
+        .toString()
+        .padStart(2, '0')}:${from.getMinutes().toString().padStart(2, '0')}`;
       const to = dateRange.to;
-      dateEnd = `${to.getFullYear()}-${(to.getMonth() + 1).toString().padStart(2, '0')}-${to.getDate().toString().padStart(2, '0')}T${to.getHours().toString().padStart(2, '0')}:${to.getMinutes().toString().padStart(2, '0')}`;
+      dateEnd = `${to.getFullYear()}-${(to.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${to.getDate().toString().padStart(2, '0')}T${to
+        .getHours()
+        .toString()
+        .padStart(2, '0')}:${to.getMinutes().toString().padStart(2, '0')}`;
     }
 
-    const techniciansId =
-      responsable === 'all' ? undefined : [responsable];
-
-    const body = {
-      page: this.currentPage(),
-      pageSize: 10,
-      techniciansId,
-      status:
-        status === 'all'
-          ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
-          : [status],
-      SearchQuery: commandNum,
-      DateStart: dateStart,
-      DateEnd: dateEnd,
-    };
+    const techniciansId = responsable === 'all' ? undefined : [responsable];
 
     this.receiptService
       .getAllReceipts(
