@@ -23,7 +23,8 @@ export class CompanySettingsComponent implements OnInit {
   logoUrl: string | ArrayBuffer | null = null;
   cachetUrl: string | ArrayBuffer | null = null;
   pdfConfiguration: any = null;
-  isLoading = false;
+  areImagesLoading = false;
+  isFormLoading = false;
   isInputFocused = signal<boolean>(false);
 
   constructor() {
@@ -46,12 +47,9 @@ export class CompanySettingsComponent implements OnInit {
   }
 
   loadData() {
-    this.isLoading = true;
-    forkJoin({
-      pdfOptions: this.configurationService.getPdfOptions(),
-      invoiceConfig: this.configurationService.getInvoiceConfiguration(),
-    }).subscribe({
-      next: ({ pdfOptions, invoiceConfig }) => {
+    this.isFormLoading = true;
+    this.configurationService.getPdfOptions().subscribe({
+      next: (pdfOptions) => {
         // Process PDF options
         let options;
         if (typeof pdfOptions === 'string') {
@@ -66,7 +64,18 @@ export class CompanySettingsComponent implements OnInit {
         if (options && options.header) {
           this.form.patchValue(options.header);
         }
+        this.isFormLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading company settings:', err);
+        this.isFormLoading = false;
+        alert('Erreur lors du chargement des informations.');
+      },
+    });
 
+    this.areImagesLoading = true;
+    this.configurationService.getInvoiceConfiguration().subscribe({
+      next: (invoiceConfig) => {
         // Process invoice config for logo
         this.pdfConfiguration = invoiceConfig;
         if (invoiceConfig && invoiceConfig.images) {
@@ -77,11 +86,11 @@ export class CompanySettingsComponent implements OnInit {
             this.cachetUrl = invoiceConfig.images.cachet;
           }
         }
-        this.isLoading = false;
+        this.areImagesLoading = false;
       },
       error: (err) => {
         console.error('Error loading company settings:', err);
-        this.isLoading = false;
+        this.areImagesLoading = false;
         alert('Erreur lors du chargement des informations.');
       },
     });
@@ -117,7 +126,7 @@ export class CompanySettingsComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.isLoading = true;
+      this.isFormLoading = true;
       const payload = {
         header: this.form.value,
         images: null,
@@ -126,27 +135,28 @@ export class CompanySettingsComponent implements OnInit {
         .updatePdfOptions(JSON.stringify(payload))
         .subscribe({
           next: () => {
+            this.isFormLoading = false;
             if (this.pdfConfiguration) {
+              this.areImagesLoading = true;
               this.configurationService
                 .updateAllPdfOptions(this.pdfConfiguration)
                 .subscribe({
                   next: () => {
-                    this.isLoading = false;
+                    this.areImagesLoading = false;
                     this.loadData(); // Refresh data
                   },
                   error: (err) => {
-                    this.isLoading = false;
+                    this.areImagesLoading = false;
                     console.error('Error updating all PDF options:', err);
                     alert('Erreur lors de la mise à jour du logo.');
                   },
                 });
             } else {
-              this.isLoading = false;
               this.loadData(); // Refresh data
             }
           },
           error: (err) => {
-            this.isLoading = false;
+            this.isFormLoading = false;
             console.error('Error updating PDF options:', err);
             alert('Erreur lors de la mise à jour des informations.');
           },
