@@ -69,7 +69,7 @@ export class PosComponent implements OnInit {
   mealImages = signal<{ [key: string]: string }>({});
 
   // Order type and table management signals
-  orderType = signal<'take away' | 'table'>('table');
+  orderType = signal<'à emporter' | 'table'>('table');
   tableNumber = signal<string>('');
   isTableNumberComplete = signal<boolean>(false);
   tables = signal<Table[]>(
@@ -102,7 +102,7 @@ export class PosComponent implements OnInit {
   // Order counter for receipt numbers
   isEditing = signal(false);
   lastOrderContext = signal<
-    'take away' | 'occupied_table' | 'unoccupied_table' | null
+    'à emporter' | 'occupied_table' | 'unoccupied_table' | null
   >(null);
 
   // Computed properties
@@ -126,7 +126,7 @@ export class PosComponent implements OnInit {
 
   canAddToCart = computed(() => {
     return Boolean(
-      this.orderType() === 'take away' ||
+      this.orderType() === 'à emporter' ||
         (this.orderType() === 'table' && this.isTableNumberComplete())
     );
   });
@@ -282,8 +282,8 @@ export class PosComponent implements OnInit {
   }
 
   onTakeAwaySelected() {
-    // If already on a take away order with items, prevent starting a new one
-    if (this.orderType() === 'take away' && this.cart().length > 0) {
+    // If already on a "à emporter" order with items, prevent starting a new one
+    if (this.orderType() === 'à emporter' && this.cart().length > 0) {
       alert("Veuillez d'abord terminer la commande à emporter en cours.");
       return;
     }
@@ -449,7 +449,7 @@ export class PosComponent implements OnInit {
   }
 
   private selectTakeAway() {
-    this.orderType.set('take away');
+    this.orderType.set('à emporter');
     this.tableNumber.set('');
     this.isTableNumberComplete.set(false);
   }
@@ -580,7 +580,7 @@ export class PosComponent implements OnInit {
 
     const total = this.total();
     const tableName =
-      this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
+      this.orderType() === 'à emporter' ? 'A emporter' : 'T' + this.tableNumber();
 
     const existingReceipt = this.currentReceipt();
 
@@ -620,7 +620,7 @@ export class PosComponent implements OnInit {
 
     this.clearCart();
 
-    if (this.orderType() === 'take away') {
+    if (this.orderType() === 'à emporter') {
       this.orderType.set('table');
       this.isEditing.set(true);
     } else {
@@ -726,7 +726,7 @@ export class PosComponent implements OnInit {
 
         this.cart.set(items);
         this.orderType.set(
-          receipt.tableName === 'Take away' ? 'take away' : 'table'
+          receipt.tableName === 'A emporter' ? 'à emporter' : 'table'
         );
         if (receipt.tableName.startsWith('T')) {
           this.tableNumber.set(receipt.tableName.replace('T', ''));
@@ -750,7 +750,7 @@ export class PosComponent implements OnInit {
 
     const total = this.total();
     const tableName =
-      this.orderType() === 'take away' ? 'Take away' : 'T' + this.tableNumber();
+      this.orderType() === 'à emporter' ? 'A emporter' : 'T' + this.tableNumber();
 
     this.receiptService
       .getReceiptByTable(tableName, this.currentUser()!.token)

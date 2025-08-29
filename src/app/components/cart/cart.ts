@@ -46,7 +46,7 @@ export class CartComponent implements OnInit {
   tempQuantity = input<string>('');
   total = input.required<number>();
   canAddToCart = input.required<boolean>();
-  orderType = input.required<'take away' | 'table'>();
+  orderType = input.required<'à emporter' | 'table'>();
   tableNumber = input.required<string>();
   tables = input.required<Table[]>();
   isTableOccupied = input.required<boolean>();
@@ -148,13 +148,13 @@ export class CartComponent implements OnInit {
   print() {
     const receiptToPrint: ReceiptType = {
       id: '', // Not needed for printing from cart
-      orderNumber: this.tableNumber() ? `Table ${this.tableNumber()}` : 'Take Away',
+      orderNumber: this.tableNumber() ? `Table ${this.tableNumber()}` : 'A emporter',
       date: new Date(),
       total: this.total(),
       items: this.cartItems(),
       responsable: '', // Not available in cart, can be left empty
       status: 'in_progress',
-      tableName: this.tableNumber() ? `Table ${this.tableNumber()}` : 'Take Away',
+      tableName: this.tableNumber() ? `Table ${this.tableNumber()}` : 'A emporter',
       paymentMethod: '', // Not available in cart, can be empty
       userId: this.userId(),
       client: null, // Not available in cart

@@ -14,7 +14,7 @@ export class ServiceSelectionComponent {
   readonly Armchair = Armchair;
   readonly ShoppingBagIcon = ShoppingBag;
 
-  orderType = input.required<'take away' | 'table'>();
+  orderType = input.required<'à emporter' | 'table'>();
   tables = input.required<Table[]>();
 
   takeAwaySelected = output<void>();

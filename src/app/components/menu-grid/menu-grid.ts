@@ -31,7 +31,7 @@ export class MenuGridComponent {
   cart = input.required<CartItem[]>();
   loading = input.required<boolean>();
   canAddToCart = input.required<boolean>();
-  orderType = input.required<'take away' | 'table'>();
+  orderType = input.required<'à emporter' | 'table'>();
   selectedCartItemId = input<string | null>(null);
   tempQuantity = input<string>('');
   userRole = input.required<string>();
