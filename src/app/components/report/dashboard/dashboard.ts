@@ -135,6 +135,13 @@ export class DashboardComponent implements OnInit {
     const techniciansToFilter =
       this.responsableFilter() === 'all' ? [] : [this.responsableFilter()];
 
+    const body = {
+      techniciansToFilter,
+      dateStart,
+      dateEnd,
+    };
+    console.log('Filtering with body:', body);
+
     const receiptsRequest = this.receiptService.getAllReceipts(
       token,
       1,
@@ -168,7 +175,9 @@ export class DashboardComponent implements OnInit {
       invoicesResponse: invoicesRequest,
       revenueByCategoryResponse: revenueByCategoryRequest,
     }).subscribe(
-      ({ receiptsResponse, invoicesResponse, revenueByCategoryResponse }) => {
+      (response) => {
+        console.log('Filter response:', response);
+        const { receiptsResponse, invoicesResponse, revenueByCategoryResponse } = response;
         this.allReceipts = receiptsResponse.receipts;
         this.allInvoices = invoicesResponse.invoices;
 

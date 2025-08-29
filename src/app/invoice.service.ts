@@ -357,11 +357,12 @@ export class InvoiceService {
     const body: any = {
       Page: page,
       PageSize: pageSize,
-      label: ['chnej8fr9n5921'],
     };
 
     if (techniciansId && techniciansId.length > 0) {
       body.techniciansId = techniciansId;
+    } else {
+      body.label = ['chnej8fr9n5921'];
     }
     if (searchQuery) {
       body.SearchQuery = searchQuery;
