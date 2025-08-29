@@ -265,8 +265,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       DateEnd: dateEnd,
     };
 
-    console.log(body);
-
     this.receiptService
       .getAllReceipts(
         this.token(),
