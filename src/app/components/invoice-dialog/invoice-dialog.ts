@@ -1,4 +1,4 @@
-import { Component, output, inject, input, signal } from '@angular/core';
+import { Component, output, inject, input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Receipt, Client } from '../../types/pos.types';
 import { ClientService } from '../../client.service';
@@ -11,19 +11,26 @@ import {
   ChevronDown,
 } from 'lucide-angular';
 import { ClientFormModalComponent } from '../client-form-modal/client-form-modal';
-import { finalize, switchMap, map } from 'rxjs';
-import { ReceiptService } from '../../receipt.service';
+import { finalize } from 'rxjs';
+import {
+  SearchableSelectComponent,
+  Option,
+} from '../searchable-select/searchable-select';
 
 @Component({
   standalone: true,
   selector: 'app-invoice-dialog',
   templateUrl: './invoice-dialog.html',
-  imports: [CommonModule, LucideAngularModule, ClientFormModalComponent],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    ClientFormModalComponent,
+    SearchableSelectComponent,
+  ],
 })
 export class InvoiceDialogComponent {
   private clientService = inject(ClientService);
   private invoiceService = inject(InvoiceService);
-  private receiptService = inject(ReceiptService);
 
   readonly XIcon = X;
   readonly ReceiptText = ReceiptText;
@@ -40,6 +47,16 @@ export class InvoiceDialogComponent {
 
   close = output<void>();
   invoiceGenerated = output<string | null>();
+
+  clientOptions = computed<Option[]>(() => {
+    const clients = this.clients();
+    const options: Option[] = clients.map((client) => ({
+      value: client.id,
+      label: client.name,
+    }));
+    options.unshift({ value: 'new', label: 'Créer un nouveau client' });
+    return options;
+  });
 
   ngOnInit() {
     this.loadClients();
@@ -81,12 +98,12 @@ export class InvoiceDialogComponent {
     }
   }
 
-  onClientSelectionChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    if (target.value === 'new') {
+  onClientSelectionChange(value: string) {
+    if (value === 'new') {
       this.isClientFormVisible.set(true);
+      setTimeout(() => this.selectedClientId.set(null), 0);
     } else {
-      this.selectedClientId.set(target.value);
+      this.selectedClientId.set(value);
     }
   }
 
