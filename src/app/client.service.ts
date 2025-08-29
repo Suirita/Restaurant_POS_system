@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Client } from './types/pos.types';
 import { environment } from '../environments/environment';
 
@@ -57,40 +57,51 @@ export class ClientService {
 
   createClient(client: Client, token: string | undefined): Observable<Client> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = {
-      firstName: client.name,
-      reference: `cl-${Math.floor(100000 + Math.random() * 900000)}`,
-      phoneNumber: client.mobile,
-      email: client.email,
-      siret: client.ice,
-      accountingCode: `411${client.name}`,
-      addresses: [
-        {
-          street: client.address,
-          city: client.city,
-          postalCode: client.postalCode,
-          countryCode: client.country,
-          isDefault: true,
-        },
-      ],
-      labels: [
-        {
-          value: 'POS',
-          id: 'chnej8fr9n58m1',
-          id_html: 'POS',
-        },
-      ],
-    };
-    return this.http.post<Client>(`${this.baseURL}/Client/Create`, body, {
-      headers,
-    });
+    return this.http
+      .get(`${this.baseURL}/Configuration/1/reference`, {
+        headers,
+      })
+      .pipe(
+        switchMap((reference) => {
+          const body = {
+            firstName: client.name,
+            reference: reference,
+            phoneNumber: client.mobile,
+            email: client.email,
+            siret: client.ice,
+            accountingCode: `411${client.name}`,
+            addresses: [
+              {
+                street: client.address,
+                city: client.city,
+                postalCode: client.postalCode,
+                countryCode: client.country,
+                isDefault: true,
+              },
+            ],
+            labels: [
+              {
+                value: 'POS',
+                id: 'chnej8fr9n58m1',
+                id_html: 'POS',
+              },
+            ],
+          };
+          return this.http.post<Client>(
+            `${this.baseURL}/Client/Create`,
+            body,
+            {
+              headers,
+            }
+          );
+        })
+      );
   }
 
   updateClient(client: Client, token: string | undefined): Observable<Client> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = {
       firstName: client.name,
-      reference: `cl-${Math.floor(100000 + Math.random() * 900000)}`,
       phoneNumber: client.mobile,
       email: client.email,
       siret: client.ice,
