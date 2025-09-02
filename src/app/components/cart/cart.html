@@ -34,22 +34,14 @@
         class="bg-white rounded-lg p-1 border border-gray-200 shadow-sm"
       >
         <div class="flex items-center gap-2">
-          <!-- Item Image -->
-          <img
-            [src]="item.image"
-            [alt]="item.designation"
-            class="w-11 h-11 rounded-lg object-cover"
-            loading="lazy"
-          />
           <div class="w-full">
-            <!-- Item Name -->
-            <span
-              class="font-medium text-md text-gray-900 leading-tight flex-1 line-clamp-1"
-            >
-              {{ item.designation }}
-            </span>
-
             <div class="flex items-center justify-between">
+              <!-- Item Name -->
+              <span
+                class="font-medium text-md text-gray-900 leading-tight ml-1.5 flex-1 line-clamp-1"
+              >
+                {{ item.designation }}
+              </span>
               <!-- Price -->
               <span
                 class="font-medium text-sm text-gray-500 min-w-0 flex-shrink-0"
@@ -65,14 +57,14 @@
               <button
                 (click)="onDecreaseQuantity(item.id, $event)"
                 title="Diminuer la quantité"
-                class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+                class="w-7 h-7 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
                 <i-lucide [img]="MinusIcon" [size]="14"></i-lucide>
               </button>
 
               <!-- Clickable Quantity Display -->
               <button
-                class="font-semibold min-w-10 text-sm py-0.5 text-center w-10 h-10 text-gray-900 rounded-lg flex items-center justify-center"
+                class="font-semibold min-w-10 text-sm py-0.5 text-center w-7 h-7 text-gray-900 rounded-lg flex items-center justify-center"
                 [class]="
                 isItemBeingEdited(item)
                   ? 'bg-gray-100 border-2 border-blue-300 shadow-md'
@@ -92,14 +84,14 @@
                 [class.opacity-25]="item.quantity >= 100"
                 [class.cursor-not-allowed]="item.quantity >= 100"
                 title="Augmenter la quantité"
-                class="w-10 h-10 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
+                class="w-7 h-7 bg-white text-gray-900 rounded-lg flex items-center justify-center border border-gray-200 shadow-xs"
               >
                 <i-lucide [img]="PlusIcon" [size]="14"></i-lucide>
               </button>
             </div>
             <!-- Remove Button -->
             <button
-              class="bg-red-400 text-white w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 shadow-xs"
+              class="bg-red-400 text-white w-7 h-7 flex items-center justify-center rounded-lg border border-gray-200 shadow-xs"
               (click)="onRemoveItem(item.id, $event)"
               title="Supprimer l'article"
             >
