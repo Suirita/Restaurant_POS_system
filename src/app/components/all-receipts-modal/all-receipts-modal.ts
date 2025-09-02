@@ -7,6 +7,7 @@ import {
   ViewChild,
   TemplateRef,
   AfterViewInit,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -34,7 +35,7 @@ import {
   DateRange,
 } from '../date-range-picker/date-range-picker';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
-import { CustomSelectComponent, Option } from '../custom-select/custom-select';
+import { MultiSelectComponent, Option } from '../multi-select/multi-select';
 import { SearchableSelectComponent } from '../searchable-select/searchable-select';
 import { ConfigurationService } from '../../configuration.service';
 import { UserService } from '../../user.service';
@@ -53,7 +54,7 @@ import { UserService } from '../../user.service';
     PaginationComponent,
     DateRangePickerComponent,
     TableSkeletonComponent,
-    CustomSelectComponent,
+    MultiSelectComponent,
     SearchableSelectComponent,
   ],
 })
@@ -96,11 +97,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       return { from: start, to: end } as DateRange;
     })()
   );
-  statusFilter = signal<string>('in_progress');
+  statusFilter = signal<string[]>(['in_progress']);
   responsableFilter = signal<string>('all');
 
   statusOptions: Option[] = [
-    { value: 'all', label: 'Tous les statuts' },
     { value: 'in_progress', label: 'En cours' },
     { value: 'accepted', label: 'Accepté' },
     { value: 'refused', label: 'Refusé' },
@@ -154,6 +154,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   getStatusLabel(status?: string): string {
     if (!status) return '';
     return this.statusLabels[status] ?? status;
+  }
+
+  constructor() {
+    effect(() => {
+      this.loadReceipts();
+    });
   }
 
   ngOnInit() {
@@ -261,9 +267,9 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         this.currentPage(),
         10,
         techniciansId,
-        status === 'all'
+        status.length === 0
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
-          : [status],
+          : status,
         commandNum,
         dateStart,
         dateEnd
@@ -290,10 +296,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.loadReceipts();
   }
 
-  onStatusChange(value: string) {
-    this.statusFilter.set(value);
-    this.loadReceipts();
-  }
+  
 
   onDateRangeChange(value: DateRange) {
     this.selectedDateRangeFilter.set(value);
@@ -651,7 +654,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   clearFilters() {
     this.commandNumberFilter.set('');
     this.selectedDateRangeFilter.set({});
-    this.statusFilter.set('all');
+    this.statusFilter.set([]);
     this.responsableFilter.set('all');
     this.loadReceipts();
   }

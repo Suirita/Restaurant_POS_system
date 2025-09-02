@@ -1,0 +1,74 @@
+<div class="relative" [ngClass]="className" #selectRef>
+  <!-- Select Trigger -->
+  <button
+    type="button"
+    (click)="toggleDropdown()"
+    [disabled]="disabled"
+    class="text-gray-900 bg-white flex h-9.5 w-full items-center justify-between rounded-lg border border-gray-200 shadow-xs px-3 py-1.5 text-sm disabled:opacity-50"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="isOpen"
+  >
+    <span
+      [ngClass]="value.length > 0 ? 'text-foreground' : 'text-muted-foreground'"
+    >
+      {{ displayLabel }}
+    </span>
+
+    <!-- Chevron Icon -->
+    <svg
+      class="h-4 w-4 opacity-50 transition-transform duration-200"
+      [ngClass]="{ 'rotate-180': isOpen }"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M19 9l-7 7-7-7"
+      />
+    </svg>
+  </button>
+
+  <!-- Dropdown Options -->
+  <div
+    *ngIf="isOpen"
+    class="absolute z-50 w-full mt-1 bg-white rounded-lg border border-gray-200 shadow-sm"
+    role="listbox"
+  >
+    <div class="p-1">
+      <div
+        *ngFor="let option of options; let i = index"
+        (click)="selectOption(option.value)"
+        class="relative flex select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none"
+        [ngClass]="{
+          'bg-accent text-accent-foreground': focusedIndex === i,
+          'font-medium': isSelected(option.value)
+        }"
+        role="option"
+        [attr.aria-selected]="isSelected(option.value)"
+      >
+        <!-- Check icon for selected option -->
+        <svg
+          *ngIf="isSelected(option.value)"
+          class="h-4 w-4 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+
+        <span [ngClass]="{ 'ml-6': !isSelected(option.value) }">
+          {{ option.label }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
