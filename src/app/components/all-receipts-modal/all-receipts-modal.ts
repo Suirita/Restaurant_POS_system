@@ -212,7 +212,11 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         ...options,
       ]);
       // Initialize responsableFilter with 'all' if it's empty or contains only 'all'
-      if (this.responsableFilter().length === 0 || (this.responsableFilter().length === 1 && this.responsableFilter()[0] === 'all')) {
+      if (
+        this.responsableFilter().length === 0 ||
+        (this.responsableFilter().length === 1 &&
+          this.responsableFilter()[0] === 'all')
+      ) {
         this.responsableFilter.set(['all']);
       }
     });
@@ -284,7 +288,9 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         dateEnd
       )
       .subscribe((response) => {
-        this.allReceipts.set(response.receipts.map(r => ({...r, items: []})));
+        this.allReceipts.set(
+          response.receipts.map((r) => ({ ...r, items: [] }))
+        );
         this.rowsCount.set(response.totalItems);
         this.isLoading.set(false);
       });
@@ -337,7 +343,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
               );
 
               receipt.items = lineItems;
-
             } else {
               console.error(
                 'Detailed receipt or its orderDetails/lineItems are missing:',
@@ -349,7 +354,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
             console.error('Error fetching detailed receipt:', error);
           },
         });
-    } else if(!receipt.id) {
+    } else if (!receipt.id) {
       console.error('Receipt ID is missing, cannot fetch details.', receipt);
     }
   }
@@ -645,7 +650,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.commandNumberFilter.set('');
     this.selectedDateRangeFilter.set({});
     this.statusFilter.set([]);
-    this.responsableFilter.set(['all']);
+    this.responsableFilter.set([]);
     this.loadReceipts();
   }
 }
