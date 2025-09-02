@@ -137,18 +137,12 @@ export class DashboardComponent implements OnInit {
     const techniciansToFilter =
       this.responsableFilter() === 'all' ? [] : [this.responsableFilter()];
 
-    const body = {
-      techniciansToFilter,
-      dateStart,
-      dateEnd,
-    };
-
     const receiptsRequest = this.receiptService.getAllReceipts(
       token,
       1,
-      10000,
+      100000000,
       techniciansToFilter,
-      ['in_progress', 'accepted', 'late', 'refused', 'billed'],
+      ['accepted', 'billed', 'in_progress', 'late', 'refused'],
       '',
       dateStart,
       dateEnd
@@ -157,7 +151,7 @@ export class DashboardComponent implements OnInit {
     const invoicesRequest = this.invoiceService.getAllInvoices(
       token,
       1,
-      10000,
+      100000000,
       techniciansToFilter,
       '',
       dateStart,
@@ -171,19 +165,13 @@ export class DashboardComponent implements OnInit {
       techniciansToFilter
     );
 
-    console.log('Fetching data with body:', body);
-
     forkJoin({
       receiptsResponse: receiptsRequest,
       invoicesResponse: invoicesRequest,
       revenueByCategoryResponse: revenueByCategoryRequest,
     }).subscribe((response) => {
-      console.log('forkJoin response:', response);
       const { receiptsResponse, invoicesResponse, revenueByCategoryResponse } =
         response;
-      console.log('Receipts response:', receiptsResponse);
-      console.log('Invoices response:', invoicesResponse);
-      console.log('Revenue by category response:', revenueByCategoryResponse);
 
       this.allReceipts = receiptsResponse.receipts;
       this.allInvoices = invoicesResponse.invoices;
