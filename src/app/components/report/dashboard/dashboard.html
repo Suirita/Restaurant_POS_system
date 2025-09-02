@@ -8,7 +8,7 @@
           [value]="responsableFilter()"
           (valueChange)="onResponsableChange($event)"
           placeholder="Tous les responsables"
-          className="w-48"
+          className="min-w-48"
         ></app-searchable-select>
         <div
           *ngIf="selectedPeriod() === 'custom'"
