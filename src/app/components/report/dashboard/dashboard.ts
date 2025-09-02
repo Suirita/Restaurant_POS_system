@@ -152,10 +152,10 @@ export class DashboardComponent implements OnInit {
       token,
       1,
       100000000,
-      techniciansToFilter,
       '',
       dateStart,
-      dateEnd
+      dateEnd,
+      techniciansToFilter,
     );
 
     const revenueByCategoryRequest = this.receiptService.getRevenueByCategory(

@@ -68,7 +68,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   private invoiceService = inject(InvoiceService);
   private clientService = inject(ClientService);
   private configurationService = inject(ConfigurationService);
-  private userService = inject(UserService);
 
   allInvoices = signal<Invoice[]>([]);
   isLoading = signal<boolean>(false);
@@ -84,8 +83,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   // Filters
   searchQuery = signal<string>('');
   selectedDateRangeFilter = signal<DateRange>({});
-  responsableFilter = signal<string>('all');
-  responsableOptions = signal<Option[]>([]);
 
   // Pagination
   currentPage = signal<number>(1);
@@ -103,14 +100,12 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   tableColumns: string[] = [
     'Numéro de facture',
     'Client',
-    'Responsable',
     'Date',
     'Total',
   ];
   tableColumnKeys: string[] = [
     'invoiceNumber',
     'clientName',
-    'responsable',
     'date',
     'total',
   ];
@@ -121,7 +116,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   columnTemplates: { [key: string]: TemplateRef<any> } = {};
 
   ngOnInit() {
-    this.loadResponsables();
     this.loadCompanyInfo();
     this.customActions = [
       {
@@ -161,18 +155,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
       });
   }
 
-  loadResponsables() {
-    this.userService.getUsers().subscribe((users) => {
-      const options = users.map(
-        (user) => ({ value: user.userId, label: user.fullName } as Option)
-      );
-      this.responsableOptions.set([
-        { value: 'all', label: 'Tous les responsables' },
-        ...options,
-      ]);
-    });
-  }
-
   loadInvoices() {
     const dateRange = this.selectedDateRangeFilter();
     if ((dateRange.from && !dateRange.to) || (!dateRange.from && dateRange.to)) {
@@ -182,7 +164,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
     this.isLoading.set(true);
     const page = this.currentPage();
     const pageSize = 10;
-    const techniciansId = this.responsableFilter() === 'all' ? undefined : [this.responsableFilter()];
     const searchQuery = this.searchQuery();
     let dateStart: string | undefined;
     let dateEnd: string | undefined;
@@ -199,7 +180,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
         this.token(),
         page,
         pageSize,
-        techniciansId,
         searchQuery,
         dateStart,
         dateEnd
@@ -218,7 +198,6 @@ export class AllInvoicesModalComponent implements AfterViewInit {
   clearFilters() {
     this.searchQuery.set('');
     this.selectedDateRangeFilter.set({});
-    this.responsableFilter.set('all');
   }
 
   onClose() {

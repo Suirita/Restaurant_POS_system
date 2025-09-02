@@ -343,10 +343,10 @@ export class InvoiceService {
     token: string,
     page: number,
     pageSize: number,
-    techniciansId?: string[],
     searchQuery?: string,
     dateStart?: string,
-    dateEnd?: string
+    dateEnd?: string,
+    techniciansId?: string[],
   ): Observable<{
     invoices: Invoice[];
     totalItems: number;

@@ -56,16 +56,6 @@
             </div>
           </form>
 
-          <!-- Filter by responsable -->
-          <div class="w-full">
-            <app-searchable-select
-              [options]="responsableOptions()"
-              [value]="responsableFilter()"
-              (valueChange)="responsableFilter.set($event)"
-              placeholder="Tous les responsables"
-            ></app-searchable-select>
-          </div>
-
           <!-- Filter by date -->
           <div class="w-full">
             <app-date-range-picker
