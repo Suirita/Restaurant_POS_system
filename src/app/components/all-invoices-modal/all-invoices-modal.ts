@@ -34,8 +34,6 @@ import {
   DateRange,
 } from '../date-range-picker/date-range-picker';
 import { ConfigurationService } from '../../configuration.service';
-import { SearchableSelectComponent, Option } from '../searchable-select/searchable-select';
-import { UserService } from '../../user.service';
 import { ClientService } from '../../client.service';
 
 @Component({
@@ -51,7 +49,6 @@ import { ClientService } from '../../client.service';
     PaginationComponent,
     TableSkeletonComponent,
     DateRangePickerComponent,
-    SearchableSelectComponent,
   ],
 })
 export class AllInvoicesModalComponent implements AfterViewInit {
