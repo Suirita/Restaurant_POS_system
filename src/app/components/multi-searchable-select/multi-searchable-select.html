@@ -1,0 +1,73 @@
+<div class="relative w-full" #dropdownRef [ngClass]="className">
+  <!-- Trigger button -->
+  <button
+    type="button"
+    (click)="toggleDropdown()"
+    class="bg-white flex h-9.5 w-full items-center justify-between rounded-md border border-gray-200 shadow-xs border-input px-3 py-2 text-sm"
+    [attr.aria-expanded]="open"
+    aria-haspopup="listbox"
+  >
+    <span
+      [ngClass]="value.length > 0 ? 'text-foreground' : 'text-muted-foreground'"
+    >
+      {{ displayLabel }}
+    </span>
+    <i-lucide
+      [img]="ChevronDown"
+      [size]="14"
+      class="chevron"
+      [ngClass]="{ 'rotate-180': open }"
+    />
+  </button>
+
+  <!-- Dropdown -->
+  <div
+    *ngIf="open"
+    class="bg-white absolute top-full z-50 mt-1 w-full max-h-60 rounded-md border border-gray-200 shadow-xs p-0"
+  >
+    <!-- Search input -->
+    <div class="flex items-center border-b border-gray-300 px-3">
+      <i-lucide [img]="Search" [size]="16" class="me-1"></i-lucide>
+      <input
+        #inputRef
+        type="text"
+        [(ngModel)]="searchTerm"
+        [placeholder]="'Search ' + placeholder.toLowerCase() + '...'"
+        class="flex h-10 w-full bg-transparent py-3 text-sm outline-none"
+      />
+    </div>
+
+    <!-- Options -->
+    <div class="max-h-60 overflow-auto p-1">
+      <div
+        *ngIf="filteredOptions.length === 0"
+        class="py-6 text-center text-sm text-muted-foreground"
+      >
+        No results found.
+      </div>
+      <button
+        *ngFor="let option of filteredOptions; let i = index"
+        type="button"
+        (click)="selectOption(option.value)"
+        class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm"
+      >
+        <!-- Check icon for selected option -->
+        <svg
+          *ngIf="isSelected(option.value)"
+          class="h-4 w-4 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        <span [ngClass]="{ 'ml-6': !isSelected(option.value) }" class="flex-1 text-left">{{ option.label }}</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -36,7 +36,7 @@ import {
 } from '../date-range-picker/date-range-picker';
 import { TableSkeletonComponent } from '../table-skeleton/table-skeleton';
 import { MultiSelectComponent, Option } from '../multi-select/multi-select';
-import { SearchableSelectComponent } from '../searchable-select/searchable-select';
+import { MultiSearchableSelectComponent } from '../multi-searchable-select/multi-searchable-select';
 import { ConfigurationService } from '../../configuration.service';
 import { UserService } from '../../user.service';
 
@@ -55,7 +55,7 @@ import { UserService } from '../../user.service';
     DateRangePickerComponent,
     TableSkeletonComponent,
     MultiSelectComponent,
-    SearchableSelectComponent,
+    MultiSearchableSelectComponent,
   ],
 })
 export class AllReceiptsModalComponent implements AfterViewInit {
@@ -98,7 +98,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     })()
   );
   statusFilter = signal<string[]>(['in_progress']);
-  responsableFilter = signal<string>('all');
+  responsableFilter = signal<string[]>(['all']);
 
   statusOptions: Option[] = [
     { value: 'all', label: 'Tous les statuts' },
@@ -159,6 +159,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
+      this.commandNumberFilter();
+      this.selectedDateRangeFilter();
+      this.statusFilter();
+      this.responsableFilter();
       this.loadReceipts();
     });
   }
@@ -207,6 +211,10 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         { value: 'all', label: 'Tous les responsables' },
         ...options,
       ]);
+      // Initialize responsableFilter with 'all' if it's empty or contains only 'all'
+      if (this.responsableFilter().length === 0 || (this.responsableFilter().length === 1 && this.responsableFilter()[0] === 'all')) {
+        this.responsableFilter.set(['all']);
+      }
     });
   }
 
@@ -260,7 +268,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         .padStart(2, '0')}:${to.getMinutes().toString().padStart(2, '0')}`;
     }
 
-    const techniciansId = responsable === 'all' ? undefined : [responsable];
+    const techniciansId = responsable.includes('all') ? undefined : responsable;
 
     this.receiptService
       .getAllReceipts(
@@ -284,23 +292,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   onPageChange(page: number) {
     this.currentPage.set(page);
-    this.loadReceipts();
-  }
-
-  onCommandNumberChange(value: string) {
-    this.commandNumberFilter.set(value);
-    this.loadReceipts();
-  }
-
-  onResponsableChange(value: string) {
-    this.responsableFilter.set(value);
-    this.loadReceipts();
-  }
-
-  
-
-  onDateRangeChange(value: DateRange) {
-    this.selectedDateRangeFilter.set(value);
     this.loadReceipts();
   }
 
@@ -656,7 +647,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.commandNumberFilter.set('');
     this.selectedDateRangeFilter.set({});
     this.statusFilter.set([]);
-    this.responsableFilter.set('all');
+    this.responsableFilter.set(['all']);
     this.loadReceipts();
   }
 }

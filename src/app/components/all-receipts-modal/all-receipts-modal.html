@@ -59,12 +59,12 @@
           </form>
 
           <div class="w-full">
-            <app-searchable-select
+            <app-multi-searchable-select
               [options]="responsableOptions()"
               [value]="responsableFilter()"
               (valueChange)="responsableFilter.set($event)"
               placeholder="Tous les responsables"
-            ></app-searchable-select>
+            ></app-multi-searchable-select>
           </div>
 
           <div class="w-full">
@@ -79,7 +79,7 @@
           <div class="w-full">
             <app-date-range-picker
               [value]="selectedDateRangeFilter()"
-              (valueChange)="onDateRangeChange($event)"
+              (valueChange)="selectedDateRangeFilter.set($event)"
               placeholder="Select a date range"
             ></app-date-range-picker>
           </div>
