@@ -803,120 +803,122 @@ export class ReceiptService {
         // Update responsible user
         quoteToUpdate.responsables = [receipt.userId];
 
-        // Update line items and totals from the local receipt
-        const total = receipt.items.reduce(
-          (sum, item) => sum + item.sellingPrice * item.quantity,
-          0
-        );
+        if (receipt.items && receipt.items.length > 0) {
+          // Update line items and totals from the local receipt
+          const total = receipt.items.reduce(
+            (sum, item) => sum + item.sellingPrice * item.quantity,
+            0
+          );
 
-        quoteToUpdate.orderDetails.lineItems = receipt.items.map(
-          (item, index) => {
-            return {
-              productId: item.id,
-              isValid: true,
-              product: {
-                id: item.id,
-                designation: item.designation,
-                description: '',
-                reference: '',
-                sellingPrice: item.sellingPrice,
-                purchasePrice: 0,
-                totalHT: item.sellingPrice * item.quantity,
-                taxValue: 0,
-                totalTTC: item.sellingPrice * item.quantity,
-                vat: 0,
-                unite: 'U',
-                coefficient: 0,
-                position: null,
-                isArchived: false,
-                productCategoryType: {
-                  id: 'Foliatech5',
-                  label: 'Repas',
-                  description: 'Repas',
-                  type: 5,
-                },
-                category: {
-                  id: item.categoryId,
-                  type: 1,
-                  label: item.categoryLabel,
-                  description: item.categoryLabel,
-                  categoryType: -1,
-                  isDefault: false,
-                  chartAccountItem: {
-                    id: 'N5mMiVKZkGMqhDWTZJhtw',
+          quoteToUpdate.orderDetails.lineItems = receipt.items.map(
+            (item, index) => {
+              return {
+                productId: item.id,
+                isValid: true,
+                product: {
+                  id: item.id,
+                  designation: item.designation,
+                  description: '',
+                  reference: '',
+                  sellingPrice: item.sellingPrice,
+                  purchasePrice: item.purchasePrice,
+                  totalHT: (item.purchasePrice + 5) * item.quantity,
+                  taxValue: 20,
+                  totalTTC: item.totalTTC * item.quantity,
+                  vat: 0,
+                  unite: 'U',
+                  coefficient: 0,
+                  position: null,
+                  isArchived: false,
+                  productCategoryType: {
+                    id: 'Foliatech5',
                     label: 'Repas',
+                    description: 'Repas',
                     type: 5,
-                    categoryType: 0,
-                    code: '1111',
-                    typeCode: null,
-                    parentId: 'Foliatech3',
-                    vatValue: 0,
-                    isDefault: false,
                   },
-                  subClassification: [],
+                  category: {
+                    id: item.categoryId,
+                    type: 1,
+                    label: item.categoryLabel,
+                    description: item.categoryLabel,
+                    categoryType: -1,
+                    isDefault: false,
+                    chartAccountItem: {
+                      id: 'N5mMiVKZkGMqhDWTZJhtw',
+                      label: 'Repas',
+                      type: 5,
+                      categoryType: 0,
+                      code: '1111',
+                      typeCode: null,
+                      parentId: 'Foliatech3',
+                      vatValue: 0,
+                      isDefault: false,
+                    },
+                    subClassification: [],
+                  },
+                  productCTypeLabel: 'Repas',
+                  categoryLabel: item.categoryLabel,
+                  labels: [],
+                  productSuppliers: [],
+                  defaultSupplierId: null,
+                  infosPricingLibrary: null,
+                  isDisabled: false,
+                  storageLocations: [],
+                  isManagedByStock: false,
+                  outOfStockQuantity: 0,
+                  quantityInStock: 0,
+                  alertQuantity: 0,
+                  averagePrice: 0,
+                  reservedQuantity: 0,
+                  orderedQuantity: 0,
+                  isOutOfStock: true,
+                  isStockAlert: true,
+                  lastStockEventDate: '0001-01-01T00:00:00+00:00',
+                  tarifeoPricesUpdate: null,
+                  ouvrages: [],
+                  stockIconSrc: './assets/app/imgs/stock_out.svg',
+                  stockTextColor: '#C51111',
+                  id_html: item.designation,
+                  discount: {
+                    type: 2,
+                    value: 0,
+                  },
+                  totalFG: 0,
+                  prixRevient: 0,
+                  totalHtNotArrondi: item.sellingPrice * item.quantity,
+                  totalTTCNotArrondi: item.sellingPrice * item.quantity,
+                  articleId: `${index}`,
+                  margin: 100,
                 },
-                productCTypeLabel: 'Repas',
-                categoryLabel: item.categoryLabel,
-                labels: [],
-                productSuppliers: [],
-                defaultSupplierId: null,
-                infosPricingLibrary: null,
-                isDisabled: false,
-                storageLocations: [],
-                isManagedByStock: false,
-                outOfStockQuantity: 0,
-                quantityInStock: 0,
-                alertQuantity: 0,
-                averagePrice: 0,
-                reservedQuantity: 0,
-                orderedQuantity: 0,
-                isOutOfStock: true,
-                isStockAlert: true,
-                lastStockEventDate: '0001-01-01T00:00:00+00:00',
-                tarifeoPricesUpdate: null,
-                ouvrages: [],
-                stockIconSrc: './assets/app/imgs/stock_out.svg',
-                stockTextColor: '#C51111',
+                quantity: item.quantity,
+                type: 1,
+                remise: 0,
+                isBonLivraison: false,
                 id_html: item.designation,
-                discount: {
-                  type: 2,
-                  value: 0,
-                },
-                totalFG: 0,
-                prixRevient: 0,
+                numeration: (index + 1).toString(),
+                idPres: `pres_${index}`,
+                totalHT: item.sellingPrice * item.quantity,
+                totalTTC: item.totalTTC * item.quantity,
                 totalHtNotArrondi: item.sellingPrice * item.quantity,
                 totalTTCNotArrondi: item.sellingPrice * item.quantity,
-                articleId: `${index}`,
-                margin: 100,
-              },
-              quantity: item.quantity,
-              type: 1,
-              remise: 0,
-              isBonLivraison: false,
-              id_html: item.designation,
-              numeration: (index + 1).toString(),
-              idPres: `pres_${index}`,
-              totalHT: item.sellingPrice * item.quantity,
-              totalTTC: item.sellingPrice * item.quantity,
-              totalHtNotArrondi: item.sellingPrice * item.quantity,
-              totalTTCNotArrondi: item.sellingPrice * item.quantity,
-              arrayNumerationComplete: [
-                {
-                  num: (index + 1).toString(),
-                  color: '#FFFFFF',
-                },
-              ],
-            };
-          }
-        );
+                arrayNumerationComplete: [
+                  {
+                    num: (index + 1).toString(),
+                    color: '#FFFFFF',
+                  },
+                ],
+              };
+            }
+          );
 
-        // Update totals
-        quoteToUpdate.orderDetails.totalHT = total;
-        quoteToUpdate.orderDetails.generalTotalHT = total;
-        quoteToUpdate.orderDetails.totalTTC = total;
-        quoteToUpdate.orderDetails.totalDu = total;
-        quoteToUpdate.totalHT = total;
-        quoteToUpdate.totalTTC = total;
+          // Update totals
+          quoteToUpdate.orderDetails.totalHT = total;
+          quoteToUpdate.orderDetails.generalTotalHT = total;
+          quoteToUpdate.orderDetails.totalTTC = total;
+          quoteToUpdate.orderDetails.totalDu = total;
+          quoteToUpdate.totalHT = total;
+          quoteToUpdate.totalTTC = total;
+        }
 
         return this.updateQuote(quoteToUpdate, token);
       })
