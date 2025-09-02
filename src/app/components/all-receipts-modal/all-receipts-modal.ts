@@ -337,7 +337,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
               );
 
               receipt.items = lineItems;
-              
+
             } else {
               console.error(
                 'Detailed receipt or its orderDetails/lineItems are missing:',
@@ -353,8 +353,6 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       console.error('Receipt ID is missing, cannot fetch details.', receipt);
     }
   }
-
-  
 
   onGenerateInvoiceClick(receipt: Receipt) {
     this.selectedReceiptForInvoice.set(receipt);
