@@ -23,7 +23,6 @@ export interface Option {
 export class MultiSelectComponent {
   @Input() options: Option[] = [];
   @Input() set value(val: string[]) {
-    console.log('value', val);
     this._value = val;
   }
   get value(): string[] {
@@ -42,12 +41,10 @@ export class MultiSelectComponent {
   @ViewChild('selectRef') selectRef!: ElementRef<HTMLDivElement>;
 
   get selectedOptions(): Option[] {
-    console.log('selectedOptions', this.options, this.value);
     return this.options.filter((option) => this.value.includes(option.value));
   }
 
   get displayLabel(): string {
-    console.log('displayLabel', this.value);
     if (this.value.length === 0) {
       return this.placeholder;
     }
@@ -62,7 +59,6 @@ export class MultiSelectComponent {
   }
 
   toggleDropdown() {
-    console.log('toggleDropdown');
     if (!this.disabled) {
       this.isOpen = !this.isOpen;
       this.focusedIndex = -1;
@@ -70,7 +66,6 @@ export class MultiSelectComponent {
   }
 
   selectOption(optionValue: string) {
-    console.log('selectOption', optionValue);
     const newValue = [...this.value];
     const index = newValue.indexOf(optionValue);
 
