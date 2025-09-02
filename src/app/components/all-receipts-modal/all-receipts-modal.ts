@@ -24,10 +24,10 @@ import {
   Printer,
 } from 'lucide-angular';
 import { Receipt as ReceiptIcon } from 'lucide-angular';
-import { ReceiptDetailsModalComponent } from '../receipt-details-modal/receipt-details-modal';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog';
 import { InvoiceDetailsModalComponent } from '../invoice-details-modal/invoice-details-modal';
-import { ReusableTable, TableAction } from '../reusable-table/reusable-table';
+import { ExpandableTable } from '../expandable-table/expandable-table';
+import { TableAction } from '../reusable-table/reusable-table';
 import { PaginationComponent } from '../pagination/pagination';
 import {
   DateRangePickerComponent,
@@ -47,10 +47,9 @@ import { UserService } from '../../user.service';
     CommonModule,
     FormsModule,
     LucideAngularModule,
-    ReceiptDetailsModalComponent,
     InvoiceDialogComponent,
     InvoiceDetailsModalComponent,
-    ReusableTable,
+    ExpandableTable,
     PaginationComponent,
     DateRangePickerComponent,
     TableSkeletonComponent,
@@ -75,9 +74,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   allReceipts = signal<Receipt[]>([]);
   isLoading = signal<boolean>(false);
   isInvoiceDialogVisible = signal(false);
-  isReceiptDetailsVisible = signal(false);
   isInvoiceDetailsVisible = signal(false);
-  selectedReceipt = signal<Receipt | null>(null);
   selectedInvoice = signal<Invoice | null>(null);
   selectedReceiptForInvoice = signal<Receipt | null>(null);
   userId = input.required<string>();
@@ -272,7 +269,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
         dateEnd
       )
       .subscribe((response) => {
-        this.allReceipts.set(response.receipts);
+        this.allReceipts.set(response.receipts.map(r => ({...r, items: []})));
         this.rowsCount.set(response.totalItems);
         this.isLoading.set(false);
       });
@@ -316,8 +313,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
     this.onPay(orderNumber);
   }
 
-  onReceiptClick(receipt: Receipt) {
-    if (receipt.id) {
+  onReceiptRowClick(receipt: Receipt) {
+    if (receipt.id && (!receipt.items || receipt.items.length === 0)) {
       this.receiptService
         .getReceiptDetails(receipt.id, this.token())
         .subscribe({
@@ -344,12 +341,8 @@ export class AllReceiptsModalComponent implements AfterViewInit {
                 })
               );
 
-              this.selectedReceipt.set({
-                ...receipt,
-                items: lineItems,
-                total: parseFloat(detailedReceipt.totalTTC.toFixed(2)),
-              });
-              this.isReceiptDetailsVisible.set(true);
+              receipt.items = lineItems;
+              
             } else {
               console.error(
                 'Detailed receipt or its orderDetails/lineItems are missing:',
@@ -361,15 +354,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
             console.error('Error fetching detailed receipt:', error);
           },
         });
-    } else {
+    } else if(!receipt.id) {
       console.error('Receipt ID is missing, cannot fetch details.', receipt);
     }
   }
 
-  onCloseReceiptDetails() {
-    this.isReceiptDetailsVisible.set(false);
-    this.selectedReceipt.set(null);
-  }
+  
 
   onGenerateInvoiceClick(receipt: Receipt) {
     this.selectedReceiptForInvoice.set(receipt);

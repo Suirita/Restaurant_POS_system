@@ -108,9 +108,7 @@
         *ngIf="!isLoading() && allReceipts().length === 0"
         class="text-center py-12"
       >
-        <p class="text-gray-700 text-xl font-medium mb-1">
-          Aucun reçu trouvé
-        </p>
+        <p class="text-gray-700 text-xl font-medium mb-1">Aucun reçu trouvé</p>
         <p class="text-gray-500">
           Créez des reçus à partir de l'écran de point de vente
         </p>
@@ -122,14 +120,16 @@
       *ngIf="!isLoading() && allReceipts().length > 0"
       class="px-4 pb-4 max-h-[80vh] overflow-y-auto scrollbar-hide"
     >
-      <app-reusable-table
+      <app-expandable-table
         [columns]="tableColumns"
         [columnKeys]="tableColumnKeys"
         [data]="allReceipts()"
         [customActions]="customActions"
         [columnTemplates]="columnTemplates"
+        (rowClicked)="onReceiptRowClick($event)"
+        [detailsTemplate]="receiptDetailsTemplate"
       >
-      </app-reusable-table>
+      </app-expandable-table>
 
       <!-- Pagination -->
       <app-pagination
@@ -172,9 +172,38 @@
     (close)="onCloseInvoiceDetails()"
   ></app-invoice-details-modal>
 
-  <app-receipt-details-modal
-    *ngIf="isReceiptDetailsVisible()"
-    [receipt]="selectedReceipt()!"
-    (close)="onCloseReceiptDetails()"
-  ></app-receipt-details-modal>
+  <ng-template #receiptDetailsTemplate let-receipt="item">
+    <div class="bg-gray-50">
+      <div
+        *ngIf="!receipt.items || receipt.items.length === 0"
+        class="text-center text-gray-500"
+      >
+        Chargement des détails...
+      </div>
+      <div *ngIf="receipt.items && receipt.items.length > 0">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs font-mediumtext-gray-700 uppercase">
+            <tr>
+              <th scope="col" class="px-6 py-3">Produit</th>
+              <th scope="col" class="py-3 text-center">Quantité</th>
+              <th scope="col" class="py-3 text-center">Prix Unitaire</th>
+              <th scope="col" class="px-6 py-3 text-end">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of receipt.items" class="border-t border-gray-200">
+              <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
+                {{ item.designation }}
+              </td>
+              <td class="py-2 text-center">{{ item.quantity }}</td>
+              <td class="py-2 text-center">
+                {{ item.sellingPrice | currency:'EUR' }}
+              </td>
+              <td class="px-6 py-2 text-end">{{ item.totalTTC | currency:'EUR' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-template>
 </div>
