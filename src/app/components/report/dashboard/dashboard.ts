@@ -97,7 +97,9 @@ export class DashboardComponent implements OnInit {
   }
 
   loadResponsables() {
+    console.log('Requesting users...');
     this.userService.getUsers().subscribe((users) => {
+      console.log('Users response:', users);
       const options = users.map(
         (user) => ({ value: user.userId, label: user.fullName } as Option)
       );
@@ -169,27 +171,33 @@ export class DashboardComponent implements OnInit {
       techniciansToFilter
     );
 
+    console.log('Fetching data with body:', body);
+
     forkJoin({
       receiptsResponse: receiptsRequest,
       invoicesResponse: invoicesRequest,
       revenueByCategoryResponse: revenueByCategoryRequest,
-    }).subscribe(
-      (response) => {
-        const { receiptsResponse, invoicesResponse, revenueByCategoryResponse } = response;
-        this.allReceipts = receiptsResponse.receipts;
-        this.allInvoices = invoicesResponse.invoices;
+    }).subscribe((response) => {
+      console.log('forkJoin response:', response);
+      const { receiptsResponse, invoicesResponse, revenueByCategoryResponse } =
+        response;
+      console.log('Receipts response:', receiptsResponse);
+      console.log('Invoices response:', invoicesResponse);
+      console.log('Revenue by category response:', revenueByCategoryResponse);
 
-        const repasCategory = revenueByCategoryResponse.value.data.find(
-          (cat: any) => cat.label === 'Repas'
-        );
+      this.allReceipts = receiptsResponse.receipts;
+      this.allInvoices = invoicesResponse.invoices;
 
-        const revenueByCategory = repasCategory
-          ? repasCategory.subcategories
-          : [];
+      const repasCategory = revenueByCategoryResponse.value.data.find(
+        (cat: any) => cat.label === 'Repas'
+      );
 
-        this.processData(revenueByCategory);
-      }
-    );
+      const revenueByCategory = repasCategory
+        ? repasCategory.subcategories
+        : [];
+
+      this.processData(revenueByCategory);
+    });
   }
 
   processData(revenueByCategory: any[] = []) {
