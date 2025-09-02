@@ -101,6 +101,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
   responsableFilter = signal<string>('all');
 
   statusOptions: Option[] = [
+    { value: 'all', label: 'Tous les statuts' },
     { value: 'in_progress', label: 'En cours' },
     { value: 'accepted', label: 'Accepté' },
     { value: 'refused', label: 'Refusé' },

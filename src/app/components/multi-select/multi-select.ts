@@ -45,6 +45,12 @@ export class MultiSelectComponent {
   }
 
   get displayLabel(): string {
+    const allOptionValues = this.options.filter(o => o.value !== 'all').map(o => o.value);
+    const allSelected = allOptionValues.every(val => this.value.includes(val));
+
+    if (allSelected && this.value.includes('all')) {
+      return 'Tous les statuts'; // Or 'All'
+    }
     if (this.value.length === 0) {
       return this.placeholder;
     }
@@ -66,13 +72,36 @@ export class MultiSelectComponent {
   }
 
   selectOption(optionValue: string) {
-    const newValue = [...this.value];
-    const index = newValue.indexOf(optionValue);
+    let newValue = [...this.value];
+    const allOptionValues = this.options.filter(o => o.value !== 'all').map(o => o.value);
 
-    if (index > -1) {
-      newValue.splice(index, 1);
+    if (optionValue === 'all') {
+      if (newValue.includes('all')) {
+        // If 'all' is currently selected, deselect all
+        newValue = [];
+      } else {
+        // If 'all' is not selected, select all
+        newValue = [...allOptionValues, 'all'];
+      }
     } else {
-      newValue.push(optionValue);
+      const index = newValue.indexOf(optionValue);
+      if (index > -1) {
+        newValue.splice(index, 1);
+      } else {
+        newValue.push(optionValue);
+      }
+
+      // After adding/removing a non-'all' option, adjust 'all' status
+      const currentlySelectedNonAll = newValue.filter(val => val !== 'all');
+      const allOthersSelected = allOptionValues.every(val => currentlySelectedNonAll.includes(val));
+
+      if (allOthersSelected) {
+        if (!newValue.includes('all')) {
+          newValue.push('all');
+        }
+      } else {
+        newValue = newValue.filter(val => val !== 'all');
+      }
     }
     this.valueChange.emit(newValue);
   }
