@@ -77,7 +77,7 @@ export class CategoriesSettingsComponent implements OnInit {
       .slice(startIndex, endIndex)
       .map((category) => ({
         ...category,
-        image: images[category.label] || 'https://placehold.co/1280x720',
+        image: images[category.label] || 'assets/img/PlaceHolder.png',
       }));
   });
 
@@ -261,6 +261,6 @@ export class CategoriesSettingsComponent implements OnInit {
   }
 
   onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = 'https://placehold.co/1280x720';
+    (event.target as HTMLImageElement).src = 'assets/img/PlaceHolder.png';
   }
 }

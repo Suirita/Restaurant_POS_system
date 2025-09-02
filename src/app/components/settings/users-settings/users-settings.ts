@@ -97,7 +97,7 @@ export class UsersSettingsComponent implements OnInit {
         image:
           user.image && user.image.content
             ? user.image.content
-            : 'https://placehold.co/1280x720',
+            : 'assets/img/PlaceHolder.png',
       }));
   });
 
@@ -181,7 +181,7 @@ export class UsersSettingsComponent implements OnInit {
     if (user.image && user.image.content) {
       return user.image.content;
     }
-    return 'https://placehold.co/1280x720';
+    return 'assets/img/PlaceHolder.png';
   }
 
   openCreateForm(): void {
@@ -223,8 +223,8 @@ export class UsersSettingsComponent implements OnInit {
 
   onImageError(event: Event) {
     const element = event.target as HTMLImageElement;
-    if (element.src !== 'https://placehold.co/1280x720') {
-      element.src = 'https://placehold.co/1280x720';
+    if (element.src !== 'assets/img/PlaceHolder.png') {
+      element.src = 'assets/img/PlaceHolder.png';
     }
   }
 }

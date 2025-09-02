@@ -32,7 +32,7 @@
               <ng-container [ngSwitch]="true">
                 <ng-container *ngSwitchCase="key === 'image'">
                   <img
-                    [src]="item[key] || 'https://placehold.co/1280x720'"
+                    [src]="item[key] || 'assets/img/PlaceHolder.png'"
                     (error)="onImageError($event)"
                     alt="{{ item.designation }}"
                     class="h-9 w-9 rounded-lg object-cover"

@@ -282,6 +282,6 @@ export class MealsSettingsComponent implements OnInit {
   }
 
   onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = 'https://placehold.co/1280x720';
+    (event.target as HTMLImageElement).src = 'assets/img/PlaceHolder.png';
   }
 }
