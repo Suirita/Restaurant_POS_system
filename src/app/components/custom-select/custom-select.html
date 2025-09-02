@@ -15,20 +15,11 @@
     </span>
 
     <!-- Chevron Icon -->
-    <svg
-      class="h-4 w-4 opacity-50 transition-transform duration-200"
+    <i-lucide
+      [img]="ChevronDown"
+      class="h-4 w-4 transition-transform duration-200"
       [ngClass]="{ 'rotate-180': isOpen }"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M19 9l-7 7-7-7"
-      />
-    </svg>
+    ></i-lucide>
   </button>
 
   <!-- Dropdown Options -->
@@ -50,20 +41,11 @@
         [attr.aria-selected]="value === option.value"
       >
         <!-- Check icon for selected option -->
-        <svg
+        <i-lucide
+          [img]="Check"
           *ngIf="value === option.value"
           class="h-4 w-4 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+        ></i-lucide>
 
         <span [ngClass]="{ 'ml-6': value !== option.value }">
           {{ option.label }}

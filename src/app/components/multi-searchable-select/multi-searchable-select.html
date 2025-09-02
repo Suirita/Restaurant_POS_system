@@ -52,21 +52,17 @@
         class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm"
       >
         <!-- Check icon for selected option -->
-        <svg
+        <i-lucide
+          [img]="Check"
           *ngIf="isSelected(option.value)"
           class="h-4 w-4 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        ></i-lucide>
+
+        <span
+          [ngClass]="{ 'ml-6': !isSelected(option.value) }"
+          class="flex-1 text-left"
+          >{{ option.label }}</span
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
-        <span [ngClass]="{ 'ml-6': !isSelected(option.value) }" class="flex-1 text-left">{{ option.label }}</span>
       </button>
     </div>
   </div>

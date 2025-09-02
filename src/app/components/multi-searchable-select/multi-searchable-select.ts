@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, Search, ChevronDown } from 'lucide-angular';
+import { LucideAngularModule, Search, ChevronDown, Check } from 'lucide-angular';
 
 export interface Option {
   value: string;
@@ -25,6 +25,7 @@ export interface Option {
 export class MultiSearchableSelectComponent {
   readonly Search = Search;
   readonly ChevronDown = ChevronDown;
+  readonly Check = Check;
 
   @Input() options: Option[] = [];
   @Input() set value(val: string[]) {

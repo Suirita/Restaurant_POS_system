@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, ChevronDown, Check } from 'lucide-angular';
 
 export interface Option {
   value: string;
@@ -16,11 +17,14 @@ export interface Option {
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   selector: 'app-custom-select',
   templateUrl: './custom-select.html',
 })
 export class CustomSelectComponent {
+  readonly ChevronDown = ChevronDown;
+  readonly Check = Check;
+
   @Input() options: Option[] = [];
   @Input() value: string = '';
   @Input() placeholder: string = 'Select an option...';

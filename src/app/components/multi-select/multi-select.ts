@@ -8,6 +8,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  LucideAngularModule,
+  ChevronDown,
+  Check,
+} from 'lucide-angular';
 
 export interface Option {
   value: string;
@@ -16,11 +21,14 @@ export interface Option {
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   selector: 'app-multi-select',
   templateUrl: './multi-select.html',
 })
 export class MultiSelectComponent {
+  readonly ChevronDown = ChevronDown;
+  readonly Check = Check;
+
   @Input() options: Option[] = [];
   @Input() set value(val: string[]) {
     this._value = val;
@@ -45,8 +53,12 @@ export class MultiSelectComponent {
   }
 
   get displayLabel(): string {
-    const allOptionValues = this.options.filter(o => o.value !== 'all').map(o => o.value);
-    const allSelected = allOptionValues.every(val => this.value.includes(val));
+    const allOptionValues = this.options
+      .filter((o) => o.value !== 'all')
+      .map((o) => o.value);
+    const allSelected = allOptionValues.every((val) =>
+      this.value.includes(val)
+    );
 
     if (allSelected && this.value.includes('all')) {
       return 'Tous les statuts'; // Or 'All'
@@ -73,7 +85,9 @@ export class MultiSelectComponent {
 
   selectOption(optionValue: string) {
     let newValue = [...this.value];
-    const allOptionValues = this.options.filter(o => o.value !== 'all').map(o => o.value);
+    const allOptionValues = this.options
+      .filter((o) => o.value !== 'all')
+      .map((o) => o.value);
 
     if (optionValue === 'all') {
       if (newValue.includes('all')) {
@@ -92,15 +106,17 @@ export class MultiSelectComponent {
       }
 
       // After adding/removing a non-'all' option, adjust 'all' status
-      const currentlySelectedNonAll = newValue.filter(val => val !== 'all');
-      const allOthersSelected = allOptionValues.every(val => currentlySelectedNonAll.includes(val));
+      const currentlySelectedNonAll = newValue.filter((val) => val !== 'all');
+      const allOthersSelected = allOptionValues.every((val) =>
+        currentlySelectedNonAll.includes(val)
+      );
 
       if (allOthersSelected) {
         if (!newValue.includes('all')) {
           newValue.push('all');
         }
       } else {
-        newValue = newValue.filter(val => val !== 'all');
+        newValue = newValue.filter((val) => val !== 'all');
       }
     }
     this.valueChange.emit(newValue);
