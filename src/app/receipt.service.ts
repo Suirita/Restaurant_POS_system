@@ -14,8 +14,6 @@ export class ReceiptService {
   private baseUrl = environment.apiBaseUrl;
   private configurationService = inject(ConfigurationService);
 
-  constructor() {}
-
   private buildQuoteBody(
     receipt: Receipt,
     reference: string,
@@ -798,10 +796,9 @@ export class ReceiptService {
         quoteToUpdate.status = status;
 
         // Update purpose (tableName)
-        quoteToUpdate.purpose = receipt.tableName;
-
-        // Update responsible user
-        quoteToUpdate.responsables = [receipt.userId];
+        if (receipt.tableName) {
+          quoteToUpdate.purpose = receipt.tableName;
+        }
 
         if (receipt.items && receipt.items.length > 0) {
           // Update line items and totals from the local receipt
