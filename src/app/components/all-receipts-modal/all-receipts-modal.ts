@@ -113,6 +113,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   currentPage = signal<number>(1);
   rowsCount = signal<number>(0);
+  pageSize = signal<number>(10);
 
   close = output<void>();
   pay = output<string>();
@@ -278,7 +279,7 @@ export class AllReceiptsModalComponent implements AfterViewInit {
       .getAllReceipts(
         this.token(),
         this.currentPage(),
-        10,
+        this.pageSize(),
         techniciansId,
         status.length === 0
           ? ['in_progress', 'refused', 'late', 'accepted', 'billed']
@@ -298,6 +299,12 @@ export class AllReceiptsModalComponent implements AfterViewInit {
 
   onPageChange(page: number) {
     this.currentPage.set(page);
+    this.loadReceipts();
+  }
+
+  onPageSizeChange(newPageSize: number) {
+    this.pageSize.set(newPageSize);
+    this.currentPage.set(1);
     this.loadReceipts();
   }
 

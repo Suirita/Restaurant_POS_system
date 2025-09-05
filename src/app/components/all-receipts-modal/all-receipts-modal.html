@@ -133,10 +133,12 @@
 
       <!-- Pagination -->
       <app-pagination
-        *ngIf="rowsCount() > 10"
+        *ngIf="rowsCount() > 0"
         [totalItems]="rowsCount()"
         [currentPage]="currentPage()"
+        [pageSize]="pageSize()"
         (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
       >
       </app-pagination>
     </div>

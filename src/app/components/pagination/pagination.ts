@@ -13,11 +13,12 @@ import {
   ChevronRight,
   ChevronsRight,
 } from 'lucide-angular';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule],
   templateUrl: './pagination.html',
 })
 export class PaginationComponent {
@@ -25,6 +26,9 @@ export class PaginationComponent {
   pageSize = input(10);
   currentPage = input.required<number>();
   @Output() pageChange = new EventEmitter<number>();
+  @Output() pageSizeChange = new EventEmitter<number>();
+
+  pageSizes = [10, 15, 20, 25];
 
   ChevronsLeft = ChevronsLeft;
   ChevronLeft = ChevronLeft;
