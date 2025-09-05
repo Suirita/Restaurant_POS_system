@@ -1,6 +1,18 @@
-import { Component, Output, EventEmitter, computed, input } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  computed,
+  input,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-pagination',
@@ -21,7 +33,9 @@ export class PaginationComponent {
 
   totalPages = computed(() => Math.ceil(this.totalItems() / this.pageSize()));
   startEntry = computed(() => (this.currentPage() - 1) * this.pageSize() + 1);
-  endEntry = computed(() => Math.min(this.currentPage() * this.pageSize(), this.totalItems()));
+  endEntry = computed(() =>
+    Math.min(this.currentPage() * this.pageSize(), this.totalItems())
+  );
   pages = computed(() => {
     const total = this.totalPages();
     const current = this.currentPage();
