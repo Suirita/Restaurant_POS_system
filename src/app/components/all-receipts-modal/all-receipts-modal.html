@@ -132,15 +132,17 @@
       </app-expandable-table>
 
       <!-- Pagination -->
-      <app-pagination
-        *ngIf="rowsCount() > 0"
-        [totalItems]="rowsCount()"
-        [currentPage]="currentPage()"
-        [pageSize]="pageSize()"
-        (pageChange)="onPageChange($event)"
-        (pageSizeChange)="onPageSizeChange($event)"
-      >
-      </app-pagination>
+      <div class="h-16">
+        <app-pagination
+          *ngIf="rowsCount() > 0"
+          [totalItems]="rowsCount()"
+          [currentPage]="currentPage()"
+          [pageSize]="pageSize()"
+          (pageChange)="onPageChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)"
+        >
+        </app-pagination>
+      </div>
     </div>
 
     <ng-template #totalColumnTemplate let-item="item">
@@ -193,7 +195,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of receipt.items" class="border-t border-gray-200">
+            <tr
+              *ngFor="let item of receipt.items"
+              class="border-t border-gray-200"
+            >
               <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
                 {{ item.designation }}
               </td>
@@ -201,7 +206,9 @@
               <td class="py-2 text-center">
                 {{ item.sellingPrice | currency:'EUR' }}
               </td>
-              <td class="px-6 py-2 text-end">{{ item.totalTTC | currency:'EUR' }}</td>
+              <td class="px-6 py-2 text-end">
+                {{ item.totalTTC | currency:'EUR' }}
+              </td>
             </tr>
           </tbody>
         </table>
